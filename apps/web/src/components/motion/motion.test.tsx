@@ -69,6 +69,20 @@ describe('Reveal', () => {
     expect(el).toHaveAttribute('data-reveal', 'static');
   });
 
+  it('shows content that was scrolled past before it could reveal', () => {
+    render(<Reveal data-testid="r">Skipped by an anchor jump</Reveal>);
+    const el = screen.getByTestId('r');
+    act(() => {
+      intersect(el, { isIntersecting: false, top: 2000 });
+    });
+    expect(el).toHaveAttribute('data-reveal', 'hidden');
+    act(() => {
+      intersect(el, { isIntersecting: false, top: -800 });
+    });
+    expect(el).toHaveAttribute('data-reveal', 'static');
+    expect(el).not.toHaveClass('opacity-0');
+  });
+
   it('renders the final state under reduced motion', () => {
     reduceMotion();
     render(<Reveal data-testid="r">Calm</Reveal>);

@@ -170,6 +170,12 @@ describe('token sheet', () => {
     }
   });
 
+  it('declares the theme pairs on every theme scope, so nested .light/.dark subtrees re-resolve', () => {
+    // Custom properties resolve where they're declared: a pair declared on :root alone would be
+    // inherited, already resolved, by a nested .dark panel (and by polyfilled light-dark()).
+    expect(css).toMatch(/:root,\s*\.light,\s*\.dark\s*\{\s*--color-bg: light-dark\(/);
+  });
+
   it('keeps the no-light-dark() fallback identical to the light theme', () => {
     for (const [token, { light }] of sheet.semantic) {
       expect(sheet.fallback.get(token), `--color-${token}`).toBe(light);

@@ -214,3 +214,13 @@
     }
   }
 }
+
+/* Printing never waits for a scroll. */
+@media print {
+  [data-reveal='hidden'],
+  [data-reveal='hidden'] .mask-hidden {
+    opacity: 1 !important;
+    transform: none !important;
+    translate: none !important;
+  }
+}

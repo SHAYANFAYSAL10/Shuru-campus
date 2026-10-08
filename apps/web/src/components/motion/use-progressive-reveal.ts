@@ -26,22 +26,32 @@ export function useProgressiveReveal<T extends Element>(enabled = true) {
     if (!enabled || reduced || !element) return;
 
     let initial = true;
-    const observer = new IntersectionObserver((entries) => {
-      for (const entry of entries) {
-        if (initial) {
-          initial = false;
-          // On screen, or already scrolled past: leave it exactly as rendered.
-          if (entry.isIntersecting || entry.boundingClientRect.top < 0) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (initial) {
+            initial = false;
+            // On screen, or already scrolled past: leave it exactly as rendered.
+            if (entry.isIntersecting || entry.boundingClientRect.top < 0) {
+              observer.disconnect();
+              return;
+            }
+            setState('hidden');
+          } else if (entry.isIntersecting) {
+            setState('shown');
             observer.disconnect();
-            return;
+          } else if (entry.boundingClientRect.top < 0) {
+            // Scrolled past without ever being seen (a fast flick, an anchor jump): show it as-is
+            // so it's never left invisible above the reader.
+            setState('static');
+            observer.disconnect();
           }
-          setState('hidden');
-        } else if (entry.isIntersecting) {
-          setState('shown');
-          observer.disconnect();
         }
-      }
-    });
+      },
+      // The root extends far above the viewport, so anything scrolled past also counts as
+      // intersecting. A jump straight over an element (an anchor link) still reveals it.
+      { rootMargin: '100000px 0px 0px 0px' },
+    );
     observer.observe(element);
     return () => {
       observer.disconnect();

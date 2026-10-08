@@ -8,7 +8,7 @@
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", "!**/*.test.*", "!**/*.spec.*", "!e2e/**", "!test/**"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
-      "env": ["API_ORIGIN", "NEXT_PUBLIC_*"]
+      "env": ["API_ORIGIN", "NEXT_PUBLIC_*", "ENABLE_STYLEGUIDE"]
     },
     "dev": {
       "dependsOn": ["^build"],

@@ -53,7 +53,7 @@ export function SegmentedControl<T extends string>({
       <legend className={cn(hideLegend ? 'sr-only' : 'mb-2 text-small text-fg-muted')}>
         {legend}
       </legend>
-      <div className="inline-flex max-w-full flex-wrap gap-1 rounded-full bg-bg-alt p-1">
+      <div className="inline-flex max-w-full flex-wrap gap-1 self-start rounded-full bg-bg-alt p-1">
         {options.map((option) => {
           const checked = option.value === value;
           const Icon = option.icon;

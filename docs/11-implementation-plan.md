@@ -27,7 +27,7 @@ A step-by-step task list. Work through the milestones **in order**. Within a mil
 | M0 | Repo & tooling foundation | 8 | ~4d | ☑ |
 | M1 | Shared contracts & seed data | 4 | ~2d | ☑ |
 | M2 | NestJS API (public + auth + admin) | 10 | ~6d | ☐ |
-| M3 | Design foundation in code | 8 | ~5d | ☐ |
+| M3 | Design foundation in code | 8 | ~5d | ☑ |
 | M4 | Layout shell | 5 | ~3d | ☐ |
 | M5 | Public pages | 8 | ~8d | ☐ |
 | M6 | Signature interactions | 7 | ~6d | ☐ |
@@ -143,7 +143,8 @@ A step-by-step task list. Work through the milestones **in order**. Within a mil
 - [x] **T3.7 Primitives: overlays & feedback** (M). `Dialog`, `Sheet` (Radix), `Toast` (live region, pause on hover/focus), `Tooltip`, `Skeleton`, `Price`, `OpenStatus`.
   *Tests:* focus trap and restore, Esc closes, toast announcement, and OpenStatus across mocked times.
 
-- [ ] **T3.8 Styleguide route** (S). `/_styleguide` (404 in production) renders every primitive in every state, in both themes.
+- [x] **T3.8 Styleguide route** (S). `/_styleguide` (404 in production) renders every primitive in every state, in both themes.
+  *Notes:* the folder is `src/app/%5Fstyleguide` (Next.js treats `_` folders as private). Set `ENABLE_STYLEGUIDE=true` at build time to include it in a production build for visual tests. Hover, focus and pressed states are frozen with `data-preview`.
   *Done when:* it's reviewed against the A6 component color table.
 
 ## M4 — Layout shell

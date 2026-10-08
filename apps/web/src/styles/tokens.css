@@ -5,10 +5,10 @@
  *   --palette-<name>: #rrggbb;
  *   --color-<name>: light-dark(var(--palette-<light>), var(--palette-<dark>));
  *
- * Theming: every semantic color is declared once with `light-dark()`, which resolves against
- * the element's `color-scheme`. `:root` follows the OS (works without JS), and next-themes sets
- * `.light` / `.dark` on <html>. Both classes also work on any subtree (the styleguide uses
- * that to show the two themes side by side).
+ * Theming: every semantic color is a `light-dark()` pair, which resolves against the element's
+ * `color-scheme`. `:root` follows the OS (works without JS), and next-themes sets `.light` /
+ * `.dark` on <html>. Both classes also work on any subtree (the styleguide uses that to show
+ * the two themes side by side).
  */
 
 /* ── Raw palette (A2). Never used directly in components. ─────────────────── */
@@ -44,7 +44,7 @@
   --palette-danger-dark: #f2867e;
 }
 
-/* ── Semantic colors (A3) + the rest of the Tailwind theme. ───────────────── */
+/* ── Tailwind theme: type, space, shape, motion. ─────────────────────────── */
 @theme {
   /* Only tokens exist: Tailwind's default palette, sizes, radii and shadows are removed. */
   --color-*: initial;
@@ -56,35 +56,6 @@
   --ease-*: initial;
   --animate-*: initial;
   --font-*: initial;
-
-  --color-bg: light-dark(var(--palette-paper), var(--palette-night));
-  --color-bg-alt: light-dark(var(--palette-paper-2), var(--palette-night-3));
-  --color-surface: light-dark(var(--palette-white), var(--palette-night-2));
-  --color-fg: light-dark(var(--palette-ink), var(--palette-parchment));
-  --color-fg-muted: light-dark(var(--palette-ink-2), var(--palette-parchment-2));
-  --color-fg-subtle: light-dark(var(--palette-ink-3), var(--palette-parchment-3));
-  --color-border: light-dark(var(--palette-line), var(--palette-night-line));
-  --color-border-strong: light-dark(var(--palette-line-strong), var(--palette-night-line-strong));
-  --color-accent: light-dark(var(--palette-marigold), var(--palette-sun));
-  --color-on-accent: light-dark(var(--palette-ink), var(--palette-ink));
-  --color-accent-text: light-dark(var(--palette-marigold-ink), var(--palette-sun));
-  --color-accent-subtle: light-dark(var(--palette-marigold-tint), var(--palette-sun-tint));
-  --color-brand: light-dark(var(--palette-lake), var(--palette-lake-light));
-  --color-brand-surface: light-dark(var(--palette-lake), var(--palette-lake));
-  --color-on-brand: light-dark(var(--palette-paper), var(--palette-parchment));
-  --color-info-subtle: light-dark(var(--palette-lake-tint), var(--palette-lake-night));
-  --color-focus: light-dark(var(--palette-lake), var(--palette-sun));
-  --color-success: light-dark(var(--palette-success), var(--palette-success-dark));
-  --color-danger: light-dark(var(--palette-danger), var(--palette-danger-dark));
-
-  /* Derived (A6): primary hover darkens the accent 6% toward ink; lake-band button hover. */
-  --color-accent-hover: color-mix(in oklab, var(--color-accent), var(--palette-ink) 6%);
-  --color-on-brand-hover: light-dark(var(--palette-white), var(--palette-white));
-  /* Behind dialogs and sheets. */
-  --color-scrim: light-dark(
-    color-mix(in srgb, var(--palette-ink) 48%, transparent),
-    color-mix(in srgb, var(--palette-night-3) 72%, transparent)
-  );
 
   /* Families come from next/font (layout.tsx sets the --font-*-face variables). */
   --font-display: var(--font-display-face), ui-serif, Georgia, serif;
@@ -129,10 +100,6 @@
   --radius-lg: 24px;
   --radius-full: 9999px;
 
-  /* Warm-tinted, low opacity. Dark mode leans on borders instead (A7). */
-  --shadow-raise: 0 1px 2px var(--shadow-tint-near), 0 12px 24px -12px var(--shadow-tint-far);
-  --shadow-overlay: 0 2px 6px var(--shadow-tint-near), 0 24px 56px -16px var(--shadow-tint-far);
-
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --ease-in: cubic-bezier(0.55, 0, 1, 0.45);
@@ -142,9 +109,6 @@
 }
 
 :root {
-  --shadow-tint-near: light-dark(rgb(22 21 15 / 0.06), rgb(0 0 0 / 0.32));
-  --shadow-tint-far: light-dark(rgb(22 21 15 / 0.14), rgb(0 0 0 / 0.48));
-
   /* Motion durations (04 §6). Mirrored in src/styles/motion.ts; a test keeps them equal. */
   --duration-instant: 100ms;
   --duration-fast: 180ms;
@@ -164,6 +128,80 @@
   --z-toast: 500;
 }
 
+/*
+ * Registers the theme-dependent colors with Tailwind so utilities exist (bg-bg, text-fg…). `reference` emits no variables: the values are declared per theme scope
+ * below. Values here are only the utilities' fallback.
+ */
+@theme reference {
+  --color-bg: var(--palette-paper);
+  --color-bg-alt: var(--palette-paper-2);
+  --color-surface: var(--palette-white);
+  --color-fg: var(--palette-ink);
+  --color-fg-muted: var(--palette-ink-2);
+  --color-fg-subtle: var(--palette-ink-3);
+  --color-border: var(--palette-line);
+  --color-border-strong: var(--palette-line-strong);
+  --color-accent: var(--palette-marigold);
+  --color-on-accent: var(--palette-ink);
+  --color-accent-text: var(--palette-marigold-ink);
+  --color-accent-subtle: var(--palette-marigold-tint);
+  --color-brand: var(--palette-lake);
+  --color-brand-surface: var(--palette-lake);
+  --color-on-brand: var(--palette-paper);
+  --color-info-subtle: var(--palette-lake-tint);
+  --color-focus: var(--palette-lake);
+  --color-success: var(--palette-success);
+  --color-danger: var(--palette-danger);
+  --color-accent-hover: var(--palette-marigold);
+  --color-on-brand-hover: var(--palette-white);
+  --color-scrim: color-mix(in srgb, var(--palette-ink) 48%, transparent);
+}
+
+/*
+ * Theme-dependent tokens, declared on every theme scope. Custom properties resolve where they
+ * are declared, so each `.light` / `.dark` subtree must declare them again to get its own
+ * values (whether light-dark() is native or polyfilled by the CSS build).
+ */
+:root,
+.light,
+.dark {
+  --color-bg: light-dark(var(--palette-paper), var(--palette-night));
+  --color-bg-alt: light-dark(var(--palette-paper-2), var(--palette-night-3));
+  --color-surface: light-dark(var(--palette-white), var(--palette-night-2));
+  --color-fg: light-dark(var(--palette-ink), var(--palette-parchment));
+  --color-fg-muted: light-dark(var(--palette-ink-2), var(--palette-parchment-2));
+  --color-fg-subtle: light-dark(var(--palette-ink-3), var(--palette-parchment-3));
+  --color-border: light-dark(var(--palette-line), var(--palette-night-line));
+  --color-border-strong: light-dark(var(--palette-line-strong), var(--palette-night-line-strong));
+  --color-accent: light-dark(var(--palette-marigold), var(--palette-sun));
+  --color-on-accent: light-dark(var(--palette-ink), var(--palette-ink));
+  --color-accent-text: light-dark(var(--palette-marigold-ink), var(--palette-sun));
+  --color-accent-subtle: light-dark(var(--palette-marigold-tint), var(--palette-sun-tint));
+  --color-brand: light-dark(var(--palette-lake), var(--palette-lake-light));
+  --color-brand-surface: light-dark(var(--palette-lake), var(--palette-lake));
+  --color-on-brand: light-dark(var(--palette-paper), var(--palette-parchment));
+  --color-info-subtle: light-dark(var(--palette-lake-tint), var(--palette-lake-night));
+  --color-focus: light-dark(var(--palette-lake), var(--palette-sun));
+  --color-success: light-dark(var(--palette-success), var(--palette-success-dark));
+  --color-danger: light-dark(var(--palette-danger), var(--palette-danger-dark));
+
+  /* Derived (A6): primary hover darkens the accent 6% toward ink; lake-band button hover. */
+  --color-accent-hover: color-mix(in oklab, var(--color-accent), var(--palette-ink) 6%);
+  --color-on-brand-hover: light-dark(var(--palette-white), var(--palette-white));
+  /* Behind dialogs and sheets. */
+  --color-scrim: light-dark(
+    color-mix(in srgb, var(--palette-ink) 48%, transparent),
+    color-mix(in srgb, var(--palette-night-3) 72%, transparent)
+  );
+
+  --shadow-tint-near: light-dark(rgb(22 21 15 / 0.06), rgb(0 0 0 / 0.32));
+  --shadow-tint-far: light-dark(rgb(22 21 15 / 0.14), rgb(0 0 0 / 0.48));
+
+  /* Warm-tinted, low opacity. Dark mode leans on borders instead (A7). */
+  --shadow-raise: 0 1px 2px var(--shadow-tint-near), 0 12px 24px -12px var(--shadow-tint-far);
+  --shadow-overlay: 0 2px 6px var(--shadow-tint-near), 0 24px 56px -16px var(--shadow-tint-far);
+}
+
 /* ── Theme switching ─────────────────────────────────────────────────────── */
 :root {
   color-scheme: light dark;
@@ -175,9 +213,12 @@
   color-scheme: dark;
 }
 
-/* Browsers without light-dark() (Safari < 17.5) get the light theme. Must match the light half above. */
+/* Browsers without light-dark() (Safari < 17.5) get the light theme. Must match the light half above
+   (a test checks). */
 @supports not (color: light-dark(#000, #fff)) {
-  :root {
+  :root,
+  .light,
+  .dark {
     --color-bg: var(--palette-paper);
     --color-bg-alt: var(--palette-paper-2);
     --color-surface: var(--palette-white);
@@ -206,7 +247,9 @@
 
 /* ── Special modes (A8) ──────────────────────────────────────────────────── */
 @media (prefers-contrast: more) {
-  :root {
+  :root,
+  .light,
+  .dark {
     --color-fg-muted: var(--color-fg);
     --color-fg-subtle: var(--color-fg);
     --color-border: var(--color-border-strong);
@@ -214,7 +257,9 @@
 }
 
 @media (forced-colors: active) {
-  :root {
+  :root,
+  .light,
+  .dark {
     --color-bg: Canvas;
     --color-bg-alt: Canvas;
     --color-surface: Canvas;
@@ -276,6 +321,14 @@
 }
 @utility duration-story {
   transition-duration: var(--duration-story);
+}
+
+/* Theme-aware shadows. Tailwind would inline a theme shadow's value, so these are plain utilities. */
+@utility shadow-raise {
+  box-shadow: var(--shadow-raise);
+}
+@utility shadow-overlay {
+  box-shadow: var(--shadow-overlay);
 }
 
 /* The lake band (A3): on-brand text, and the focus ring switches to the accent. */
