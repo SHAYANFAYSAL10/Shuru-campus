@@ -107,7 +107,7 @@ A step-by-step task list. Work through the milestones **in order**. Within a mil
 
 - [x] **T2.5 Plans module** (S). `GET /plans` (ordered), `GET /plans/:slug` (404 on unknown).
 
-- [ ] **T2.6 Throttling** (S). `@nestjs/throttler` global defaults, plus stricter named limits for login and inquiries (configurable for tests).
+- [x] **T2.6 Throttling** (S). `@nestjs/throttler` global defaults, plus stricter named limits for login and inquiries (configurable for tests).
   *Tests:* the 6th login attempt in 60s → 429 + `Retry-After`.
 
 - [ ] **T2.7 Inquiries module** (S). `POST /inquiries` → 202. Honeypot no-op. Logs a redacted summary (no email or phone in logs).

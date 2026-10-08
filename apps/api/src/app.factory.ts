@@ -11,6 +11,13 @@ import { type AppConfig } from './config/app-config.js';
 
 export const API_PREFIX = 'api/v1';
 
+/** Express `trust proxy` from the env string: `true`/`false`, a hop count, or subnet names/CIDRs. */
+export function trustProxySetting(value: string): boolean | number | string {
+  if (value === 'true' || value === 'false') return value === 'true';
+  if (/^\d+$/.test(value)) return Number(value);
+  return value;
+}
+
 export interface CreateAppOptions {
   logger?: LoggerOptions;
 }
@@ -28,6 +35,8 @@ export async function createApp(
     { bufferLogs: true, abortOnError: false, bodyParser: false },
   );
   app.useLogger(app.get(Logger));
+  // `req.ip` (the rate-limit key) is the forwarded client IP only from trusted hops.
+  app.set('trust proxy', trustProxySetting(config.env.TRUST_PROXY));
 
   // Runs before Nest's own middleware, so even router 404s carry a request ID.
   app.use(requestId);

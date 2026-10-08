@@ -165,5 +165,10 @@ The brand name (and logo, legal name, taglines) is **configuration, not code**.
 | api | `ADMIN_PASSWORD_HASH` | argon2id hash |
 | api | `DATA_SOURCE` | `memory` (Phase 1 only value) |
 | api | `BRAND_SEED` | Optional path to a JSON file overriding the default brand (validated at boot) |
+| api | `LOG_LEVEL` | Optional. Defaults to `debug` (dev), `silent` (test), `info` (prod) |
+| api | `TRUST_PROXY` | Express `trust proxy`: `loopback` (default), a hop count, CIDRs or `true`/`false`. Rate limits key on the client IP it yields |
+| api | `THROTTLE_DEFAULT_LIMIT` | Requests/min/IP on every route, default `120` |
+| api | `THROTTLE_LOGIN_LIMIT` | Login attempts/min/IP, default `5` |
+| api | `THROTTLE_INQUIRY_LIMIT` | Inquiries/min/IP, default `5` |
 | web | `API_ORIGIN` | `http://localhost:4000` (server-side only) |
 | web | `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` (canonical URLs, OG) |

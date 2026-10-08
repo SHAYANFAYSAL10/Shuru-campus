@@ -17,6 +17,11 @@ export function testEnv(
     // argon2id of TEST_ADMIN_PASSWORD.
     ADMIN_PASSWORD_HASH:
       '$argon2id$v=19$m=65536,p=4,t=3$UgB9nfXkhY3hQymNSo/RNg$FASV5IJ9USa+VtgjnFwXM95CUl9K1uSHuyeM4BvAsm4',
+    // Limits are raised so suites never trip them; throttling tests lower them explicitly
+    // (docs/08-testing.md → Conventions).
+    THROTTLE_DEFAULT_LIMIT: '10000',
+    THROTTLE_LOGIN_LIMIT: '10000',
+    THROTTLE_INQUIRY_LIMIT: '10000',
     ...overrides,
   };
 }

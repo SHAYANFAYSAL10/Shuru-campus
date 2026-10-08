@@ -26,7 +26,13 @@ function writeJson(value: unknown): string {
 
 describe('loadConfig', () => {
   it('accepts a complete environment and applies defaults', () => {
-    const config = loadConfig(testEnv());
+    const config = loadConfig(
+      testEnv({
+        THROTTLE_DEFAULT_LIMIT: undefined,
+        THROTTLE_LOGIN_LIMIT: undefined,
+        THROTTLE_INQUIRY_LIMIT: undefined,
+      }),
+    );
     expect(config.env).toMatchObject({
       PORT: 4000,
       JWT_TTL: 8 * 3600,

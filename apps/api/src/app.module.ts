@@ -5,6 +5,7 @@ import { LoggerModule } from 'nestjs-pino';
 import { AllExceptionsFilter } from './common/all-exceptions.filter.js';
 import { CacheControlInterceptor } from './common/cache-control.js';
 import { type LoggerOptions, pinoHttpOptions } from './common/logger.js';
+import { ThrottlingModule } from './common/throttling.js';
 import { type AppConfig } from './config/app-config.js';
 import { ConfigModule } from './config/config.module.js';
 import { HealthModule } from './modules/health/health.module.js';
@@ -20,6 +21,7 @@ export class AppModule {
       imports: [
         ConfigModule.forRoot(config),
         LoggerModule.forRoot({ pinoHttp: logger.stream ? [pinoHttp, logger.stream] : pinoHttp }),
+        ThrottlingModule,
         HealthModule,
         SiteModule,
         PlansModule,
