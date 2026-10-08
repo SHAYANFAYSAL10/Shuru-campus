@@ -129,7 +129,7 @@ The brand name (and logo, legal name, taglines) is **configuration, not code**.
 - **Access in web:**
   - Server Components call `getBrand()` from `src/lib/api`.
   - Client components read it from `<BrandProvider>` (filled once in the root layout) via `useBrand()`.
-  - If the API is unreachable, `getBrand()` falls back to the seed default imported from contracts, so the name always renders.
+  - If the API is unreachable, `getBrand()` falls back to the seed default imported from contracts, so the name always renders. The layout shell (header, footer) reads `getSiteSettings()`, which falls back to the whole site seed the same way.
 - **Optional override without editing code:** `BRAND_SEED=<path to a JSON file>` on the API replaces the default brand at boot. It's validated by the `Brand` schema, and the API refuses to start if it's invalid. This is used by the rebrand test.
 - **Internal identifiers are brand-neutral:** package scope `@campus/*`, cookie `admin_session`, CSS and token names (`--color-accent`, never `--shuru-*`). Renaming the brand never requires a code change.
 - **Enforcement:**

@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { amenitiesSeed, defaultBrand, gallerySeed, plansSeed, siteSeed } from '@campus/contracts';
 
-import { getBrand } from '@/lib/api/brand';
+import { getBrand, getSiteSettings } from '@/lib/api/brand';
 import { getAmenities, getGallery, getHealth, getPlan, getPlans, getSite } from '@/lib/api/public';
 
 function respondWith(body: unknown, status = 200) {
@@ -87,5 +87,20 @@ describe('getBrand', () => {
     vi.stubGlobal('fetch', () => Promise.reject(new TypeError('fetch failed')));
 
     expect(await getBrand()).toEqual(defaultBrand);
+  });
+});
+
+describe('getSiteSettings', () => {
+  it('returns the settings from the API', async () => {
+    const settings = { ...siteSeed, features: { ...siteSeed.features, gallery: false } };
+    respondWith(settings);
+
+    expect(await getSiteSettings()).toEqual(settings);
+  });
+
+  it('falls back to the seed when the API answers off-contract', async () => {
+    respondWith({ brand: { name: '' } });
+
+    expect(await getSiteSettings()).toEqual(siteSeed);
   });
 });
