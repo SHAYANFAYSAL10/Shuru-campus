@@ -51,6 +51,8 @@ Loaded through `next/font` (self-hosted, `display: swap`, subset `latin`, metric
 
 Measure: body copy is `max-width: 65ch`. Headlines use `text-wrap: balance`, paragraphs `text-wrap: pretty`.
 
+**Type roles in code** (`apps/web/src/styles/base.css`): `type-display`, `type-h1`, `type-h2` and `type-h3` set Fraunces with its size, line-height, tracking and a pinned optical size (144 / 144 / 96 / 72) plus `SOFT 50`. `type-lead` and `type-eyebrow` (Geist Mono, uppercase, 0.12em) cover the rest. The bare `text-*` size utilities stay available for Geist text. Fonts load in `src/styles/fonts.ts`.
+
 ## 4. Space, layout and shape
 
 - **Spacing scale (4px base):** 1=4, 2=8, 3=12, 4=16, 5=20, 6=24, 8=32, 10=40, 12=48, 16=64, 20=80, 24=96, 32=128. Section padding is fluid: `clamp(64px, 10vw, 160px)`.

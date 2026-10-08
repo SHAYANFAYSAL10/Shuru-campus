@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import './tokens.css';
+@import './base.css';
 
 /*
  * Interaction variants. Hover only applies on fine pointers (04 §6); touch gets press states.
@@ -32,10 +33,3 @@
   }
 }
 @custom-variant dark (&:where(.dark, .dark *));
-
-@layer base {
-  html {
-    background-color: var(--color-bg);
-    color: var(--color-fg);
-  }
-}

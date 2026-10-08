@@ -1,0 +1,153 @@
+/* Base element styles and type roles (docs/04-design-system.md §3, 10-design-guidelines.md B2). */
+
+@layer base {
+  html {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    min-height: 100dvh;
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    text-wrap: balance;
+  }
+
+  p,
+  li,
+  dd,
+  figcaption,
+  blockquote {
+    text-wrap: pretty;
+  }
+
+  blockquote {
+    hanging-punctuation: first;
+  }
+
+  ::selection {
+    background-color: var(--color-accent-subtle);
+    color: var(--color-fg);
+  }
+
+  /* One focus ring for everything (A6): 2px in --color-focus, 2px offset. */
+  :focus-visible,
+  [data-preview~='focus'] {
+    outline: var(--ring-width) solid var(--color-focus);
+    outline-offset: var(--ring-offset);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  /*
+   * Paper grain (04 §4): a fixed 3% noise layer that sits on --color-bg only. With z-index -1
+   * in the root stacking context it paints above the canvas and below every section, so
+   * surfaces and bg-alt sections cover it.
+   */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: var(--grain-opacity);
+    background-image: var(--grain-texture);
+    transform: translateZ(0);
+  }
+
+  @media (forced-colors: active), (prefers-contrast: more) {
+    body::before {
+      display: none;
+    }
+  }
+}
+
+:root {
+  --ring-width: 2px;
+  --ring-offset: 2px;
+  --grain-opacity: 0.03;
+  /* 160px tile of fractal noise. */
+  --grain-texture: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/*
+ * Type roles. Fraunces is for headlines, pull quotes and big numbers only (B2); optical size is
+ * pinned per role (72–144) instead of following the rendered size, with SOFT 50 throughout.
+ */
+@utility type-display {
+  font-family: var(--font-display);
+  font-size: var(--text-display);
+  line-height: var(--text-display--line-height);
+  letter-spacing: var(--text-display--letter-spacing);
+  font-weight: 400;
+  font-variation-settings:
+    'opsz' 144,
+    'SOFT' 50,
+    'WONK' 0;
+}
+@utility type-h1 {
+  font-family: var(--font-display);
+  font-size: var(--text-h1);
+  line-height: var(--text-h1--line-height);
+  font-weight: 400;
+  font-variation-settings:
+    'opsz' 144,
+    'SOFT' 50,
+    'WONK' 0;
+}
+@utility type-h2 {
+  font-family: var(--font-display);
+  font-size: var(--text-h2);
+  line-height: var(--text-h2--line-height);
+  font-weight: 400;
+  font-variation-settings:
+    'opsz' 96,
+    'SOFT' 50,
+    'WONK' 0;
+}
+@utility type-h3 {
+  font-family: var(--font-display);
+  font-size: var(--text-h3);
+  line-height: var(--text-h3--line-height);
+  font-weight: 500;
+  font-variation-settings:
+    'opsz' 72,
+    'SOFT' 50,
+    'WONK' 0;
+}
+@utility type-lead {
+  font-size: var(--text-lead);
+  line-height: var(--text-lead--line-height);
+}
+@utility type-eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-eyebrow);
+  line-height: var(--text-eyebrow--line-height);
+  letter-spacing: var(--text-eyebrow--letter-spacing);
+  text-transform: uppercase;
+}
+
+/* The ৳ sign at 0.75em in fg-muted (B2). */
+@utility currency-symbol {
+  font-size: 0.75em;
+  color: var(--color-fg-muted);
+}

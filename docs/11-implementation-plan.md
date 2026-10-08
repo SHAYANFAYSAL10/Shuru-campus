@@ -127,7 +127,7 @@ A step-by-step task list. Work through the milestones **in order**. Within a mil
 - [x] **T3.1 Tokens in CSS** (M). `globals.css`: palette + semantic tokens (light/dark/forced-colors/prefers-contrast) from `10-design-guidelines.md` A2–A3, the type scale, spacing, radius, shadow and z-index tokens from `04-design-system.md`, and Tailwind v4 `@theme` mapping.
   *Tests:* `contrast.test.ts` asserts every row of the A4 matrix by parsing the token values.
 
-- [ ] **T3.2 Fonts & base styles** (S). `next/font` for Fraunces (variable axes), Geist Sans and Geist Mono. Base typography, `text-wrap`, the selection color, the paper-grain overlay and the focus-visible ring.
+- [x] **T3.2 Fonts & base styles** (S). `next/font` for Fraunces (variable axes), Geist Sans and Geist Mono. Base typography, `text-wrap`, the selection color, the paper-grain overlay and the focus-visible ring.
 
 - [ ] **T3.3 Theming** (S). `next-themes` (System/Light/Dark), no flash, the `ThemeToggle` primitive, the 180ms root color transition.
 
