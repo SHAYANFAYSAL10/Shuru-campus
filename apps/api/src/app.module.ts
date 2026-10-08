@@ -8,6 +8,7 @@ import { type LoggerOptions, pinoHttpOptions } from './common/logger.js';
 import { type AppConfig } from './config/app-config.js';
 import { ConfigModule } from './config/config.module.js';
 import { HealthModule } from './modules/health/health.module.js';
+import { PlansModule } from './modules/plans/plans.module.js';
 import { SiteModule } from './modules/site/site.module.js';
 
 @Module({})
@@ -21,6 +22,7 @@ export class AppModule {
         LoggerModule.forRoot({ pinoHttp: logger.stream ? [pinoHttp, logger.stream] : pinoHttp }),
         HealthModule,
         SiteModule,
+        PlansModule,
       ],
       providers: [
         { provide: APP_FILTER, useClass: AllExceptionsFilter },

@@ -105,7 +105,7 @@ A step-by-step task list. Work through the milestones **in order**. Within a mil
 - [x] **T2.4 Site module** (M). Repositories + services for site settings (including `brand`, with the optional `BRAND_SEED` JSON override validated at boot), amenities and gallery (`?category=`), with in-memory implementations seeded from contracts.
   *Tests:* supertest for each endpoint, including an invalid category → 400.
 
-- [ ] **T2.5 Plans module** (S). `GET /plans` (ordered), `GET /plans/:slug` (404 on unknown).
+- [x] **T2.5 Plans module** (S). `GET /plans` (ordered), `GET /plans/:slug` (404 on unknown).
 
 - [ ] **T2.6 Throttling** (S). `@nestjs/throttler` global defaults, plus stricter named limits for login and inquiries (configurable for tests).
   *Tests:* the 6th login attempt in 60s → 429 + `Retry-After`.
