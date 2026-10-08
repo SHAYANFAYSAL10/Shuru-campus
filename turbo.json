@@ -1,33 +1,62 @@
 {
   "$schema": "https://turborepo.com/schema.json",
+  "agentGuidance": false,
   "ui": "stream",
-  "globalEnv": ["NODE_ENV", "TZ"],
+  "globalEnv": [
+    "NODE_ENV",
+    "TZ"
+  ],
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
-      "inputs": ["$TURBO_DEFAULT$", "!**/*.test.*", "!**/*.spec.*", "!e2e/**", "!test/**"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
-      "env": ["API_ORIGIN", "NEXT_PUBLIC_*"]
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!**/*.test.*",
+        "!**/*.spec.*",
+        "!e2e/**",
+        "!test/**"
+      ],
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**"
+      ],
+      "env": [
+        "API_ORIGIN",
+        "NEXT_PUBLIC_*"
+      ]
     },
     "dev": {
-      "dependsOn": ["^build"],
+      "dependsOn": [
+        "^build"
+      ],
       "cache": false,
       "persistent": true
     },
     "lint": {
-      "dependsOn": ["^build"],
+      "dependsOn": [
+        "^build"
+      ],
       "outputs": []
     },
     "typecheck": {
-      "dependsOn": ["^build"],
+      "dependsOn": [
+        "^build"
+      ],
       "outputs": []
     },
     "test": {
-      "dependsOn": ["^build"],
+      "dependsOn": [
+        "^build"
+      ],
       "outputs": []
     },
     "test:e2e": {
-      "dependsOn": ["^build"],
+      "dependsOn": [
+        "^build"
+      ],
       "cache": false
     }
   }
