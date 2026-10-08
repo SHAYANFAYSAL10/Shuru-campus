@@ -13,9 +13,10 @@ export function isThemeChoice(value: unknown): value is ThemeChoice {
 /**
  * System / Light / Dark (A7). next-themes injects a blocking script that sets `.light` or
  * `.dark` on <html> before first paint, so there's no flash of the wrong theme; the choice is
- * kept in localStorage. Without JS, `:root` follows the OS through `color-scheme`.
+ * kept in localStorage. Without JS, `:root` follows the OS through `color-scheme`. `nonce` is the
+ * request's CSP nonce (src/proxy.ts), without which the script is blocked.
  */
-export function ThemeProvider({ children }: { children: ReactNode }) {
+export function ThemeProvider({ nonce, children }: { nonce?: string; children: ReactNode }) {
   return (
     <NextThemesProvider
       attribute="class"
@@ -23,6 +24,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       enableSystem
       enableColorScheme={false}
       storageKey="theme"
+      nonce={nonce}
     >
       {children}
     </NextThemesProvider>

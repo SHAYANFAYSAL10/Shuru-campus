@@ -41,7 +41,7 @@ shuru-campus/
 │  │  │  ├─ admin/
 │  │  │  │  ├─ login/
 │  │  │  │  └─ (console)/      # authenticated layout: dashboard, settings, pricing, features
-│  │  │  ├─ layout.tsx  not-found.tsx  error.tsx  sitemap.ts  robots.ts  opengraph-image.tsx
+│  │  │  ├─ layout.tsx  not-found.tsx  error.tsx  global-error.tsx  sitemap.ts  robots.ts  opengraph-image.tsx
 │  │  ├─ src/components/
 │  │  │  ├─ ui/                # primitives: Button, Field, Dialog, Toast… (Radix-based, token-styled)
 │  │  │  ├─ motion/            # Reveal, SplitText, BeginLine, Magnetic, Marquee, MotionProvider…
@@ -49,9 +49,10 @@ shuru-campus/
 │  │  │  └─ admin/
 │  │  ├─ src/lib/              # api client, cn(), hooks (useReducedMotion…), contrast math, plan-finder logic
 │  │  ├─ src/styles/           # globals.css (@theme tokens), motion.ts
+│  │  ├─ src/proxy.ts          # per-request CSP nonce; /admin cookie redirect (T7.1)
+│  │  ├─ assets/fonts/         # static WOFF files for the generated OG image
 │  │  ├─ content/legal/*.mdx
-│  │  ├─ e2e/                  # Playwright specs
-│  │  └─ proxy.ts
+│  │  └─ e2e/                  # Playwright specs
 │  └─ api/
 │     ├─ src/
 │     │  ├─ main.ts  app.module.ts
@@ -150,7 +151,10 @@ The brand name (and logo, legal name, taglines) is **configuration, not code**.
 - **Guarding:** `proxy.ts` in web does a fast redirect when the cookie is missing (UX only). **Authorization is enforced in the API** by `AdminGuard` verifying the JWT on every `/admin/*` route.
 - **CSRF:** `SameSite=Lax` plus an `OriginGuard` rejecting mutations whose `Origin` isn't in `WEB_ORIGINS`.
 - **Brute force:** login is throttled to 5 attempts/min/IP. Responses are uniform (`Invalid email or password`) with constant-time comparison.
-- **Headers:** Helmet on the API. Next sets a CSP (nonce-based), `Referrer-Policy`, `Permissions-Policy` and `X-Content-Type-Options`.
+- **Headers:** Helmet on the API. On the web, `src/proxy.ts` sets a nonce-based CSP on every page (a fresh nonce per request; `src/lib/security/csp.ts`), and `next.config.ts` sets `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, `X-Frame-Options`, `Cross-Origin-Opener-Policy` and, on an https site, HSTS.
+  - Scripts run only with the nonce (`'strict-dynamic'`, no `'unsafe-inline'`; `'unsafe-eval'` in `next dev` only). Next.js puts it on its own scripts; the root layout passes it to the next-themes and announcement boot scripts. Reading it makes every page dynamic, which the data-fetching model already assumes.
+  - Styles allow `'unsafe-inline'` (React `style` attributes can't carry a nonce). Every other source is `'self'`, frames are blocked both ways, and a third-party embed must be added to the policy explicitly.
+  - Client-side Zod runs `jitless`, so its `new Function` probe never trips the policy.
 - **Inquiries:** honeypot field plus throttling. All input is length-limited by the schema.
 
 ## Environment variables

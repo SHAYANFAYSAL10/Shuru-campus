@@ -1,11 +1,12 @@
 import 'server-only';
 
+import { SITE_URL } from '@/lib/site-url';
+
 /** Where the Next server reaches the API (docs/03-architecture.md → Environment variables). */
 export const API_ORIGIN = process.env.API_ORIGIN ?? 'http://localhost:4000';
 
 /** Sent as `Origin` on server-side mutations; the API's OriginGuard checks it (06-api.md). */
-export const SITE_ORIGIN = new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000')
-  .origin;
+export const SITE_ORIGIN = SITE_URL.origin;
 
 export const API_BASE = `${API_ORIGIN}/api/v1`;
 
