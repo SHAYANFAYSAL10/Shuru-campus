@@ -137,7 +137,7 @@ A step-by-step task list. Work through the milestones **in order**. Within a mil
 
 - [x] **T3.5 Primitives: actions** (M). `Button` (variants/sizes/loading keeps width), `IconButton`, `Link` (begin-line underline), `Badge`/`Chip`.
 
-- [ ] **T3.6 Primitives: forms** (M). `Field` wrapper (label, hint, error, `aria-describedby`), `Input`, `Textarea`, `Select`, `Checkbox`, `Switch`, `SegmentedControl` (roving tabindex, spring thumb), plus React Hook Form + Zod integration helpers (`useZodForm`, focus the first error).
+- [x] **T3.6 Primitives: forms** (M). `Field` wrapper (label, hint, error, `aria-describedby`), `Input`, `Textarea`, `Select`, `Checkbox`, `Switch`, `SegmentedControl` (roving tabindex, spring thumb), plus React Hook Form + Zod integration helpers (`useZodForm`, focus the first error).
   *Tests:* RTL keyboard, error announcement and focus management.
 
 - [ ] **T3.7 Primitives: overlays & feedback** (M). `Dialog`, `Sheet` (Radix), `Toast` (live region, pause on hover/focus), `Tooltip`, `Skeleton`, `Price`, `OpenStatus`.

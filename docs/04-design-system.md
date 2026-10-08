@@ -67,6 +67,8 @@ Measure: body copy is `max-width: 65ch`. Headlines use `text-wrap: balance`, par
 
 `Button` (primary / secondary / ghost / link; sm / md / lg; loading state preserves width) · `IconButton` · `Link` (animated begin-line underline) · `Field` (`Input`, `Textarea`, `Select`, `SegmentedControl`, `Checkbox`, `Switch`) with label, hint, error · `Card` · `Badge` / `Chip` · `Tabs` · `Dialog` / `Sheet` (mobile) · `Toast` · `Tooltip` (never the only source of info) · `Skeleton` · `Price` (formats BDT, unit, tabular nums) · `OpenStatus` (live dot + label) · `ThemeToggle` · `Logo`.
 
+**Forms are native first.** `Select` is a styled `<select>`, `Checkbox` and `Switch` (`role="switch"`) are real checkboxes, and `SegmentedControl` is a radio group, so the platform pickers, keyboard behavior and no-JS form posts all keep working. `Field` links the label, hint and error to its control (`aria-describedby`, `aria-invalid`), and invalid controls get a danger border and a danger focus ring. Forms use `useZodForm(schema)` from `src/lib/forms`, which validates on blur and then live, and on submit focuses the first invalid field. `applyApiErrors()` maps a `400` response's `details` back onto fields.
+
 Every interactive primitive has these documented states: default, hover, focus-visible, active, disabled, loading, error. A `/_styleguide` dev-only route renders all primitives in all states and themes, and it's used by the visual tests.
 
 ## 6. Motion
