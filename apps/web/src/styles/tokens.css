@@ -151,6 +151,8 @@
   --duration-base: 320ms;
   --duration-slow: 560ms;
   --duration-story: 900ms;
+  /* Reduced-motion stand-in for transforms. */
+  --duration-crossfade: 150ms;
 
   /* Z-index scale (04 §4). Use the z-* utilities below, never raw numbers. */
   --z-base: 0;

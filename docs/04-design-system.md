@@ -97,6 +97,14 @@ Motion explains **where things come from and what changed.** It's never decorati
 - No scroll-jacking. Lenis (if enabled) only smooths native scroll and is disabled on touch devices.
 - Target 60fps on mid-range Android. Use `will-change` only during the animation.
 
+### Implementation (`apps/web/src/components/motion/`)
+- **Reveals are CSS, toggled by one IntersectionObserver hook** (`useProgressiveReveal`). `<Reveal>`, `<SplitText>` and `<BeginLine>` use the `animate-reveal` / `animate-mask-up` / `animate-draw` keyframes from `src/styles/animations.css`, so they add almost no JS. Their `mount` variants run from CSS on first paint, before hydration and without JS.
+- **`motion` is for springs and layout** (`<Magnetic>`, the segmented-control thumb, shared-element transitions). Its features load lazily through `<MotionProvider>` (`LazyMotion strict` + `MotionConfig reducedMotion="user"`), so use `m.*` from `motion/react-m`, never `motion.*`.
+- **Reduced motion:** `useReducedMotion()` (`src/lib/hooks/use-media-query.ts`) for JS and the `motion-reduce:` variant for CSS. Reveals render their final state, line-draws appear drawn, `<Marquee>` becomes a wrapped list.
+- `<Marquee>` only moves after hydration, when its pause button works. Without JS it's a static list.
+- `<SmoothScroll>` (Lenis) is code-split and loads only on fine pointers without reduced motion. It isn't mounted yet; whether to use it is decided with the layout shell (M4).
+- Durations and easings live in `src/styles/motion.ts` and are mirrored as `--duration-*` / `--ease-*` in CSS. `motion.test.ts` keeps the two equal.
+
 ### Signature moments
 1. **Hero word cycle:** "Your ___ *begins* here." The blank cycles through *startup · big idea · Monday · next chapter* with a vertical mask-slide. It pauses on hover/focus and has a visible pause button (WCAG 2.2.2).
 2. **Begin-line draw:** an SVG `pathLength` 0→1 under the hero word, then it persists as the nav underline (shared `layoutId`).

@@ -131,7 +131,7 @@ A step-by-step task list. Work through the milestones **in order**. Within a mil
 
 - [ ] **T3.3 Theming** (S). `next-themes` (System/Light/Dark), no flash, the `ThemeToggle` primitive, the 180ms root color transition.
 
-- [ ] **T3.4 Motion foundation** (M). `motion.ts` tokens, the `useReducedMotion` wrapper, `<Reveal>` (progressive, below-fold only, once), `<SplitText>`, `<BeginLine>` (SVG path draw), `<Magnetic>`, `<Marquee>` (pausable), and optional Lenis provider (off on touch and reduced motion).
+- [x] **T3.4 Motion foundation** (M). `motion.ts` tokens, the `useReducedMotion` wrapper, `<Reveal>` (progressive, below-fold only, once), `<SplitText>`, `<BeginLine>` (SVG path draw), `<Magnetic>`, `<Marquee>` (pausable), and optional Lenis provider (off on touch and reduced motion).
   *Tests:* reduced-motion branches render final states, and Reveal content exists in the SSR HTML.
 
 - [ ] **T3.5 Primitives: actions** (M). `Button` (variants/sizes/loading keeps width), `IconButton`, `Link` (begin-line underline), `Badge`/`Chip`.

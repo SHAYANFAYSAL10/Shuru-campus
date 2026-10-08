@@ -44,10 +44,10 @@ shuru-campus/
 │  │  │  ├─ layout.tsx  not-found.tsx  error.tsx  sitemap.ts  robots.ts  opengraph-image.tsx
 │  │  ├─ src/components/
 │  │  │  ├─ ui/                # primitives: Button, Field, Dialog, Toast… (Radix-based, token-styled)
-│  │  │  ├─ motion/            # Reveal, SplitText, Magnetic, Marquee, useReducedMotion…
+│  │  │  ├─ motion/            # Reveal, SplitText, BeginLine, Magnetic, Marquee, MotionProvider…
 │  │  │  ├─ sections/          # page sections (Hero, PlanGrid, DayTimeline…)
 │  │  │  └─ admin/
-│  │  ├─ src/lib/              # api client, formatting (BDT), hours (open-now), plan-finder logic
+│  │  ├─ src/lib/              # api client, cn(), hooks (useReducedMotion…), contrast math, plan-finder logic
 │  │  ├─ src/styles/           # globals.css (@theme tokens), motion.ts
 │  │  ├─ content/legal/*.mdx
 │  │  ├─ e2e/                  # Playwright specs

@@ -1,0 +1,75 @@
+/*
+ * Keyframe animations (docs/04-design-system.md §6). Only transform and opacity, plus the SVG
+ * stroke offset for the begin line. Components pair each one with a reduced-motion fallback.
+ */
+
+:root {
+  /* Mirrors distance.reveal in motion.ts. */
+  --reveal-distance: 20px;
+}
+
+@theme {
+  --animate-reveal: reveal var(--duration-slow) var(--ease-out) both;
+  --animate-mask-up: mask-up var(--duration-slow) var(--ease-out) both;
+  --animate-draw: draw var(--duration-story) var(--ease-out) both;
+  --animate-fade-in: fade-in var(--duration-crossfade) linear both;
+  --animate-marquee: marquee var(--marquee-duration) linear infinite;
+
+  /* Section reveal: up from --reveal-distance, opacity 0 → 1. */
+  @keyframes reveal {
+    from {
+      opacity: 0;
+      transform: translateY(var(--reveal-distance));
+    }
+  }
+
+  /* Word slides up out of an overflow-hidden mask. */
+  @keyframes mask-up {
+    from {
+      transform: translateY(105%);
+    }
+  }
+
+  /* SVG path with pathLength="1" and stroke-dasharray: 1. */
+  @keyframes draw {
+    from {
+      stroke-dashoffset: 1;
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  /* The track holds two copies of the content, so -50% is one seamless loop. */
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+/* A word's clipping window for mask-up. The padding/negative-margin pair widens the clip box
+   so italic overhangs and descenders aren't cut, without changing layout. */
+@utility mask-line {
+  display: inline-block;
+  overflow: clip;
+  padding: 0.12em 0.06em;
+  margin: -0.12em -0.06em;
+}
+
+/* Start position of mask-up, before the word scrolls into view. */
+@utility mask-hidden {
+  transform: translateY(105%);
+}
+
+/* Start position of the begin-line draw, before it scrolls into view. */
+@utility begin-line-undrawn {
+  stroke-dashoffset: 1;
+}
+
+@utility animation-paused {
+  animation-play-state: paused;
+}

@@ -4,5 +4,13 @@
   "printWidth": 100,
   "semi": true,
   "plugins": ["prettier-plugin-tailwindcss"],
-  "tailwindFunctions": ["cn", "cva"]
+  "tailwindFunctions": ["cn", "cva"],
+  "overrides": [
+    {
+      "files": "apps/web/**",
+      "options": {
+        "tailwindStylesheet": "./apps/web/src/styles/globals.css"
+      }
+    }
+  ]
 }

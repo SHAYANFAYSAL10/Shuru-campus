@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import './tokens.css';
 @import './base.css';
+@import './animations.css';
 
 /*
  * Interaction variants. Hover only applies on fine pointers (04 §6); touch gets press states.
