@@ -16,6 +16,11 @@ class StubResizeObserver implements ResizeObserver {
 }
 
 if (typeof window !== 'undefined') {
+  // Radix uses pointer capture for swipe and press handling.
+  Element.prototype.hasPointerCapture = () => false;
+  Element.prototype.setPointerCapture = () => undefined;
+  Element.prototype.releasePointerCapture = () => undefined;
+  Element.prototype.scrollIntoView = () => undefined;
   globalThis.IntersectionObserver = TestIntersectionObserver;
   globalThis.ResizeObserver = StubResizeObserver;
 }

@@ -179,7 +179,7 @@ Ratios were computed with the WCAG 2.x formula. **AA text** needs ≥ 4.5 (≥ 3
 | **Toast, info** | `surface`, left 3px `brand` bar, icon `brand` | — | — | — | — |
 | **Toast, success / error** | same, with a `success` / `danger` bar and icon | — | — | — | — |
 | **Banner, preview mode** | `info-subtle` background, `fg` text, `brand` icon | — | — | — | — |
-| **OpenStatus** | Open: `success` dot (pulsing, static when reduced motion) + "Open now". Closed: `fg-subtle` dot + "Closed · opens Sat 9:00". | — | — | — | — |
+| **OpenStatus** | Open: `success` dot (pulsing, static when reduced motion) + "Open now · until 19:00". Closed: `fg-subtle` dot + "Closed · opens 9:00" (later today) or "Closed · opens Sat 9:00". Dhaka time, updated each minute; a skeleton holds its place until hydration. | — | — | — | — |
 
 Buttons, chips and the segmented control are pill-shaped (`radius-full`). Small (36px) buttons and chips extend their touch target to 44px with the `hit-target` utility. Primitives live in `apps/web/src/components/ui/`.
 

@@ -15,6 +15,20 @@
   --animate-fade-in: fade-in var(--duration-crossfade) linear both;
   --animate-marquee: marquee var(--marquee-duration) linear infinite;
   --animate-spin: spin var(--duration-story) linear infinite;
+  --animate-fade-out: fade-out var(--duration-fast) var(--ease-in) both;
+  --animate-overlay-in: fade-in var(--duration-base) var(--ease-out) both;
+  --animate-dialog-in: dialog-in var(--duration-base) var(--ease-out) both;
+  --animate-dialog-out: dialog-out var(--duration-fast) var(--ease-in) both;
+  --animate-sheet-in-right: sheet-in-right var(--duration-base) var(--ease-out) both;
+  --animate-sheet-out-right: sheet-out-right var(--duration-fast) var(--ease-in) both;
+  --animate-sheet-in-left: sheet-in-left var(--duration-base) var(--ease-out) both;
+  --animate-sheet-out-left: sheet-out-left var(--duration-fast) var(--ease-in) both;
+  --animate-sheet-in-bottom: sheet-in-bottom var(--duration-base) var(--ease-out) both;
+  --animate-sheet-out-bottom: sheet-out-bottom var(--duration-fast) var(--ease-in) both;
+  --animate-toast-in: toast-in var(--duration-base) var(--ease-out) both;
+  --animate-toast-swipe-out: toast-swipe-out var(--duration-fast) var(--ease-in) both;
+  --animate-pulse-dot: pulse-dot calc(var(--duration-story) * 2) var(--ease-out) infinite;
+  --animate-skeleton: skeleton calc(var(--duration-story) * 2) var(--ease-in-out) infinite;
 
   /* Section reveal: up from --reveal-distance, opacity 0 → 1. */
   @keyframes reveal {
@@ -41,6 +55,92 @@
   @keyframes fade-in {
     from {
       opacity: 0;
+    }
+  }
+
+  @keyframes fade-out {
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes dialog-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px) scale(0.97);
+    }
+  }
+  @keyframes dialog-out {
+    to {
+      opacity: 0;
+      transform: scale(0.97);
+    }
+  }
+
+  @keyframes sheet-in-right {
+    from {
+      transform: translateX(100%);
+    }
+  }
+  @keyframes sheet-out-right {
+    to {
+      transform: translateX(100%);
+    }
+  }
+  @keyframes sheet-in-left {
+    from {
+      transform: translateX(-100%);
+    }
+  }
+  @keyframes sheet-out-left {
+    to {
+      transform: translateX(-100%);
+    }
+  }
+  @keyframes sheet-in-bottom {
+    from {
+      transform: translateY(100%);
+    }
+  }
+  @keyframes sheet-out-bottom {
+    to {
+      transform: translateY(100%);
+    }
+  }
+
+  @keyframes toast-in {
+    from {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+  }
+  /* Continues a swipe from where the finger let go (Radix sets the variable). */
+  @keyframes toast-swipe-out {
+    from {
+      transform: translateX(var(--radix-toast-swipe-end-x));
+    }
+    to {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+  }
+
+  /* The "Open now" dot's ring: grows and fades out. */
+  @keyframes pulse-dot {
+    from {
+      opacity: 0.6;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(2.6);
+    }
+  }
+
+  /* Loading placeholders breathe instead of shimmering (no gradients, A5). */
+  @keyframes skeleton {
+    50% {
+      opacity: 0.55;
     }
   }
 

@@ -1,5 +1,6 @@
 import { MotionProvider } from '@/components/motion/motion-provider';
 import { ThemeProvider } from '@/components/providers/theme-provider';
+import { Toaster } from '@/components/ui/toaster';
 import { fontVariables } from '@/styles/fonts';
 
 import type { ReactNode } from 'react';
@@ -13,6 +14,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
       <body>
         <ThemeProvider>
           <MotionProvider>{children}</MotionProvider>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

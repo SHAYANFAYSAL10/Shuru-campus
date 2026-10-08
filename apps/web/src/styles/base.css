@@ -187,3 +187,15 @@
 [aria-invalid='true'] {
   --color-focus: var(--color-danger);
 }
+
+/* Safe-area padding for fixed and sticky UI (notches, home indicators). */
+@utility pt-safe {
+  padding-top: max(calc(var(--spacing) * 4), env(safe-area-inset-top));
+}
+@utility pb-safe {
+  padding-bottom: max(calc(var(--spacing) * 4), env(safe-area-inset-bottom));
+}
+@utility px-safe {
+  padding-left: max(calc(var(--spacing) * 4), env(safe-area-inset-left));
+  padding-right: max(calc(var(--spacing) * 4), env(safe-area-inset-right));
+}

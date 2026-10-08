@@ -1,7 +1,10 @@
+'use client';
+
 import { type LucideIcon } from 'lucide-react';
 import { type ComponentProps } from 'react';
 
 import { buttonClasses } from '@/components/ui/button';
+import { Tooltip } from '@/components/ui/tooltip';
 import { cn } from '@/lib/cn';
 
 export interface IconButtonProps extends Omit<ComponentProps<'button'>, 'children'> {
@@ -10,20 +13,26 @@ export interface IconButtonProps extends Omit<ComponentProps<'button'>, 'childre
   icon: LucideIcon;
   variant?: 'primary' | 'secondary' | 'ghost';
   size?: 'sm' | 'md';
+  /** Show the label as a tooltip on hover and focus (B3). On by default. */
+  tooltip?: boolean;
 }
 
-/** A square, icon-only button. 36px (sm, touch target extended to 44px) or 44px (md). */
+/**
+ * A square, icon-only button: 36px (sm, touch target extended to 44px) or 44px (md). The label
+ * is its accessible name and, by default, its tooltip.
+ */
 export function IconButton({
   label,
   icon: Icon,
   variant = 'ghost',
   size = 'md',
+  tooltip = true,
   disabled = false,
   type = 'button',
   className,
   ...rest
 }: IconButtonProps) {
-  return (
+  const button = (
     <button
       type={type}
       aria-label={label}
@@ -39,4 +48,5 @@ export function IconButton({
       <Icon aria-hidden="true" className={size === 'sm' ? 'size-4' : 'size-5'} strokeWidth={1.5} />
     </button>
   );
+  return tooltip && !disabled ? <Tooltip content={label}>{button}</Tooltip> : button;
 }
