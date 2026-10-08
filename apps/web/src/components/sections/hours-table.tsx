@@ -12,7 +12,7 @@ export interface HoursTableProps {
 }
 
 /**
- * The week's opening hours, one row per day from Saturday (Home → Visit us). The whole table is
+ * The week's opening hours, one row per day from Saturday (Home → Visit us, Contact). The whole table is
  * in the server HTML; today's row (Dhaka time) is marked once hydrated, so a cached page never
  * highlights yesterday. "Today" is spelled out, not shown by color alone (A5).
  */

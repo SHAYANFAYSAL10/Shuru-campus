@@ -35,7 +35,7 @@ const BLOCKS = [
 ] as const;
 
 /**
- * The map on Home → Visit us: a light, token-colored illustration (it themes with the page and
+ * The map on Home → Visit us and Contact: a light, token-colored illustration (it themes with the page and
  * costs no third-party request) with the pin at its center. The whole card links to Google Maps.
  * TODO(client): swap for a static map export of the real location once it's confirmed.
  */

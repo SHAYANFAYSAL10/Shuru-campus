@@ -105,6 +105,8 @@ export function auditLayout(page: Page): Promise<LayoutAudit> {
       ),
     ].filter((element) => {
       if (!hasBox(element) || getComputedStyle(element).visibility === 'hidden') return false;
+      // Visually hidden controls (the inquiry form's honeypot) are no one's target.
+      if (element.closest('.sr-only')) return false;
       // WCAG 2.5.8's inline exception: links in running text.
       if (element.tagName === 'A' && getComputedStyle(element).display === 'inline') return false;
       const size = hitSize(element);

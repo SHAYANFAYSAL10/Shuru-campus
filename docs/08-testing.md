@@ -53,7 +53,7 @@ For every public route and admin route (logged in), on every project:
 1. **Explore → inquire:** Home → Spaces card → plan detail → "Book this" → contact form pre-filled → submit → success card.
 2. **Plan finder:** answer the 3 questions → correct recommendation → CTA carries the plan.
 3. **Pricing period filter:** switching periods updates the highlighted rates and the URL (`?period=monthly`) is shareable.
-4. **Contact validation:** empty submit → errors announced, focus on the first invalid field. Fix → submit. API failure (route mocked 500) → error banner, inputs preserved.
+4. **Contact validation:** empty submit → errors announced, focus on the first invalid field. Fix → submit. Send failure (the server action's POST aborted) → error banner, inputs preserved, "Try again" sends.
 5. **Navigation:** mobile menu open/close (Esc, overlay click, link click), focus trap, scroll lock, theme toggle persists across reload.
 6. **Gallery:** open the lightbox via keyboard, arrow navigation, Esc closes, focus returns to the thumbnail.
 7. **Open status:** with the clock mocked (`page.clock`) to a Dhaka Saturday 10:00 it shows "Open now", Friday shows "Closed today", and Thursday 18:30 shows "Closes in 30 min".

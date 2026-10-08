@@ -43,10 +43,11 @@ A masonry grid (CSS columns; no JS layout), filter chips (*Workspace · Meeting 
 
 ## Contact `/contact`
 
-- **Inquiry form:** name, email, phone (BD format hint, lenient validation), interest (plan select, pre-filled from the query), preferred date (optional), team size (optional), message, hidden honeypot.
+- **Inquiry form:** name, email, phone (optional, lenient validation, BD example as placeholder), interest (one select of plans and their rates, grouped by plan, pre-filled from `?plan=&rate=`; it sets both `planSlug` and `rateId`), preferred start date (optional, today to a year ahead), team size (optional), message, hidden honeypot.
 - Validation uses the Zod schema shared with the API, on blur + submit, and focus moves to the first error.
 - States: idle → submitting (button keeps its width, spinner) → **success** (the form morphs into a confirmation card: "Thanks, {name}. We'll reply within one business day.") / **error** (inline banner, inputs preserved, retry).
-- Works without JS through a server action fallback.
+- Works without JS: the form posts to the same server action the JS path calls, and the page returns with errors marked and the first focused, or with the confirmation.
+- With `features.inquiryForm` off, the form gives way to call and email buttons.
 - Side panel: address, phones, email, hours, `OpenStatus`, map link.
 
 ## Legal `/legal/privacy` · `/legal/terms` · `/legal/refund`

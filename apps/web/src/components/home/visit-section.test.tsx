@@ -5,8 +5,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { siteSeed } from '@campus/contracts';
 
-import { HoursTable } from '@/components/home/hours-table';
 import { VisitSection } from '@/components/home/visit-section';
+import { HoursTable } from '@/components/sections/hours-table';
 
 const toast = vi.hoisted(() => vi.fn());
 vi.mock('@/lib/toast', () => ({ toast }));

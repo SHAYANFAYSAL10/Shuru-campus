@@ -143,6 +143,7 @@ The brand name (and logo, legal name, taglines) is **configuration, not code**.
 - All calls go through `apiFetch()` in `apps/web/src/lib/api` (server-only). It validates every 2xx body against the contract schema, applies a timeout and returns a typed `ApiResult` instead of throwing, so pages decide how to render each failure (`http`, `timeout`, `network`, `invalid-response`).
 - If the API is unreachable at request time, pages render from the last cached response. The build doesn't require the API (`dynamic` rendering + cache).
 - Admin pages are always dynamic and uncached (`no-store`). The session is checked server-side through `GET /auth/me`.
+- The contact form sends through a server action (`sendInquiry`), not the `/api` rewrite, so it works without JS. The action forwards the visitor's `X-Forwarded-For` to `POST /inquiries`, so the inquiry throttle counts visitors, not the web server. In production the proxy in front of the web app must set that header.
 
 ## Security model
 
