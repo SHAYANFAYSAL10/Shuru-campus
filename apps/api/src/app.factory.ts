@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { type NestExpressApplication } from '@nestjs/platform-express';
+import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { Logger } from 'nestjs-pino';
 
@@ -42,6 +43,7 @@ export async function createApp(
   app.use(requestId);
   app.use(helmet());
   app.use(jsonBody());
+  app.use(cookieParser());
   app.enableCors({
     origin: config.env.WEB_ORIGINS,
     credentials: true,

@@ -29,6 +29,7 @@ Base path: `/api/v1`. JSON only. All schemas live in `@campus/contracts`. This d
 
 - Every response carries `X-Request-Id`. A safe incoming `X-Request-Id` (8–64 chars of `[A-Za-z0-9_-]`) is reused so web and API logs correlate. Otherwise the API generates a UUID.
 - Public GET responses send `Cache-Control: public, max-age=60, stale-while-revalidate=600`. Everything else (admin, auth, inquiries, `/health` and all errors) sends `no-store`.
+- **Every mutation** (`POST`, `PUT`, `PATCH`, `DELETE`, including `/inquiries` and `/auth/*`) must carry an `Origin` in `WEB_ORIGINS`, or, when `Origin` is absent, a `Referer` on one of them. Otherwise it's `403 FORBIDDEN`. Browsers send `Origin` themselves. The web app's server-side API client must set it explicitly (e.g. to `NEXT_PUBLIC_SITE_URL`).
 - Bodies are JSON only (100 KB max). Malformed or oversized bodies return `400 VALIDATION_FAILED` with a message saying which.
 
 ## Public endpoints
@@ -103,4 +104,4 @@ InquiryCreate {
 
 Phase 1 PUTs **validate fully** (so the UI's error handling is real and tested) but don't change anything. A follow-up `GET` returns the original values. In Phase 2 they return `200` with the updated resource, the contract shape stays the same and `persisted` becomes `true`.
 
-Mutations also require `Origin` ∈ `WEB_ORIGINS` (`403 FORBIDDEN` otherwise).
+Like every mutation, these require `Origin` ∈ `WEB_ORIGINS` (`403 FORBIDDEN` otherwise, see Conventions).

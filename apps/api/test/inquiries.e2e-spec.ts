@@ -3,6 +3,7 @@ import request from 'supertest';
 
 import { ApiError, dhakaToday, InquiryAccepted, type InquiryCreateInput } from '@campus/contracts';
 
+import { TEST_WEB_ORIGIN } from '#test/fixtures/env.js';
 import { createTestApp } from '#test/helpers/test-app.js';
 
 const valid: InquiryCreateInput = {
@@ -34,6 +35,7 @@ describe('POST /api/v1/inquiries', () => {
   it('accepts a valid inquiry with 202 { id, receivedAt }, never cached', async () => {
     const res = await request(app.getHttpServer())
       .post('/api/v1/inquiries')
+      .set('Origin', TEST_WEB_ORIGIN)
       .send(valid)
       .expect(202);
     const body = InquiryAccepted.parse(res.body);
@@ -44,6 +46,7 @@ describe('POST /api/v1/inquiries', () => {
   it('accepts the minimum: name, email and message', async () => {
     await request(app.getHttpServer())
       .post('/api/v1/inquiries')
+      .set('Origin', TEST_WEB_ORIGIN)
       .send({ name: valid.name, email: valid.email, message: valid.message })
       .expect(202);
   });
@@ -51,6 +54,7 @@ describe('POST /api/v1/inquiries', () => {
   it('logs a summary without the name, email, phone or message', async () => {
     const res = await request(app.getHttpServer())
       .post('/api/v1/inquiries')
+      .set('Origin', TEST_WEB_ORIGIN)
       .send(valid)
       .expect(202);
     const { id } = InquiryAccepted.parse(res.body);
@@ -69,6 +73,7 @@ describe('POST /api/v1/inquiries', () => {
   it('rejects invalid fields with 400 VALIDATION_FAILED and a detail per field', async () => {
     const res = await request(app.getHttpServer())
       .post('/api/v1/inquiries')
+      .set('Origin', TEST_WEB_ORIGIN)
       .send({ ...valid, email: 'not-an-email', message: 'too short', planSlug: 'penthouse' })
       .expect(400);
     const { error } = ApiError.parse(res.body);
@@ -78,13 +83,17 @@ describe('POST /api/v1/inquiries', () => {
   });
 
   it('rejects a missing body', async () => {
-    const res = await request(app.getHttpServer()).post('/api/v1/inquiries').expect(400);
+    const res = await request(app.getHttpServer())
+      .post('/api/v1/inquiries')
+      .set('Origin', TEST_WEB_ORIGIN)
+      .expect(400);
     expect(ApiError.parse(res.body).error.code).toBe('VALIDATION_FAILED');
   });
 
   it('answers a filled honeypot exactly like a real inquiry, but drops it', async () => {
     const res = await request(app.getHttpServer())
       .post('/api/v1/inquiries')
+      .set('Origin', TEST_WEB_ORIGIN)
       .send({ ...valid, website: 'https://spam.example' })
       .expect(202);
     InquiryAccepted.parse(res.body);
@@ -107,10 +116,15 @@ describe('POST /api/v1/inquiries throttling', () => {
 
   it('blocks the 6th inquiry in a minute with 429 and Retry-After', async () => {
     for (let i = 0; i < 5; i++) {
-      await request(app.getHttpServer()).post('/api/v1/inquiries').send(valid).expect(202);
+      await request(app.getHttpServer())
+        .post('/api/v1/inquiries')
+        .set('Origin', TEST_WEB_ORIGIN)
+        .send(valid)
+        .expect(202);
     }
     const res = await request(app.getHttpServer())
       .post('/api/v1/inquiries')
+      .set('Origin', TEST_WEB_ORIGIN)
       .send(valid)
       .expect(429);
     expect(ApiError.parse(res.body).error.code).toBe('RATE_LIMITED');

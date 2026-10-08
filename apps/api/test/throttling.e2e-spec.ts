@@ -9,7 +9,7 @@ import { trustProxySetting } from '#src/app.factory.js';
 import { AppModule } from '#src/app.module.js';
 import { RateLimit } from '#src/common/throttling.js';
 import { loadConfig } from '#src/config/app-config.js';
-import { testEnv } from '#test/fixtures/env.js';
+import { TEST_WEB_ORIGIN, testEnv } from '#test/fixtures/env.js';
 
 // Stand-ins for the login and inquiry routes, so the policies are tested on their own.
 @Controller('probe')
@@ -71,11 +71,13 @@ describe('Throttling', () => {
       for (let i = 0; i < 5; i++) {
         await request(app.getHttpServer())
           .post('/probe/login')
+          .set('Origin', TEST_WEB_ORIGIN)
           .set('X-Forwarded-For', ip)
           .expect(201);
       }
       const res = await request(app.getHttpServer())
         .post('/probe/login')
+        .set('Origin', TEST_WEB_ORIGIN)
         .set('X-Forwarded-For', ip)
         .expect(429);
 
@@ -93,6 +95,7 @@ describe('Throttling', () => {
     it('counts each client IP (from a trusted proxy) separately', async () => {
       await request(app.getHttpServer())
         .post('/probe/login')
+        .set('Origin', TEST_WEB_ORIGIN)
         .set('X-Forwarded-For', '203.0.113.99')
         .expect(201);
     });
@@ -101,6 +104,7 @@ describe('Throttling', () => {
       const ip = '203.0.113.10'; // Blocked for login by the first test.
       await request(app.getHttpServer())
         .post('/probe/inquiry')
+        .set('Origin', TEST_WEB_ORIGIN)
         .set('X-Forwarded-For', ip)
         .expect(201);
       await request(app.getHttpServer()).get('/probe/open').set('X-Forwarded-For', ip).expect(200);
@@ -111,10 +115,10 @@ describe('Throttling', () => {
     const app = await appWithLimits({ inquiry: 2 });
     try {
       const server = app.getHttpServer();
-      await request(server).post('/probe/inquiry').expect(201);
-      await request(server).post('/probe/inquiry').expect(201);
-      await request(server).post('/probe/inquiry').expect(429);
-      await request(server).post('/probe/login').expect(201);
+      await request(server).post('/probe/inquiry').set('Origin', TEST_WEB_ORIGIN).expect(201);
+      await request(server).post('/probe/inquiry').set('Origin', TEST_WEB_ORIGIN).expect(201);
+      await request(server).post('/probe/inquiry').set('Origin', TEST_WEB_ORIGIN).expect(429);
+      await request(server).post('/probe/login').set('Origin', TEST_WEB_ORIGIN).expect(201);
     } finally {
       await app.close();
     }

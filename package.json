@@ -23,7 +23,8 @@
     "test:scripts": "node --test \"scripts/__tests__/*.test.mjs\"",
     "check:no-db": "node scripts/check-no-db.mjs",
     "check:brand": "node scripts/check-brand-literals.mjs",
-    "check:guards": "npm run check:no-db && npm run check:brand"
+    "check:guards": "npm run check:no-db && npm run check:brand",
+    "admin:hash": "npm run admin:hash -w @campus/api --"
   },
   "devDependencies": {
     "@campus/eslint-config": "^0.0.0",

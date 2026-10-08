@@ -10,7 +10,7 @@ Staff can **sign in** and **see** the site's configuration exactly as the public
 
 ```bash
 npm run admin:hash -- 'a-strong-password'
-# → $argon2id$v=19$m=65536,t=3,p=4$...
+# → $argon2id$v=19$m=65536,p=4,t=3$...
 # put it in apps/api/.env as ADMIN_PASSWORD_HASH (quote it), with ADMIN_EMAIL
 ```
 
