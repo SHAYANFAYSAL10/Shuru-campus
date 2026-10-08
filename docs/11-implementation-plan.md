@@ -149,8 +149,9 @@ A step-by-step task list. Work through the milestones **in order**. Within a mil
 
 ## M4 — Layout shell
 
-- [ ] **T4.1 Typed API client + brand access** (S). `getBrand()` (falls back to the seed default if the API is down), `<BrandProvider>` + `useBrand()` for client components, and `src/lib/api`: server-only fetchers, validated with contracts schemas, cache tags, a timeout, and an error-to-typed-result mapping.
+- [x] **T4.1 Typed API client + brand access** (S). `getBrand()` (falls back to the seed default if the API is down), `<BrandProvider>` + `useBrand()` for client components, and `src/lib/api`: server-only fetchers, validated with contracts schemas, cache tags, a timeout, and an error-to-typed-result mapping.
   *Tests:* schema mismatch → typed error, and timeout handling.
+  *Notes:* `apiFetch()` never throws; it returns `ApiResult<T>` whose failures are `http` (code/details/requestId/`retryAfterS`), `timeout`, `network` or `invalid-response`. Public GETs revalidate every 60s under the tags in `src/lib/api/tags.ts`. Server-side mutations send `Origin` from `NEXT_PUBLIC_SITE_URL`.
 
 - [ ] **T4.2 Header** (M). Logo, nav with begin-line `layoutId` underline, `OpenStatus`, theme toggle, Member login, primary CTA. Transparent → condensed on scroll, hide on down and show on up (not while focused), safe areas.
 

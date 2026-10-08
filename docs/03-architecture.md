@@ -139,6 +139,7 @@ The brand name (and logo, legal name, taglines) is **configuration, not code**.
 ## Data fetching and caching (web)
 
 - Public content (site settings, plans, amenities, gallery) is fetched in Server Components and cached with tag-based revalidation (`site`, `plans`, …). Phase 2 admin saves call `revalidateTag`.
+- All calls go through `apiFetch()` in `apps/web/src/lib/api` (server-only). It validates every 2xx body against the contract schema, applies a timeout and returns a typed `ApiResult` instead of throwing, so pages decide how to render each failure (`http`, `timeout`, `network`, `invalid-response`).
 - If the API is unreachable at request time, pages render from the last cached response. The build doesn't require the API (`dynamic` rendering + cache).
 - Admin pages are always dynamic and uncached (`no-store`). The session is checked server-side through `GET /auth/me`.
 
