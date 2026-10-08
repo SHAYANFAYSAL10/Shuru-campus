@@ -100,9 +100,9 @@ A step-by-step task list. Work through the milestones **in order**. Within a mil
 - [x] **T2.2 Common layer** (M). `ZodValidationPipe`, global exception filter → `ApiError` shape, request-id middleware + `X-Request-Id`, `nestjs-pino` with redaction, Helmet, CORS, global prefix `/api/v1`, `Cache-Control` interceptor (public vs `no-store`).
   *Tests:* unit tests for the pipe and filter (validation → 400 shape, unknown → 500 with no stack in prod).
 
-- [ ] **T2.3 Health module** (S). `GET /health`.
+- [x] **T2.3 Health module** (S). `GET /health`.
 
-- [ ] **T2.4 Site module** (M). Repositories + services for site settings (including `brand`, with the optional `BRAND_SEED` JSON override validated at boot), amenities and gallery (`?category=`), with in-memory implementations seeded from contracts.
+- [x] **T2.4 Site module** (M). Repositories + services for site settings (including `brand`, with the optional `BRAND_SEED` JSON override validated at boot), amenities and gallery (`?category=`), with in-memory implementations seeded from contracts.
   *Tests:* supertest for each endpoint, including an invalid category → 400.
 
 - [ ] **T2.5 Plans module** (S). `GET /plans` (ordered), `GET /plans/:slug` (404 on unknown).
