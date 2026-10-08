@@ -40,6 +40,8 @@
     "typescript": "~6.0.3"
   },
   "allowScripts": {
-    "unrs-resolver": false
+    "unrs-resolver": false,
+    "argon2": false,
+    "@scarf/scarf": false
   }
 }

@@ -5,13 +5,17 @@ import { type App } from 'supertest/types.js';
 
 import { HealthResponse } from '@campus/contracts';
 
-import { AppModule } from '../src/app.module.js';
+import { AppModule } from '#src/app.module.js';
+import { loadConfig } from '#src/config/app-config.js';
+import { testEnv } from '#test/fixtures/env.js';
 
 describe('GET /api/v1/health', () => {
   let app: INestApplication<App>;
 
   beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
+    const moduleRef = await Test.createTestingModule({
+      imports: [AppModule.forRoot(loadConfig(testEnv()))],
+    }).compile();
     app = moduleRef.createNestApplication();
     app.setGlobalPrefix('api/v1');
     await app.init();

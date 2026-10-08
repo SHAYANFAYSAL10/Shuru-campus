@@ -1,6 +1,18 @@
+import { fileURLToPath } from 'node:url';
+
 import { defineConfig } from 'vitest/config';
 
+// Mirrors package.json "imports" (#src → src at test time; Node maps it to dist at runtime).
+const alias = [
+  { find: /^#src\/(.*)\.js$/, replacement: fileURLToPath(new URL('./src/$1.ts', import.meta.url)) },
+  {
+    find: /^#test\/(.*)\.js$/,
+    replacement: fileURLToPath(new URL('./test/$1.ts', import.meta.url)),
+  },
+];
+
 export default defineConfig({
+  resolve: { alias },
   test: {
     globals: true,
     root: './',
