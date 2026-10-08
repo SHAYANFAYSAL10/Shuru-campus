@@ -9,6 +9,7 @@ import { ThrottlingModule } from './common/throttling.js';
 import { type AppConfig } from './config/app-config.js';
 import { ConfigModule } from './config/config.module.js';
 import { HealthModule } from './modules/health/health.module.js';
+import { InquiriesModule } from './modules/inquiries/inquiries.module.js';
 import { PlansModule } from './modules/plans/plans.module.js';
 import { SiteModule } from './modules/site/site.module.js';
 
@@ -25,6 +26,7 @@ export class AppModule {
         HealthModule,
         SiteModule,
         PlansModule,
+        InquiriesModule,
       ],
       providers: [
         { provide: APP_FILTER, useClass: AllExceptionsFilter },

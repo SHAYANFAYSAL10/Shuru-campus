@@ -110,7 +110,7 @@ A step-by-step task list. Work through the milestones **in order**. Within a mil
 - [x] **T2.6 Throttling** (S). `@nestjs/throttler` global defaults, plus stricter named limits for login and inquiries (configurable for tests).
   *Tests:* the 6th login attempt in 60s → 429 + `Retry-After`.
 
-- [ ] **T2.7 Inquiries module** (S). `POST /inquiries` → 202. Honeypot no-op. Logs a redacted summary (no email or phone in logs).
+- [x] **T2.7 Inquiries module** (S). `POST /inquiries` → 202. Honeypot no-op. Logs a redacted summary (no email or phone in logs).
   *Tests:* happy path, validation errors, honeypot, throttling, and a log redaction assertion.
 
 - [ ] **T2.8 Auth module** (M). `npm run admin:hash` script (argon2id), `POST /auth/login` (constant-time, uniform error), JWT cookie, `POST /auth/logout`, `GET /auth/me`, `AdminGuard`, `OriginGuard`.
