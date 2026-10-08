@@ -129,7 +129,8 @@ A step-by-step task list. Work through the milestones **in order**. Within a mil
 
 - [x] **T3.2 Fonts & base styles** (S). `next/font` for Fraunces (variable axes), Geist Sans and Geist Mono. Base typography, `text-wrap`, the selection color, the paper-grain overlay and the focus-visible ring.
 
-- [ ] **T3.3 Theming** (S). `next-themes` (System/Light/Dark), no flash, the `ThemeToggle` primitive, the 180ms root color transition.
+- [x] **T3.3 Theming** (S). `next-themes` (System/Light/Dark), no flash, the `ThemeToggle` primitive, the 180ms root color transition.
+  *Note:* `SegmentedControl` (from T3.6) shipped here, because the toggle is built on it.
 
 - [x] **T3.4 Motion foundation** (M). `motion.ts` tokens, the `useReducedMotion` wrapper, `<Reveal>` (progressive, below-fold only, once), `<SplitText>`, `<BeginLine>` (SVG path draw), `<Magnetic>`, `<Marquee>` (pausable), and optional Lenis provider (off on touch and reduced motion).
   *Tests:* reduced-motion branches render final states, and Reveal content exists in the SSR HTML.

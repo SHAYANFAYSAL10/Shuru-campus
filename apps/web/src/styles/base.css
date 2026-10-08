@@ -165,3 +165,20 @@
     transform: translate(-50%, -50%);
   }
 }
+
+/* The focus ring on a wrapper whose (visually hidden) control has keyboard focus. */
+@utility focus-ring-within {
+  &:has(:focus-visible) {
+    outline: var(--ring-width) solid var(--color-focus);
+    outline-offset: var(--ring-offset);
+  }
+}
+
+/* Theme switches cross-fade on the root only, never per element (A7). */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    transition:
+      background-color var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out);
+  }
+}
