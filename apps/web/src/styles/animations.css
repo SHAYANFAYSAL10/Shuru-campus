@@ -30,12 +30,20 @@
   --animate-toast-swipe-out: toast-swipe-out var(--duration-fast) var(--ease-in) both;
   --animate-pulse-dot: pulse-dot calc(var(--duration-story) * 2) var(--ease-out) infinite;
   --animate-skeleton: skeleton calc(var(--duration-story) * 2) var(--ease-in-out) infinite;
+  --animate-settle: settle calc(var(--duration-story) * 2) var(--ease-out) both;
 
   /* Section reveal: up from --reveal-distance, opacity 0 → 1. */
   @keyframes reveal {
     from {
       opacity: 0;
       transform: translateY(var(--reveal-distance));
+    }
+  }
+
+  /* The hero photo's slow scale-in (05 → Home #1). Starts fully visible, so it never holds up LCP. */
+  @keyframes settle {
+    from {
+      transform: scale(1.05);
     }
   }
 
@@ -210,7 +218,9 @@
     content: '';
     position: absolute;
     inset-inline: 0;
-    bottom: -0.2em;
+    /* Under the text line, even when the link is taller than its text (a 44px touch target with
+       centred text): half the box, less half a line, puts it at the text's foot. */
+    bottom: calc(50% - 0.5lh - 0.2em);
     height: 1.5px;
     background-color: var(--color-accent);
     transform: scaleX(0);

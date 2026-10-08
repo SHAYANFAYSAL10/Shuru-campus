@@ -146,6 +146,14 @@
   text-transform: uppercase;
 }
 
+/* Photos are tinted warm so placeholder, stock and client shots match, and dimmed in dark mode (A5, A7). */
+@utility photo-tone {
+  filter: sepia(0.06) saturate(0.95);
+  &:where(.dark *) {
+    filter: sepia(0.06) saturate(0.95) brightness(0.9);
+  }
+}
+
 /* The ৳ sign at 0.75em in fg-muted (B2). */
 @utility currency-symbol {
   font-size: 0.75em;

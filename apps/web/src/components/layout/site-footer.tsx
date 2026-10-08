@@ -61,7 +61,11 @@ export async function SiteFooter() {
               <BeginLine draw="inView" delay={200} className="mt-[0.14em]" />
             </span>
           </p>
-          <Link href={BOOK_VISIT_HREF} variant="standalone" className="self-start lg:self-auto">
+          <Link
+            href={BOOK_VISIT_HREF}
+            variant="standalone"
+            className="min-h-hit self-start lg:self-auto"
+          >
             Book a visit
           </Link>
         </div>
@@ -127,7 +131,10 @@ export async function SiteFooter() {
             <nav aria-label="Footer" className="-my-3">
               <ul className="flex flex-col">
                 <li>
-                  <NextLink href="/" className={`inline-flex min-h-hit items-center ${LINK}`}>
+                  <NextLink
+                    href="/"
+                    className={`inline-flex min-h-hit min-w-hit items-center ${LINK}`}
+                  >
                     Home
                   </NextLink>
                 </li>

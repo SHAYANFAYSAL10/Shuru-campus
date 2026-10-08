@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { defaultBrand, type Brand } from '@campus/contracts';
 
-import { siteDescription, siteMetadata } from '@/lib/metadata';
+import { pageMetadata, siteDescription, siteMetadata } from '@/lib/metadata';
 
 const acme: Brand = {
   ...defaultBrand,
@@ -43,5 +43,38 @@ describe('siteMetadata', () => {
 
   it('never mentions the default brand', () => {
     expect(JSON.stringify(metadata)).not.toContain(defaultBrand.shortName);
+  });
+});
+
+describe('pageMetadata', () => {
+  it('titles a page through the template and shares it under the brand', () => {
+    const metadata = pageMetadata(acme, {
+      title: 'Spaces',
+      description: 'Desks and rooms.',
+      path: '/spaces',
+    });
+
+    expect(metadata.title).toBe('Spaces');
+    expect(metadata.description).toBe('Desks and rooms.');
+    expect(metadata.alternates?.canonical).toBe('/spaces');
+    expect(metadata.openGraph).toMatchObject({
+      siteName: 'Acme Works',
+      type: 'website',
+      title: 'Spaces · Acme Works',
+      description: 'Desks and rooms.',
+      url: '/spaces',
+    });
+    expect(metadata.twitter).toMatchObject({
+      card: 'summary_large_image',
+      title: 'Spaces · Acme Works',
+      description: 'Desks and rooms.',
+    });
+  });
+
+  it('keeps the site title on Home', () => {
+    const metadata = pageMetadata(acme, { description: 'Welcome.', path: '/' });
+
+    expect(metadata).not.toHaveProperty('title');
+    expect(metadata.openGraph).toMatchObject({ title: 'Acme Works · Desks for doers', url: '/' });
   });
 });

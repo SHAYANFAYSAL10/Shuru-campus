@@ -130,4 +130,4 @@ Motion explains **where things come from and what changed.** It's never decorati
 - Navigation is a full-screen sheet below `lg`, with a focus trap, `Esc` to close and scroll lock that preserves position.
 - Tables (pricing comparison) become stacked cards below `md`. They never scroll sideways without a visible affordance.
 - `forced-colors: active` (Windows High Contrast) keeps borders and focus rings visible.
-- It works without JS: all content is readable, links work and the contact form posts via a server action fallback.
+- It works without JS: all content is readable, links work and the contact form posts via a server action fallback. So public pages have no route-level `loading.tsx` (streamed content needs JS to reveal); their data is cached (60s) and awaited before the HTML is sent.

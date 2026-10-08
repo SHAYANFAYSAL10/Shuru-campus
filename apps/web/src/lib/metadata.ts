@@ -11,7 +11,7 @@ export function siteDescription(brand: Pick<Brand, 'tagline' | 'subTagline'>): s
 }
 
 /** Ends `text` with a full stop unless it already ends a sentence. */
-function sentence(text: string): string {
+export function sentence(text: string): string {
   const trimmed = text.trim();
   return /[.!?]$/.test(trimmed) ? trimmed : `${trimmed}.`;
 }
@@ -19,7 +19,7 @@ function sentence(text: string): string {
 /**
  * Default metadata for every page (docs/03-architecture.md → Brand configuration). Pages set
  * `title` (filled into the `%s · {name}` template) and `description`. A page that sets
- * `openGraph` replaces this object whole, so spread `siteMetadata(brand).openGraph` into it.
+ * `openGraph` replaces this object whole, so public pages use `pageMetadata()`, which spreads it in.
  * The OG image comes from `app/opengraph-image.tsx`.
  */
 export function siteMetadata(brand: Brand, base: URL = SITE_URL): Metadata {
@@ -41,6 +41,33 @@ export function siteMetadata(brand: Brand, base: URL = SITE_URL): Metadata {
     twitter: { card: 'summary_large_image', title, description },
     // Phones and addresses are real links already; stop iOS restyling them.
     formatDetection: { telephone: false, address: false, email: false },
+  };
+}
+
+export interface PageMetadataInput {
+  /** Filled into the `%s · {name}` template. Omit on Home, which keeps the site title. */
+  title?: string;
+  description: string;
+  /** The page's path, for the canonical URL and `og:url`. */
+  path: string;
+}
+
+/**
+ * A public page's metadata: its title and description, a canonical URL, and Open Graph and
+ * Twitter cards that keep the site defaults (siteName, image, card type) but describe this page.
+ */
+export function pageMetadata(
+  brand: Brand,
+  { title, description, path }: PageMetadataInput,
+): Metadata {
+  const site = siteMetadata(brand);
+  const shareTitle = title ? `${title} · ${brand.name}` : `${brand.name} · ${brand.tagline}`;
+  return {
+    ...(title ? { title } : {}),
+    description,
+    alternates: { canonical: path },
+    openGraph: { ...site.openGraph, title: shareTitle, description, url: path },
+    twitter: { ...site.twitter, title: shareTitle, description },
   };
 }
 
