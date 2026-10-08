@@ -114,3 +114,15 @@
   padding-left: max(var(--spacing-page), env(safe-area-inset-left));
   padding-right: max(var(--spacing-page), env(safe-area-inset-right));
 }
+
+/*
+ * The full-screen sheet's top bar (the mobile menu) takes the header's current height, so its
+ * close button lands exactly where the menu button was, expanded or condensed.
+ */
+[data-sheet-bar] {
+  --sheet-bar-height: var(--header-height-expanded);
+
+  :root:has([data-site-header][data-condensed]) & {
+    --sheet-bar-height: var(--header-height);
+  }
+}
