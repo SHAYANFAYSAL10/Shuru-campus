@@ -40,3 +40,44 @@ export function sortPlans(plans: readonly Plan[]): Plan[] {
 export function planHref(slug: Plan['slug']): string {
   return `/spaces/${slug}`;
 }
+
+/** Where a plan's "Book this" leads: the inquiry form, pre-filled with the plan and rate. */
+export function bookHref(slug: Plan['slug'], rateId?: Rate['id']): string {
+  const query = new URLSearchParams({ plan: slug });
+  if (rateId) query.set('rate', rateId);
+  return `/contact?${query.toString()}`;
+}
+
+const RATE_TITLES: Record<Exclude<RateUnit, 'block'>, string> = {
+  hour: 'Hourly',
+  day: 'Daily',
+  week: 'Weekly',
+  month: 'Monthly',
+};
+
+export interface RateTitle {
+  /** "Big", "Premium", or the period when the rate has no label ("Monthly"). */
+  title: string;
+  /** "10 people", unless the title already says how many ("3 people"). */
+  note?: string;
+}
+
+/** How a rate is named in a plan's rate list. */
+export function rateTitle(
+  rate: Pick<Rate, 'label' | 'unit' | 'blockHours' | 'capacity'>,
+): RateTitle {
+  const title =
+    rate.label ??
+    (rate.unit === 'block' ? `${String(rate.blockHours ?? 1)}-hour block` : RATE_TITLES[rate.unit]);
+  const { capacity } = rate;
+  if (capacity === undefined || title.includes(String(capacity))) return { title };
+  return { title, note: `${String(capacity)} ${capacity === 1 ? 'person' : 'people'}` };
+}
+
+/**
+ * Plans priced by team or room size (every rate has a capacity), where other sizes are worth
+ * asking about (docs/09-roadmap.md #6: "Other sizes: contact us").
+ */
+export function pricedBySize(plan: Pick<Plan, 'rates'>): boolean {
+  return plan.rates.every((rate) => rate.capacity !== undefined);
+}

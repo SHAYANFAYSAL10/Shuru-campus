@@ -25,6 +25,19 @@
   }
 }
 
+/*
+ * Where sticky page UI (the pricing table's header) sticks: under the condensed header while it
+ * shows, at the very top while it's hidden. It jumps rather than slides (only translate and
+ * opacity animate), and the header, sliding above it, covers the jump.
+ */
+:root {
+  --sticky-top: 0px;
+}
+
+:root:has([data-site-header]:not([data-hidden])) {
+  --sticky-top: calc(var(--header-height) + env(safe-area-inset-top));
+}
+
 /* Anchor jumps and focused elements stop below the condensed header (WCAG 2.4.11). */
 :root:has([data-site-header]) {
   scroll-padding-top: calc(var(--header-height) + env(safe-area-inset-top) + var(--spacing) * 4);

@@ -1,10 +1,10 @@
 import { type Plan } from '@campus/contracts';
 
 import { PlanCard } from '@/components/home/plan-card';
+import { PlansNotice } from '@/components/sections/plans-notice';
 import { SectionHeading } from '@/components/sections/section-heading';
 import { Link } from '@/components/ui/link';
 import { SnapCarousel } from '@/components/ui/snap-carousel';
-import { BOOK_VISIT_HREF } from '@/lib/navigation';
 import { sortPlans } from '@/lib/plans';
 
 export interface SpacesSectionProps {
@@ -61,19 +61,7 @@ export function SpacesSection({ plans, number }: SpacesSectionProps) {
           ))}
         </SnapCarousel>
       ) : (
-        <div className="mt-10 max-w-xl rounded-md border border-border bg-surface p-6 lg:mt-14">
-          <p className="text-fg">
-            {plans
-              ? 'Our plans are being updated right now.'
-              : 'Plans and prices aren’t loading right now.'}
-          </p>
-          <p className="mt-2 text-fg-muted">
-            Refresh the page in a moment, or get in touch and we’ll share them with you.
-          </p>
-          <Link href={BOOK_VISIT_HREF} variant="standalone" className="mt-4 min-h-hit">
-            Get in touch
-          </Link>
-        </div>
+        <PlansNotice reason={plans ? 'empty' : 'error'} className="mt-10 lg:mt-14" />
       )}
     </section>
   );

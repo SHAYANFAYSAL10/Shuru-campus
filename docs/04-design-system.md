@@ -128,6 +128,6 @@ Motion explains **where things come from and what changed.** It's never decorati
 - At 320px nothing truncates critical info. Long words wrap (`overflow-wrap: anywhere` on user-generated content and emails).
 - Browser zoom 200% and 400% reflow without horizontal scroll (WCAG 1.4.10). Text spacing overrides (WCAG 1.4.12) don't clip content.
 - Navigation is a full-screen sheet below `lg`, with a focus trap, `Esc` to close and scroll lock that preserves position.
-- Tables (pricing comparison) become stacked cards below `md`. They never scroll sideways without a visible affordance.
+- Tables (pricing comparison) become stacked cards below `lg`. They never scroll sideways without a visible affordance.
 - `forced-colors: active` (Windows High Contrast) keeps borders and focus rings visible.
 - It works without JS: all content is readable, links work and the contact form posts via a server action fallback. So public pages have no route-level `loading.tsx` (streamed content needs JS to reveal); their data is cached (60s) and awaited before the HTML is sent.

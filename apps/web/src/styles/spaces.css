@@ -1,0 +1,49 @@
+/*
+ * Spaces period filter (docs/05-pages-and-interactions.md → Spaces & Pricing). `<PeriodScope>`
+ * sets `data-period` to the chosen period; plans and their jump links carry the periods they
+ * offer (`data-offers="hourly daily"`) and each rate its own (`data-rate-period`). Everything
+ * else is these rules, so filtering re-renders nothing on the server or the client.
+ */
+
+/* Plans (and jump links) that don't offer the chosen period step aside. */
+[data-period='hourly'] [data-offers]:not([data-offers~='hourly']),
+[data-period='daily'] [data-offers]:not([data-offers~='daily']),
+[data-period='weekly'] [data-offers]:not([data-offers~='weekly']),
+[data-period='monthly'] [data-offers]:not([data-offers~='monthly']) {
+  display: none;
+}
+
+/* Once the visitor has changed the filter (never on first paint), plans fade back in. */
+[data-period-changed] [data-offers] {
+  transition: opacity var(--duration-base) var(--ease-out);
+
+  @starting-style {
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition-duration: var(--duration-crossfade);
+  }
+}
+
+/* Rates paid by the chosen period are highlighted, with a check so it isn't color alone (A5). */
+[data-rate-mark] {
+  display: none;
+}
+
+[data-period='hourly'] [data-rate-period='hourly'],
+[data-period='daily'] [data-rate-period='daily'],
+[data-period='weekly'] [data-rate-period='weekly'],
+[data-period='monthly'] [data-rate-period='monthly'] {
+  background-color: var(--color-info-subtle);
+  /* A4 pairs only fg with info-subtle, so muted text is full strength on the highlight. */
+  --color-fg-muted: var(--color-fg);
+  --color-fg-subtle: var(--color-fg);
+  /* Invisible normally; forced-colors paints it, since it drops the fill. */
+  outline: 1px solid transparent;
+  outline-offset: -1px;
+
+  & [data-rate-mark] {
+    display: inline-block;
+  }
+}

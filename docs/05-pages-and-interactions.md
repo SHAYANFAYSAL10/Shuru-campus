@@ -25,11 +25,11 @@ The header is transparent over the hero. On scroll it condenses (height 80→64p
 
 ## Spaces & Pricing `/spaces`
 
-- Intro + **period filter** (`Hourly · Daily · Weekly · Monthly`). It filters and highlights matching rates, and the odometer animates prices.
+- Intro + **period filter** (`Hourly · Daily · Weekly · Monthly`, synced to `?period=`; nothing chosen shows every plan). It hides plans without a matching rate and highlights the matching rates (block rates count as hourly), says what it shows (`aria-live`) and offers "Show all plans". Without JS it is a GET form. The odometer (T6.3) animates prices.
 - Plan sections (anchor IDs = slugs) with rates, an "Included" checklist and capacity.
-- **Comparison table** (features × plans). Sticky first column and header on desktop; stacked cards on mobile.
-- Each plan's "Book this" → `/contact?plan=<slug>&rate=<index>`, which pre-fills the inquiry.
-- FAQ accordion (business address use, refund window, Friday closed, guests, internet speed), with content from the Terms and Refund policies.
+- **Comparison table** (features × plans, features grouped into rows by kind; what every plan includes is said once in the lead). From `lg` a table whose header sticks under the site header; it fits the page, so it never scrolls sideways and the first column needs no sticking. Below `lg`, stacked cards (a 7-column table is too cramped at `md`).
+- Each rate's "Book this" → `/contact?plan=<slug>&rate=<rateId>` (the stable rate ID, matching `InquiryCreate.rateId`), which pre-fills the inquiry.
+- FAQ accordion (business address use, refund window, opening hours incl. Friday closed, guests, internet speed), with content from the Terms and Refund policies.
 
 **`/spaces/[slug]`**: a deep-linkable plan detail page with the same content, used for SEO and shared-element navigation from cards. `generateStaticParams` comes from the plans list, and unknown slugs → 404.
 
