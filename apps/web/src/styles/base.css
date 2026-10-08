@@ -134,6 +134,20 @@
     'SOFT' 50,
     'WONK' 0;
 }
+/* Pull quotes (B2): Fraunces at h3 size, but regular weight and a looser leading, since they run
+   longer than a headline. The opening quote mark hangs into the margin (Safari-only
+   hanging-punctuation does it natively; the indent does it everywhere). */
+@utility type-pullquote {
+  font-family: var(--font-display);
+  font-size: var(--text-h3);
+  line-height: 1.3;
+  font-weight: 400;
+  font-variation-settings:
+    'opsz' 72,
+    'SOFT' 50,
+    'WONK' 0;
+  text-indent: -0.4em;
+}
 @utility type-lead {
   font-size: var(--text-lead);
   line-height: var(--text-lead--line-height);
@@ -206,4 +220,27 @@
 @utility px-safe {
   padding-left: max(calc(var(--spacing) * 4), env(safe-area-inset-left));
   padding-right: max(calc(var(--spacing) * 4), env(safe-area-inset-right));
+}
+
+/*
+ * A horizontal scroller that runs to the screen edges while its first and last items still line
+ * up with the page margin (and snap there). Use inside a `px-page-safe` container.
+ */
+@utility bleed-page-x {
+  --bleed-left: max(var(--spacing-page), env(safe-area-inset-left));
+  --bleed-right: max(var(--spacing-page), env(safe-area-inset-right));
+  margin-left: calc(-1 * var(--bleed-left));
+  margin-right: calc(-1 * var(--bleed-right));
+  padding-left: var(--bleed-left);
+  padding-right: var(--bleed-right);
+  scroll-padding-left: var(--bleed-left);
+  scroll-padding-right: var(--bleed-right);
+}
+
+/* Hides a scroller's bar where the scroller has its own controls (a snap carousel). */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }

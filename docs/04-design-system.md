@@ -51,7 +51,7 @@ Loaded through `next/font` (self-hosted, `display: swap`, subset `latin`, metric
 
 Measure: body copy is `max-width: 65ch`. Headlines use `text-wrap: balance`, paragraphs `text-wrap: pretty`.
 
-**Type roles in code** (`apps/web/src/styles/base.css`): `type-display`, `type-h1`, `type-h2` and `type-h3` set Fraunces with its size, line-height, tracking and a pinned optical size (144 / 144 / 96 / 72) plus `SOFT 50`. `type-lead` and `type-eyebrow` (Geist Mono, uppercase, 0.12em) cover the rest. The bare `text-*` size utilities stay available for Geist text. Fonts load in `src/styles/fonts.ts`.
+**Type roles in code** (`apps/web/src/styles/base.css`): `type-display`, `type-h1`, `type-h2` and `type-h3` set Fraunces with its size, line-height, tracking and a pinned optical size (144 / 144 / 96 / 72) plus `SOFT 50`. `type-pullquote` is Fraunces at the h3 size but regular weight, 1.3 leading and a hanging opening quote mark. `type-lead` and `type-eyebrow` (Geist Mono, uppercase, 0.12em) cover the rest. The bare `text-*` size utilities stay available for Geist text. Fonts load in `src/styles/fonts.ts`.
 
 ## 4. Space, layout and shape
 
