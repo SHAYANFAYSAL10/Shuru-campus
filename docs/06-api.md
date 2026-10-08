@@ -99,7 +99,7 @@ InquiryCreate {
 | --- | --- | --- |
 | GET | `/admin/config` | `AdminConfig` = `{ site: SiteSettings; plans: Plan[]; meta: { dataSource: 'memory'; editable: false; updatedAt } }` |
 | PUT | `/admin/config/site` | Body `SiteSettings` → **`202 { persisted: false, validated: true, message }`** |
-| PUT | `/admin/config/plans/:slug` | Body `Plan` → **`202 { persisted: false, validated: true, message }`** |
+| PUT | `/admin/config/plans/:slug` | Body `Plan` → **`202 { persisted: false, validated: true, message }`**. `400` if `body.slug` ≠ `:slug` (slugs can't change), `404` for an unknown plan |
 | PUT | `/admin/config/features` | Body `SiteSettings['features'] & { announcement }` → **`202 { persisted: false, … }`** |
 
 Phase 1 PUTs **validate fully** (so the UI's error handling is real and tested) but don't change anything. A follow-up `GET` returns the original values. In Phase 2 they return `200` with the updated resource, the contract shape stays the same and `persisted` becomes `true`.

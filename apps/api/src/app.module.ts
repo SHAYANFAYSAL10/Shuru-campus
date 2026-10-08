@@ -9,6 +9,7 @@ import { OriginGuard } from './common/origin.guard.js';
 import { ThrottlingModule } from './common/throttling.js';
 import { type AppConfig } from './config/app-config.js';
 import { ConfigModule } from './config/config.module.js';
+import { AdminConfigModule } from './modules/admin-config/admin-config.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { HealthModule } from './modules/health/health.module.js';
 import { InquiriesModule } from './modules/inquiries/inquiries.module.js';
@@ -30,6 +31,7 @@ export class AppModule {
         PlansModule,
         InquiriesModule,
         AuthModule,
+        AdminConfigModule,
       ],
       providers: [
         { provide: APP_FILTER, useClass: AllExceptionsFilter },

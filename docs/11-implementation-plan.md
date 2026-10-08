@@ -116,7 +116,7 @@ A step-by-step task list. Work through the milestones **in order**. Within a mil
 - [x] **T2.8 Auth module** (M). `npm run admin:hash` script (argon2id), `POST /auth/login` (constant-time, uniform error), JWT cookie, `POST /auth/logout`, `GET /auth/me`, `AdminGuard`, `OriginGuard`.
   *Tests:* wrong email, wrong password, success sets the cookie flags, a tampered or expired JWT → 401, logout clears, a mutation with a foreign Origin → 403.
 
-- [ ] **T2.9 Admin-config module** (M). `GET /admin/config`, the `PUT` endpoints → `202 { persisted: false }` after full validation, and the repository's `update()` throws `NotPersistedError`.
+- [x] **T2.9 Admin-config module** (M). `GET /admin/config`, the `PUT` endpoints → `202 { persisted: false }` after full validation, and the repository's `update()` throws `NotPersistedError`.
   *Tests:* unauthenticated → 401, invalid body → 400 with field paths, valid → 202, and a follow-up GET is unchanged.
 
 - [ ] **T2.10 API docs & Docker** (S). Swagger at `/api/docs` (dev only) generated from the Zod schemas, plus a multi-stage `Dockerfile`.
