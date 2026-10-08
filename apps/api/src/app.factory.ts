@@ -7,6 +7,7 @@ import { Logger } from 'nestjs-pino';
 import { AppModule } from './app.module.js';
 import { jsonBody } from './common/json-body.js';
 import { type LoggerOptions } from './common/logger.js';
+import { setupOpenApi } from './common/openapi.js';
 import { REQUEST_ID_HEADER, requestId } from './common/request-id.js';
 import { type AppConfig } from './config/app-config.js';
 
@@ -50,6 +51,8 @@ export async function createApp(
     exposedHeaders: [REQUEST_ID_HEADER, 'Retry-After'],
   });
   app.setGlobalPrefix(API_PREFIX);
+  // API docs are a development aid; production never exposes them.
+  if (!config.isProduction) setupOpenApi(app, config);
   app.enableShutdownHooks();
   return app;
 }

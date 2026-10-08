@@ -1,4 +1,5 @@
-import { type PipeTransform } from '@nestjs/common';
+import { createParamDecorator, type ExecutionContext, type PipeTransform } from '@nestjs/common';
+import { type Request } from 'express';
 import { type z } from 'zod';
 
 import { toErrorDetails } from '@campus/contracts';
@@ -28,3 +29,23 @@ export class ZodValidationPipe<T extends z.ZodType> implements PipeTransform<unk
     return result.data;
   }
 }
+
+const requestBody = createParamDecorator(
+  (_data: unknown, ctx: ExecutionContext): unknown => ctx.switchToHttp().getRequest<Request>().body,
+);
+const requestQuery = createParamDecorator(
+  (_data: unknown, ctx: ExecutionContext): unknown =>
+    ctx.switchToHttp().getRequest<Request>().query,
+);
+
+// Custom decorators rather than `@Body()`/`@Query()` with the pipe: Swagger skips custom
+// parameters, so docs come only from the Zod schemas (`ApiJsonBody`), never from the TS
+// design type (which some compilers emit as the schema object itself).
+
+/** The request body, validated against a contracts schema. */
+export const ZodBody = (schema: z.ZodType, message?: string): ParameterDecorator =>
+  requestBody(new ZodValidationPipe(schema, message));
+
+/** The query string, validated against a contracts schema. */
+export const ZodQuery = (schema: z.ZodType, message?: string): ParameterDecorator =>
+  requestQuery(new ZodValidationPipe(schema, message));

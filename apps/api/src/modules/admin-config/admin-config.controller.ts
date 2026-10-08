@@ -1,16 +1,19 @@
-import { Body, Controller, Get, HttpStatus, Param, Put, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Param, Put, Res, UseGuards } from '@nestjs/common';
+import { ApiCookieAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { type Response } from 'express';
 
 import {
   type AdminConfig,
   FeaturesUpdate,
   Plan,
+  PLAN_SLUGS,
   type PreviewSaveResult,
   SiteSettings,
 } from '@campus/contracts';
 
 import { ApiException } from '#src/common/api-exception.js';
-import { ZodValidationPipe } from '#src/common/zod-validation.pipe.js';
+import { ApiErrors, ApiJson, ApiJsonBody } from '#src/common/openapi.js';
+import { ZodBody } from '#src/common/zod-validation.pipe.js';
 import { AdminGuard } from '#src/modules/auth/admin.guard.js';
 
 import { AdminConfigService } from './admin-config.service.js';
@@ -21,28 +24,41 @@ function respond(res: Response, result: PreviewSaveResult): PreviewSaveResult {
   return result;
 }
 
+const PREVIEW = 'Phase 1: valid, but not persisted (`persisted: false`).';
+
 @Controller('admin/config')
 @UseGuards(AdminGuard)
+@ApiTags('admin')
+@ApiCookieAuth()
+@ApiErrors(401)
 export class AdminConfigController {
   constructor(private readonly config: AdminConfigService) {}
 
   @Get()
+  @ApiJson(200, 'AdminConfig')
   get(): Promise<AdminConfig> {
     return this.config.get();
   }
 
   @Put('site')
+  @ApiJsonBody('SiteSettings')
+  @ApiJson(202, 'PreviewSaveResult', { description: PREVIEW })
+  @ApiErrors(400, 403)
   async saveSite(
-    @Body(new ZodValidationPipe(SiteSettings)) site: SiteSettings,
+    @ZodBody(SiteSettings) site: SiteSettings,
     @Res({ passthrough: true }) res: Response,
   ): Promise<PreviewSaveResult> {
     return respond(res, await this.config.save({ kind: 'site', site }));
   }
 
   @Put('plans/:slug')
+  @ApiParam({ name: 'slug', enum: PLAN_SLUGS })
+  @ApiJsonBody('Plan')
+  @ApiJson(202, 'PreviewSaveResult', { description: PREVIEW })
+  @ApiErrors(400, 403, 404)
   async savePlan(
     @Param('slug') slug: string,
-    @Body(new ZodValidationPipe(Plan)) plan: Plan,
+    @ZodBody(Plan) plan: Plan,
     @Res({ passthrough: true }) res: Response,
   ): Promise<PreviewSaveResult> {
     if (plan.slug !== slug) {
@@ -54,8 +70,11 @@ export class AdminConfigController {
   }
 
   @Put('features')
+  @ApiJsonBody('FeaturesUpdate')
+  @ApiJson(202, 'PreviewSaveResult', { description: PREVIEW })
+  @ApiErrors(400, 403)
   async saveFeatures(
-    @Body(new ZodValidationPipe(FeaturesUpdate)) features: FeaturesUpdate,
+    @ZodBody(FeaturesUpdate) features: FeaturesUpdate,
     @Res({ passthrough: true }) res: Response,
   ): Promise<PreviewSaveResult> {
     return respond(res, await this.config.save({ kind: 'features', features }));

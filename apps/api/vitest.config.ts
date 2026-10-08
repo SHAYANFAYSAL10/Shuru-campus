@@ -18,5 +18,12 @@ export default defineConfig({
     root: './',
     include: ['src/**/*.spec.ts', 'test/**/*.e2e-spec.ts'],
     env: { TZ: process.env.TZ ?? 'America/Los_Angeles' },
+    coverage: {
+      provider: 'v8',
+      include: ['src/**/*.ts'],
+      // main.ts only reads the env and listens; everything it calls is covered via createApp.
+      exclude: ['src/**/*.spec.ts', 'src/main.ts'],
+      thresholds: { lines: 80, functions: 80, statements: 80, branches: 80 },
+    },
   },
 });

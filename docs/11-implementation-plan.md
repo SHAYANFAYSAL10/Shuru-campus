@@ -119,7 +119,7 @@ A step-by-step task list. Work through the milestones **in order**. Within a mil
 - [x] **T2.9 Admin-config module** (M). `GET /admin/config`, the `PUT` endpoints → `202 { persisted: false }` after full validation, and the repository's `update()` throws `NotPersistedError`.
   *Tests:* unauthenticated → 401, invalid body → 400 with field paths, valid → 202, and a follow-up GET is unchanged.
 
-- [ ] **T2.10 API docs & Docker** (S). Swagger at `/api/docs` (dev only) generated from the Zod schemas, plus a multi-stage `Dockerfile`.
+- [x] **T2.10 API docs & Docker** (S). Swagger at `/api/docs` (dev only) generated from the Zod schemas, plus a multi-stage `Dockerfile`.
   *Done when:* the coverage of `apps/api/src` is ≥ 80%.
 
 ## M3 — Design foundation in code

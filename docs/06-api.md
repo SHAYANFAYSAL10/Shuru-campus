@@ -2,6 +2,8 @@
 
 Base path: `/api/v1`. JSON only. All schemas live in `@campus/contracts`. This document describes them, and the code is authoritative.
 
+Outside production, interactive docs are served at `/api/docs` (OpenAPI JSON at `/api/docs-json`), generated from the same Zod schemas. Container image: `docker build -f apps/api/Dockerfile .` from the repo root.
+
 ## Conventions
 
 - **Success:** the resource or collection directly. Collections return `{ items: T[] }`.
