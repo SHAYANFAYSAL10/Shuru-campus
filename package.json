@@ -15,11 +15,15 @@
     "build": "turbo run build",
     "lint": "turbo run lint && eslint . && npm run format:check",
     "typecheck": "turbo run typecheck",
-    "test": "turbo run test",
+    "test": "turbo run test && npm run test:scripts",
     "test:e2e": "turbo run test:e2e",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test:scripts": "node --test \"scripts/__tests__/*.test.mjs\"",
+    "check:no-db": "node scripts/check-no-db.mjs",
+    "check:brand": "node scripts/check-brand-literals.mjs",
+    "check:guards": "npm run check:no-db && npm run check:brand"
   },
   "devDependencies": {
     "@campus/eslint-config": "^0.0.0",

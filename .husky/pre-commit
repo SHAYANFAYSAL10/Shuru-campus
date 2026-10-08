@@ -1,1 +1,2 @@
+npm run --silent check:guards
 npx lint-staged
