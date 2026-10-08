@@ -6,4 +6,7 @@ export const PUBLIC_ROUTES = [
   { name: 'Home', path: '/' },
   { name: 'Spaces', path: '/spaces' },
   { name: 'Spaces, filtered', path: '/spaces?period=monthly' },
+  // The plan with the longest rate list and the one priced by size cover both layouts' extremes.
+  { name: 'Plan detail', path: '/spaces/meeting-room' },
+  { name: 'Plan detail, priced by size', path: '/spaces/private-office' },
 ] as const;

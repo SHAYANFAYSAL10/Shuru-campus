@@ -1,6 +1,7 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Settings } from 'lucide-react';
+import NextLink from 'next/link';
 import { renderToString } from 'react-dom/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -90,7 +91,7 @@ describe('Sheet', () => {
           <Button>Menu</Button>
         </SheetTrigger>
         <SheetContent title="Site menu" hideTitle side="full">
-          <a href="/spaces">Spaces</a>
+          <NextLink href="/spaces">Spaces</NextLink>
         </SheetContent>
       </Sheet>,
     );

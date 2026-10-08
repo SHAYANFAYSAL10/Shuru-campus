@@ -57,4 +57,11 @@ describe('PlanSection', () => {
     render(<PlanSection plan={seedPlan('business-seating')} index={0} />);
     expect(screen.getByText('Popular')).toBeInTheDocument();
   });
+
+  it('heads the page on the plan’s own page, with its parts a level below', () => {
+    render(<PlanSection plan={seedPlan('hot-desk')} index={0} headingLevel="h1" />);
+    expect(screen.getByRole('heading', { level: 1, name: 'Hot Desk' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: 'Rates' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: 'Included' })).toBeInTheDocument();
+  });
 });

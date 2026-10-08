@@ -1,4 +1,6 @@
-import { type Plan, type Rate, type RateUnit } from '@campus/contracts';
+import { formatBdt, rateUnitLabel, type Plan, type Rate, type RateUnit } from '@campus/contracts';
+
+import { sentence } from '@/lib/metadata';
 
 /**
  * The cheapest rate charged per `unit` across all plans: the hero's "From ৳100/hr". `undefined`
@@ -80,4 +82,34 @@ export function rateTitle(
  */
 export function pricedBySize(plan: Pick<Plan, 'rates'>): boolean {
   return plan.rates.every((rate) => rate.capacity !== undefined);
+}
+
+/** How many other plans a plan's page suggests (05 → `/spaces/[slug]`). */
+export const RELATED_PLAN_COUNT = 3;
+
+/**
+ * The plans a plan's page suggests next: its nearest neighbors in the display order (the lineup
+ * runs from a desk by the hour up to a room for events, so neighbors are the next size down or
+ * up), the earlier one first on a tie, returned in display order.
+ */
+export function relatedPlans(
+  plan: Pick<Plan, 'slug'>,
+  plans: readonly Plan[],
+  count = RELATED_PLAN_COUNT,
+): Plan[] {
+  const sorted = sortPlans(plans);
+  const at = sorted.findIndex((p) => p.slug === plan.slug);
+  if (at === -1) return sorted.slice(0, count);
+  const nearest = sorted
+    .map((p, index) => ({ p, index, distance: Math.abs(index - at) }))
+    .filter(({ index }) => index !== at)
+    .sort((a, b) => a.distance - b.distance || a.index - b.index)
+    .slice(0, count);
+  return nearest.sort((a, b) => a.index - b.index).map(({ p }) => p);
+}
+
+/** A plan page's meta description: its summary and entry price ("From ৳100/hour"). */
+export function planDescription(plan: Plan): string {
+  const from = planFromRate(plan);
+  return `${sentence(plan.summary)} From ${formatBdt(from.amountBdt)}/${rateUnitLabel(from)}, in the heart of Gulshan.`;
 }

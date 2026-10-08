@@ -10,6 +10,8 @@ import {
   planHref,
   pricedBySize,
   rateTitle,
+  planDescription,
+  relatedPlans,
   sortPlans,
 } from '@/lib/plans';
 
@@ -114,5 +116,58 @@ describe('pricedBySize', () => {
     const bySlug = (slug: Plan['slug']) => plansSeed.find((p) => p.slug === slug);
     expect(pricedBySize(bySlug('private-office') ?? { rates: [] })).toBe(true);
     expect(pricedBySize(bySlug('hot-desk') ?? { rates: [] })).toBe(false);
+  });
+});
+
+describe('relatedPlans', () => {
+  const slugs = (plans: readonly Plan[]) => plans.map((p) => p.slug);
+  const bySlug = (slug: Plan['slug']): Plan => {
+    const found = plansSeed.find((p) => p.slug === slug);
+    if (!found) throw new Error(`seed has no ${slug}`);
+    return found;
+  };
+
+  it('suggests the nearest plans in the lineup, in display order', () => {
+    expect(slugs(relatedPlans(bySlug('private-office'), plansSeed))).toEqual([
+      'business-seating',
+      'executive-seating',
+      'meeting-room',
+    ]);
+  });
+
+  it('looks further along at either end of the lineup', () => {
+    expect(slugs(relatedPlans(bySlug('hot-desk'), plansSeed))).toEqual([
+      'business-seating',
+      'executive-seating',
+      'private-office',
+    ]);
+    expect(slugs(relatedPlans(bySlug('seminar-room'), plansSeed))).toEqual([
+      'executive-seating',
+      'private-office',
+      'meeting-room',
+    ]);
+  });
+
+  it('follows display order, not the input order, and never suggests the plan itself', () => {
+    const shuffled = [...plansSeed].reverse();
+    const related = relatedPlans(bySlug('business-seating'), shuffled, 2);
+    expect(slugs(related)).toEqual(['hot-desk', 'executive-seating']);
+  });
+
+  it('copes with too few plans or a plan missing from the list', () => {
+    expect(relatedPlans(bySlug('hot-desk'), [bySlug('hot-desk')])).toEqual([]);
+    expect(slugs(relatedPlans(bySlug('hot-desk'), [bySlug('meeting-room')]))).toEqual([
+      'meeting-room',
+    ]);
+  });
+});
+
+describe('planDescription', () => {
+  it('gives the summary and the entry price', () => {
+    const [hotDesk] = plansSeed;
+    if (!hotDesk) throw new Error('seed has no plans');
+    expect(planDescription(hotDesk)).toBe(
+      'A designated hot desk by the hour or the day. From ৳100/hour, in the heart of Gulshan.',
+    );
   });
 });

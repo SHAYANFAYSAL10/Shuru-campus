@@ -21,15 +21,26 @@ export interface PlanSectionProps {
   index: number;
   /** Loads the photo eagerly (the first plan can be in the first viewport). */
   eager?: boolean;
+  /** `h1` on the plan's own page, where the plan is the page; its parts then use `h2`. */
+  headingLevel?: 'h1' | 'h2';
+  className?: string;
 }
 
 /**
  * One plan on Spaces (05 → Spaces & Pricing), anchored at its slug (`/spaces#hot-desk`): photo,
  * name, who it's for, its rates with "Book this", and the full "Included" checklist. From `lg` a
  * 5/6 split that alternates sides down the page. It carries the periods it offers, so the period
- * filter can hide it (`styles/spaces.css`).
+ * filter can hide it (`styles/spaces.css`). The plan's own page (`/spaces/[slug]`) renders the
+ * same section with the plan's name as the page heading.
  */
-export function PlanSection({ plan, index, eager = false }: PlanSectionProps) {
+export function PlanSection({
+  plan,
+  index,
+  eager = false,
+  headingLevel: Heading = 'h2',
+  className,
+}: PlanSectionProps) {
+  const Subheading = Heading === 'h1' ? 'h2' : 'h3';
   const photo = planPhoto(plan);
   const titleId = `${plan.slug}-title`;
   const ratesId = `${plan.slug}-rates`;
@@ -40,7 +51,10 @@ export function PlanSection({ plan, index, eager = false }: PlanSectionProps) {
       id={plan.slug}
       aria-labelledby={titleId}
       data-offers={planPeriods(plan).join(' ')}
-      className="grid gap-8 border-t border-border py-12 lg:grid-cols-12 lg:gap-gutter lg:py-20"
+      className={cn(
+        'grid gap-8 border-t border-border py-12 lg:grid-cols-12 lg:gap-gutter lg:py-20',
+        className,
+      )}
     >
       <div
         className={cn(
@@ -70,17 +84,17 @@ export function PlanSection({ plan, index, eager = false }: PlanSectionProps) {
         )}
       >
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <h2 id={titleId} className="type-h2 text-fg">
+          <Heading id={titleId} className={cn(Heading === 'h1' ? 'type-h1' : 'type-h2', 'text-fg')}>
             {plan.name}
-          </h2>
+          </Heading>
           {plan.highlight ? <Badge tone="accent">Popular</Badge> : null}
         </div>
         <p className="mt-3 text-fg-muted">For {listText(plan.audience.map(lowerFirst))}</p>
         <p className="mt-4 max-w-xl type-lead text-fg-muted">{plan.summary}</p>
 
-        <h3 id={ratesId} className="mt-10 type-eyebrow text-fg-muted">
+        <Subheading id={ratesId} className="mt-10 type-eyebrow text-fg-muted">
           Rates
-        </h3>
+        </Subheading>
         <RateList plan={plan} labelledBy={ratesId} className="mt-3" />
         {pricedBySize(plan) ? (
           <p className="mt-3 text-small text-fg-muted">
@@ -91,7 +105,7 @@ export function PlanSection({ plan, index, eager = false }: PlanSectionProps) {
           </p>
         ) : null}
 
-        <h3 className="mt-10 type-eyebrow text-fg-muted">Included</h3>
+        <Subheading className="mt-10 type-eyebrow text-fg-muted">Included</Subheading>
         <ul
           aria-label={`Included with ${plan.name}`}
           className="mt-4 grid gap-x-gutter gap-y-3 sm:grid-cols-2"

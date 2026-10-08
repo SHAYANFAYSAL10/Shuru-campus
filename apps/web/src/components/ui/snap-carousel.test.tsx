@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import NextLink from 'next/link';
 import { renderToString } from 'react-dom/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -28,7 +29,11 @@ function stubLayout() {
 
 function renderCarousel() {
   return render(
-    <SnapCarousel label="Plans" itemName="plan" aside={<a href="/spaces">Compare all plans</a>}>
+    <SnapCarousel
+      label="Plans"
+      itemName="plan"
+      aside={<NextLink href="/spaces">Compare all plans</NextLink>}
+    >
       <li>Hot Desk</li>
       <li>Business Seating</li>
       <li>Private Office</li>

@@ -31,7 +31,7 @@ The header is transparent over the hero. On scroll it condenses (height 80→64p
 - Each rate's "Book this" → `/contact?plan=<slug>&rate=<rateId>` (the stable rate ID, matching `InquiryCreate.rateId`), which pre-fills the inquiry.
 - FAQ accordion (business address use, refund window, opening hours incl. Friday closed, guests, internet speed), with content from the Terms and Refund policies.
 
-**`/spaces/[slug]`**: a deep-linkable plan detail page with the same content, used for SEO and shared-element navigation from cards. `generateStaticParams` comes from the plans list, and unknown slugs → 404.
+**`/spaces/[slug]`**: a deep-linkable plan detail page with the same content, used for SEO and shared-element navigation from cards. A breadcrumb ("Spaces & pricing › {plan}", with BreadcrumbList JSON-LD) leads in; below the plan, "Need a different *size*?" suggests the three plans nearest it in the lineup as plan cards (a snap carousel until `lg`) with "Compare all plans". `generateStaticParams` comes from the plans list, and unknown slugs → 404.
 
 ## About `/about`
 
