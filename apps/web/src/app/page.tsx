@@ -6,7 +6,9 @@ export default async function HomePage() {
   const health = await getHealth();
   return (
     <main className="grid min-h-dvh place-items-center p-6">
-      <p>API: {health.ok ? health.status : 'unreachable'}</p>
+      <p>
+        API: {health.ok ? `${health.health.status} (${health.health.dataSource})` : 'unreachable'}
+      </p>
     </main>
   );
 }

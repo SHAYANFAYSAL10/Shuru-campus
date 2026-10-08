@@ -3,6 +3,8 @@ import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import { type App } from 'supertest/types.js';
 
+import { HealthResponse } from '@campus/contracts';
+
 import { AppModule } from '../src/app.module.js';
 
 describe('GET /api/v1/health', () => {
@@ -19,8 +21,8 @@ describe('GET /api/v1/health', () => {
     await app.close();
   });
 
-  it('reports ok', async () => {
+  it('returns a payload matching the HealthResponse contract', async () => {
     const res = await request(app.getHttpServer()).get('/api/v1/health').expect(200);
-    expect(res.body).toEqual({ status: 'ok' });
+    expect(HealthResponse.parse(res.body)).toMatchObject({ status: 'ok', dataSource: 'memory' });
   });
 });
