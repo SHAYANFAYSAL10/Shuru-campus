@@ -16,6 +16,13 @@ const OUT = fileURLToPath(new URL('../public/placeholder/', import.meta.url));
 const IMAGES = {
   'hero-wide': [1920, 1080, '16:9'],
   'hero-tall': [1200, 1500, '4:5'],
+  // Plan cards (lib/plan-media.ts), one per seed plan's imageId.
+  'plan-hot-desk': [960, 1200, 'HOT DESK · 4:5'],
+  'plan-business-seating': [960, 1200, 'BUSINESS SEATING · 4:5'],
+  'plan-executive-seating': [960, 1200, 'EXECUTIVE SEATING · 4:5'],
+  'plan-private-office': [960, 1200, 'PRIVATE OFFICE · 4:5'],
+  'plan-meeting-room': [960, 1200, 'MEETING ROOM · 4:5'],
+  'plan-seminar-room': [960, 1200, 'SEMINAR ROOM · 4:5'],
 };
 
 // Warm, low-contrast stand-ins for a sunlit room: wall, windows, a desk line. Colors are fixed
@@ -33,8 +40,10 @@ function svg(width, height, label) {
   ${windows}
   <rect y="${height * 0.68}" width="100%" height="${height * 0.32}" fill="#c9bca6"/>
   <rect x="${width * 0.08}" y="${height * 0.64}" width="${width * 0.84}" height="${unit * 0.35}" rx="${unit * 0.1}" fill="#a8977c"/>
-  <text x="50%" y="${height * 0.86}" text-anchor="middle" font-family="Consolas, Menlo, monospace"
-    font-size="${unit * 0.42}" letter-spacing="${unit * 0.05}" fill="#6b5f4c">PLACEHOLDER PHOTO · ${label}</text>
+  <text x="50%" y="${height * 0.82}" text-anchor="middle" font-family="Consolas, Menlo, monospace"
+    font-size="${unit * 0.42}" letter-spacing="${unit * 0.05}" fill="#6b5f4c">
+    <tspan x="50%">PLACEHOLDER PHOTO</tspan><tspan x="50%" dy="1.5em">${label}</tspan>
+  </text>
 </svg>`;
 }
 
