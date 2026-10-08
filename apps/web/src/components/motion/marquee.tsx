@@ -3,6 +3,7 @@
 import { Pause, Play } from 'lucide-react';
 import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from 'react';
 
+import { IconButton } from '@/components/ui/icon-button';
 import { cn } from '@/lib/cn';
 import { useHydrated } from '@/lib/hooks/use-hydrated';
 import { useReducedMotion } from '@/lib/hooks/use-media-query';
@@ -81,21 +82,16 @@ export function Marquee({ items, label, className }: MarqueeProps) {
           </ul>
         </div>
       </div>
-      <button
-        type="button"
+      <IconButton
+        label="Pause scrolling list"
+        icon={paused ? Play : Pause}
+        aria-pressed={paused}
+        variant="secondary"
+        size="sm"
         onClick={() => {
           setPaused((value) => !value);
         }}
-        aria-pressed={paused}
-        className="hit-target inline-flex size-9 shrink-0 items-center justify-center rounded-full border border-border-strong text-fg-muted transition hover:bg-bg-alt hover:text-fg"
-      >
-        {paused ? (
-          <Play aria-hidden="true" className="size-4" strokeWidth={1.5} />
-        ) : (
-          <Pause aria-hidden="true" className="size-4" strokeWidth={1.5} />
-        )}
-        <span className="sr-only">Pause scrolling list</span>
-      </button>
+      />
     </div>
   );
 }

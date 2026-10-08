@@ -167,7 +167,8 @@ Ratios were computed with the WCAG 2.x formula. **AA text** needs ≥ 4.5 (≥ 3
 | **Button, secondary** | transparent, `fg` text, `border-strong` 1px | `bg-alt` fill | scale 0.98 | same ring | same |
 | **Button, ghost** | transparent, `fg` | `bg-alt` fill | scale 0.98 | same ring | same |
 | **Button on lake band** | `paper` fill, `lake` text | paper → white | scale 0.98 | ring in `accent` | same |
-| **Link (inline)** | `accent-text`, underline 1px offset 3px | begin line draws (0→100% width via `scaleX`) | — | ring | — |
+| **Link (inline)** | `accent-text`, underline 1px offset 3px | underline thickens to 2px (no animation, so it stays correct when the link wraps across lines) | — | ring | — |
+| **Link (standalone)** | `fg`, medium weight, trailing arrow | begin line draws under it (0→100% via `scaleX`), arrow nudges 2px | — | ring + begin line stays drawn | — |
 | **Nav item** | `fg-muted` | `fg` | — | ring | — |
 | **Nav item, current** | `fg` + begin line under it | — | — | ring | — |
 | **Input** | `surface` fill, `border-strong` 1px | border `fg-subtle` | — | border `focus` + ring | `bg-alt` fill, `fg-subtle` text |
@@ -179,6 +180,8 @@ Ratios were computed with the WCAG 2.x formula. **AA text** needs ≥ 4.5 (≥ 3
 | **Toast, success / error** | same, with a `success` / `danger` bar and icon | — | — | — | — |
 | **Banner, preview mode** | `info-subtle` background, `fg` text, `brand` icon | — | — | — | — |
 | **OpenStatus** | Open: `success` dot (pulsing, static when reduced motion) + "Open now". Closed: `fg-subtle` dot + "Closed · opens Sat 9:00". | — | — | — | — |
+
+Buttons, chips and the segmented control are pill-shaped (`radius-full`). Small (36px) buttons and chips extend their touch target to 44px with the `hit-target` utility. Primitives live in `apps/web/src/components/ui/`.
 
 ### A7. Dark mode guidance
 

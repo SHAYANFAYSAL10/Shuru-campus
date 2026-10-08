@@ -14,6 +14,7 @@
   --animate-draw: draw var(--duration-story) var(--ease-out) both;
   --animate-fade-in: fade-in var(--duration-crossfade) linear both;
   --animate-marquee: marquee var(--marquee-duration) linear infinite;
+  --animate-spin: spin var(--duration-story) linear infinite;
 
   /* Section reveal: up from --reveal-distance, opacity 0 → 1. */
   @keyframes reveal {
@@ -40,6 +41,12 @@
   @keyframes fade-in {
     from {
       opacity: 0;
+    }
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
     }
   }
 
@@ -72,4 +79,38 @@
 
 @utility animation-paused {
   animation-play-state: paused;
+}
+
+/*
+ * Standalone links (A6): the begin line draws under the text on hover (scaleX 0 → 1) and stays
+ * drawn while focused or current. Single-line links only; inline prose links use an underline.
+ */
+@utility link-draw {
+  position: relative;
+  &::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    bottom: -0.2em;
+    height: 1.5px;
+    background-color: var(--color-accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    &:hover::after {
+      transform: scaleX(1);
+    }
+  }
+  &:focus-visible::after,
+  &[data-preview~='hover']::after,
+  &[aria-current='page']::after {
+    transform: scaleX(1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    &::after {
+      transition: none;
+    }
+  }
 }
