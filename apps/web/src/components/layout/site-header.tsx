@@ -10,10 +10,7 @@ import { OpenStatus } from '@/components/ui/open-status';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { getSiteSettings } from '@/lib/api';
 import { cn } from '@/lib/cn';
-import { BOOK_VISIT_HREF, primaryNav } from '@/lib/navigation';
-
-/** Id of the page's `<main>`, the skip link's target. */
-export const MAIN_CONTENT_ID = 'main';
+import { BOOK_VISIT_HREF, MAIN_CONTENT_ID, primaryNav } from '@/lib/navigation';
 
 /**
  * The public site header (docs/05-pages-and-interactions.md): logo, nav, open status, theme

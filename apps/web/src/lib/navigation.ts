@@ -33,3 +33,13 @@ export function navCurrent(pathname: string, href: string): 'page' | 'true' | un
   if (href !== '/' && path.startsWith(`${href}/`)) return 'true';
   return undefined;
 }
+
+/** Id of the page's `<main>`: the skip link's target, and where focus goes when the bar it follows closes. */
+export const MAIN_CONTENT_ID = 'main';
+
+/** Legal pages (docs/05-pages-and-interactions.md → Legal), linked from the footer. */
+export const LEGAL_NAV: readonly NavItem[] = [
+  { href: '/legal/privacy', label: 'Privacy' },
+  { href: '/legal/terms', label: 'Terms' },
+  { href: '/legal/refund', label: 'Refunds' },
+];

@@ -3,7 +3,7 @@ import { nextChange, type OpeningHours } from '@campus/contracts';
 const WEEKDAY = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as const;
 
 /** `09:00` → `9:00`. */
-function displayTime(time: string): string {
+export function displayTime(time: string): string {
   return time.replace(/^0(\d)/, '$1');
 }
 
