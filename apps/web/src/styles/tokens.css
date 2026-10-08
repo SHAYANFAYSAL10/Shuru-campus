@@ -1,0 +1,284 @@
+/*
+ * Design tokens. Source of truth: docs/10-design-guidelines.md (color, A2–A3) and
+ * docs/04-design-system.md (type, space, shape, motion). `src/lib/color/contrast.test.ts`
+ * parses this file and asserts the A4 contrast matrix, so keep the formats below:
+ *   --palette-<name>: #rrggbb;
+ *   --color-<name>: light-dark(var(--palette-<light>), var(--palette-<dark>));
+ *
+ * Theming: every semantic color is declared once with `light-dark()`, which resolves against
+ * the element's `color-scheme`. `:root` follows the OS (works without JS), and next-themes sets
+ * `.light` / `.dark` on <html>. Both classes also work on any subtree (the styleguide uses
+ * that to show the two themes side by side).
+ */
+
+/* ── Raw palette (A2). Never used directly in components. ─────────────────── */
+:root {
+  --palette-paper: #f7f4ee;
+  --palette-paper-2: #efeae0;
+  --palette-white: #ffffff;
+  --palette-ink: #16150f;
+  --palette-ink-2: #55524a;
+  --palette-ink-3: #6b675f;
+  --palette-line: #dcd5c8;
+  --palette-line-strong: #857f74;
+  --palette-marigold: #e8a33d;
+  --palette-marigold-ink: #8a5a0e;
+  --palette-marigold-tint: #fbebd0;
+  --palette-lake: #1f4e4a;
+  --palette-lake-tint: #e8efee;
+  --palette-lake-light: #7fb8b0;
+  --palette-lake-night: #2a3d3a;
+  --palette-night: #12110e;
+  --palette-night-2: #1b1a16;
+  --palette-night-3: #0d0c0a;
+  --palette-night-line: #2e2c26;
+  --palette-night-line-strong: #77716a;
+  --palette-parchment: #f3efe7;
+  --palette-parchment-2: #b9b3a7;
+  --palette-parchment-3: #8f897d;
+  --palette-sun: #f0b355;
+  --palette-sun-tint: #3a2c14;
+  --palette-success: #276b44;
+  --palette-success-dark: #6fbf8e;
+  --palette-danger: #b3261e;
+  --palette-danger-dark: #f2867e;
+}
+
+/* ── Semantic colors (A3) + the rest of the Tailwind theme. ───────────────── */
+@theme {
+  /* Only tokens exist: Tailwind's default palette, sizes, radii and shadows are removed. */
+  --color-*: initial;
+  --text-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+  --ease-*: initial;
+  --animate-*: initial;
+  --font-*: initial;
+
+  --color-bg: light-dark(var(--palette-paper), var(--palette-night));
+  --color-bg-alt: light-dark(var(--palette-paper-2), var(--palette-night-3));
+  --color-surface: light-dark(var(--palette-white), var(--palette-night-2));
+  --color-fg: light-dark(var(--palette-ink), var(--palette-parchment));
+  --color-fg-muted: light-dark(var(--palette-ink-2), var(--palette-parchment-2));
+  --color-fg-subtle: light-dark(var(--palette-ink-3), var(--palette-parchment-3));
+  --color-border: light-dark(var(--palette-line), var(--palette-night-line));
+  --color-border-strong: light-dark(var(--palette-line-strong), var(--palette-night-line-strong));
+  --color-accent: light-dark(var(--palette-marigold), var(--palette-sun));
+  --color-on-accent: light-dark(var(--palette-ink), var(--palette-ink));
+  --color-accent-text: light-dark(var(--palette-marigold-ink), var(--palette-sun));
+  --color-accent-subtle: light-dark(var(--palette-marigold-tint), var(--palette-sun-tint));
+  --color-brand: light-dark(var(--palette-lake), var(--palette-lake-light));
+  --color-brand-surface: light-dark(var(--palette-lake), var(--palette-lake));
+  --color-on-brand: light-dark(var(--palette-paper), var(--palette-parchment));
+  --color-info-subtle: light-dark(var(--palette-lake-tint), var(--palette-lake-night));
+  --color-focus: light-dark(var(--palette-lake), var(--palette-sun));
+  --color-success: light-dark(var(--palette-success), var(--palette-success-dark));
+  --color-danger: light-dark(var(--palette-danger), var(--palette-danger-dark));
+
+  /* Derived (A6): primary hover darkens the accent 6% toward ink; lake-band button hover. */
+  --color-accent-hover: color-mix(in oklab, var(--color-accent), var(--palette-ink) 6%);
+  --color-on-brand-hover: light-dark(var(--palette-white), var(--palette-white));
+  /* Behind dialogs and sheets. */
+  --color-scrim: light-dark(
+    color-mix(in srgb, var(--palette-ink) 48%, transparent),
+    color-mix(in srgb, var(--palette-night-3) 72%, transparent)
+  );
+
+  /* Families come from next/font (layout.tsx sets the --font-*-face variables). */
+  --font-display: var(--font-display-face), ui-serif, Georgia, serif;
+  --font-sans: var(--font-sans-face), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-face), ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  /*
+   * Fluid type scale (04 §3): min @ 360px → max @ 1440px, linear in between.
+   * clamp(min, intercept + slope·vw, max), with slope = Δsize / 1080px and rem intercepts so
+   * the scale still follows the user's font-size setting.
+   */
+  --text-display: clamp(3rem, 1.3333rem + 7.4074vw, 8rem);
+  --text-display--line-height: 0.95;
+  --text-display--letter-spacing: -0.03em;
+  --text-h1: clamp(2.5rem, 1.6667rem + 3.7037vw, 5rem);
+  --text-h1--line-height: 1;
+  --text-h2: clamp(2rem, 1.5rem + 2.2222vw, 3.5rem);
+  --text-h2--line-height: 1.05;
+  --text-h3: clamp(1.375rem, 1.25rem + 0.5556vw, 1.75rem);
+  --text-h3--line-height: 1.2;
+  --text-lead: clamp(1.125rem, 1.0417rem + 0.3704vw, 1.375rem);
+  --text-lead--line-height: 1.5;
+  --text-body: clamp(1rem, 0.9792rem + 0.0926vw, 1.0625rem);
+  --text-body--line-height: 1.6;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.5;
+  --text-eyebrow: clamp(0.75rem, 0.7292rem + 0.0926vw, 0.8125rem);
+  --text-eyebrow--line-height: 1.2;
+  --text-eyebrow--letter-spacing: 0.12em;
+
+  /* Space (04 §4): Tailwind's 4px multiplier gives the scale (p-4 = 16px), plus fluid layout steps. */
+  --spacing: 0.25rem;
+  --spacing-section: clamp(4rem, 10vw, 10rem);
+  --spacing-gutter: clamp(1rem, 2.5vw, 2rem);
+  --spacing-page: clamp(1rem, 5vw, 5rem);
+  /* Minimum touch target (WCAG 2.5.8 asks 24px; we hold 44px). */
+  --spacing-hit: 2.75rem;
+  --container-content: 90rem;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+
+  /* Warm-tinted, low opacity. Dark mode leans on borders instead (A7). */
+  --shadow-raise: 0 1px 2px var(--shadow-tint-near), 0 12px 24px -12px var(--shadow-tint-far);
+  --shadow-overlay: 0 2px 6px var(--shadow-tint-near), 0 24px 56px -16px var(--shadow-tint-far);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-in: cubic-bezier(0.55, 0, 1, 0.45);
+
+  --default-transition-duration: var(--duration-fast);
+  --default-transition-timing-function: var(--ease-out);
+}
+
+:root {
+  --shadow-tint-near: light-dark(rgb(22 21 15 / 0.06), rgb(0 0 0 / 0.32));
+  --shadow-tint-far: light-dark(rgb(22 21 15 / 0.14), rgb(0 0 0 / 0.48));
+
+  /* Motion durations (04 §6). Mirrored in src/styles/motion.ts; a test keeps them equal. */
+  --duration-instant: 100ms;
+  --duration-fast: 180ms;
+  --duration-base: 320ms;
+  --duration-slow: 560ms;
+  --duration-story: 900ms;
+
+  /* Z-index scale (04 §4). Use the z-* utilities below, never raw numbers. */
+  --z-base: 0;
+  --z-raised: 10;
+  --z-sticky: 100;
+  --z-header: 200;
+  --z-overlay: 300;
+  --z-modal: 400;
+  --z-toast: 500;
+}
+
+/* ── Theme switching ─────────────────────────────────────────────────────── */
+:root {
+  color-scheme: light dark;
+}
+.light {
+  color-scheme: light;
+}
+.dark {
+  color-scheme: dark;
+}
+
+/* Browsers without light-dark() (Safari < 17.5) get the light theme. Must match the light half above. */
+@supports not (color: light-dark(#000, #fff)) {
+  :root {
+    --color-bg: var(--palette-paper);
+    --color-bg-alt: var(--palette-paper-2);
+    --color-surface: var(--palette-white);
+    --color-fg: var(--palette-ink);
+    --color-fg-muted: var(--palette-ink-2);
+    --color-fg-subtle: var(--palette-ink-3);
+    --color-border: var(--palette-line);
+    --color-border-strong: var(--palette-line-strong);
+    --color-accent: var(--palette-marigold);
+    --color-on-accent: var(--palette-ink);
+    --color-accent-text: var(--palette-marigold-ink);
+    --color-accent-subtle: var(--palette-marigold-tint);
+    --color-brand: var(--palette-lake);
+    --color-brand-surface: var(--palette-lake);
+    --color-on-brand: var(--palette-paper);
+    --color-info-subtle: var(--palette-lake-tint);
+    --color-focus: var(--palette-lake);
+    --color-success: var(--palette-success);
+    --color-danger: var(--palette-danger);
+    --color-on-brand-hover: var(--palette-white);
+    --color-scrim: color-mix(in srgb, var(--palette-ink) 48%, transparent);
+    --shadow-tint-near: rgb(22 21 15 / 0.06);
+    --shadow-tint-far: rgb(22 21 15 / 0.14);
+  }
+}
+
+/* ── Special modes (A8) ──────────────────────────────────────────────────── */
+@media (prefers-contrast: more) {
+  :root {
+    --color-fg-muted: var(--color-fg);
+    --color-fg-subtle: var(--color-fg);
+    --color-border: var(--color-border-strong);
+  }
+}
+
+@media (forced-colors: active) {
+  :root {
+    --color-bg: Canvas;
+    --color-bg-alt: Canvas;
+    --color-surface: Canvas;
+    --color-fg: CanvasText;
+    --color-fg-muted: CanvasText;
+    --color-fg-subtle: CanvasText;
+    --color-border: CanvasText;
+    --color-border-strong: ButtonText;
+    --color-accent: ButtonText;
+    --color-accent-hover: ButtonText;
+    --color-on-accent: ButtonFace;
+    --color-accent-text: LinkText;
+    --color-accent-subtle: Canvas;
+    --color-brand: CanvasText;
+    --color-brand-surface: Canvas;
+    --color-on-brand: CanvasText;
+    --color-on-brand-hover: CanvasText;
+    --color-info-subtle: Canvas;
+    --color-focus: Highlight;
+    --color-success: CanvasText;
+    --color-danger: CanvasText;
+  }
+}
+
+/* ── Token utilities Tailwind has no namespace for ───────────────────────── */
+@utility z-base {
+  z-index: var(--z-base);
+}
+@utility z-raised {
+  z-index: var(--z-raised);
+}
+@utility z-sticky {
+  z-index: var(--z-sticky);
+}
+@utility z-header {
+  z-index: var(--z-header);
+}
+@utility z-overlay {
+  z-index: var(--z-overlay);
+}
+@utility z-modal {
+  z-index: var(--z-modal);
+}
+@utility z-toast {
+  z-index: var(--z-toast);
+}
+
+@utility duration-instant {
+  transition-duration: var(--duration-instant);
+}
+@utility duration-fast {
+  transition-duration: var(--duration-fast);
+}
+@utility duration-base {
+  transition-duration: var(--duration-base);
+}
+@utility duration-slow {
+  transition-duration: var(--duration-slow);
+}
+@utility duration-story {
+  transition-duration: var(--duration-story);
+}
+
+/* The lake band (A3): on-brand text, and the focus ring switches to the accent. */
+@utility surface-brand {
+  background-color: var(--color-brand-surface);
+  color: var(--color-on-brand);
+  --color-focus: var(--color-accent);
+}

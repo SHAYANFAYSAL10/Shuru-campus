@@ -37,6 +37,7 @@ Raw values are **never** used directly in components. They exist only to build t
 | `lake` | `#1F4E4A` | Secondary, dark sections, focus ring (light) |
 | `lake-tint` | `#E8EFEE` | Info backgrounds |
 | `lake-light` | `#7FB8B0` | Lake on dark backgrounds |
+| `lake-night` | `#2A3D3A` | Info backgrounds (dark) |
 | `night` | `#12110E` | Page background (dark) |
 | `night-2` | `#1B1A16` | Raised surfaces (dark) |
 | `night-3` | `#0D0C0A` | Sunken surfaces (dark) |
@@ -69,16 +70,26 @@ Raw values are **never** used directly in components. They exist only to build t
 | `--color-brand` | lake | lake-light | Secondary emphasis, icons, eyebrows on feature sections |
 | `--color-brand-surface` | lake | lake (`#1F4E4A`) | Dark feature sections (the "lake band") |
 | `--color-on-brand` | paper | parchment | Text on the lake band |
-| `--color-info-subtle` | lake-tint | `#2A3D3A` | Info banners (admin "Preview mode") |
+| `--color-info-subtle` | lake-tint | lake-night | Info banners (admin "Preview mode") |
 | `--color-focus` | lake | sun | Focus ring |
 | `--color-success` | success | success-dark | Success text and icons |
 | `--color-danger` | danger | danger-dark | Errors, destructive actions |
+
+Three derived tokens complete the set. They are built from the ones above, so they need no extra contrast rows:
+
+| Token | Value | Use for |
+| --- | --- | --- |
+| `--color-accent-hover` | `color-mix(in oklab, accent, ink 6%)` | Primary button hover (A6) |
+| `--color-on-brand-hover` | white (both themes) | Button-on-lake-band hover (A6) |
+| `--color-scrim` | ink at 48% (light) · night-3 at 72% (dark) | Behind dialogs and sheets |
+
+**How theming works in code** (`apps/web/src/styles/tokens.css`): each semantic token is declared once as `light-dark(var(--palette-…), var(--palette-…))` and resolves against the element's `color-scheme`. `:root` follows the OS (so the right theme shows even without JS), and next-themes puts `.light` or `.dark` on `<html>`. Both classes also work on any subtree, which is how `/_styleguide` shows the two themes side by side. Browsers without `light-dark()` (Safari < 17.5) fall back to the light theme.
 
 > In dark mode `--color-brand-surface` stays lake (`#1F4E4A`), not lake-light. The lake band reads as a deep, calm section in both themes. In dark mode it's separated from the page by a `night-line` hairline because it's only 2.0:1 against `night`.
 
 ### A4. Verified contrast matrix
 
-Ratios were computed with the WCAG 2.x formula. **AA text** needs ≥ 4.5 (≥ 3.0 for text ≥ 24px, or ≥ 18.66px bold). **UI components** (borders, icons, focus rings) need ≥ 3.0. `contrast.test.ts` asserts every row.
+Ratios were computed with the WCAG 2.x formula. **AA text** needs ≥ 4.5 (≥ 3.0 for text ≥ 24px, or ≥ 18.66px bold). **UI components** (borders, icons, focus rings) need ≥ 3.0. `apps/web/src/lib/color/contrast.test.ts` parses `tokens.css` and asserts every row, plus every allowed semantic pairing in both themes.
 
 **Light**
 
@@ -96,13 +107,15 @@ Ratios were computed with the WCAG 2.x formula. **AA text** needs ≥ 4.5 (≥ 3
 | marigold-ink | marigold-tint | 5.04 | Text ("Popular" badge) |
 | ink | marigold | 8.48 | Text on primary CTA |
 | ink | marigold-tint | 15.59 | Text |
+| ink | lake-tint | 15.69 | Text on info banners and badges |
 | lake | paper | 8.51 | Text, focus ring |
 | lake | white | 9.35 | Text, focus ring |
 | paper | lake | 8.51 | Text on the lake band |
 | lake | lake-tint | 8.02 | Info banner text |
-| success | paper / paper-2 | 5.85 / 5.35 | Text |
-| danger | paper / paper-2 | 5.95 / 5.45 | Text |
-| line-strong | paper / paper-2 | 3.62 / 3.31 | Input borders only |
+| success | paper / paper-2 / white | 5.85 / 5.35 / 6.42 | Text |
+| danger | paper / paper-2 / white | 5.95 / 5.45 / 6.54 | Text |
+| line-strong | paper / paper-2 / white | 3.62 / 3.31 / 3.97 | Input borders only |
+| marigold | lake | 4.33 | Focus ring on the lake band |
 | **marigold** | **paper** | **1.96** | ❌ **Never text, never a meaningful UI boundary.** Fills, decoration and the begin line only. |
 | **line** | **paper** | **1.33** | ❌ Decorative dividers only. Never an input border. |
 
@@ -121,10 +134,12 @@ Ratios were computed with the WCAG 2.x formula. **AA text** needs ≥ 4.5 (≥ 3
 | sun | sun-tint | 7.28 | Text ("Popular" badge) |
 | parchment | sun-tint | 11.81 | Text |
 | lake-light | night / night-2 | 8.44 / 7.78 | Text, icons |
-| parchment | `#2A3D3A` | 10.02 | Info banner text |
+| parchment | lake-night | 10.02 | Info banner text |
+| parchment | lake | 8.15 | Text on the lake band; lake text on the band's parchment button |
 | success-dark | night-2 | 7.89 | Text |
 | danger-dark | night / night-2 | 7.63 / 7.04 | Text |
-| night-line-strong | night / night-3 | 3.92 / 4.05 | Input borders |
+| night-line-strong | night / night-3 / night-2 | 3.92 / 4.05 / 3.61 | Input borders |
+| sun | lake | 5.02 | Focus ring on the lake band |
 | **night-line** | **night** | **1.35** | ❌ Decorative dividers only |
 | **lake** | **night** | **2.02** | ❌ Never text. Lake band needs a hairline edge in dark. |
 

@@ -1,1 +1,41 @@
 @import 'tailwindcss';
+@import './tokens.css';
+
+/*
+ * Interaction variants. Hover only applies on fine pointers (04 §6); touch gets press states.
+ * `data-preview` forces a state so /_styleguide and visual tests can show it statically.
+ */
+@custom-variant hover {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @slot;
+    }
+  }
+  &:where([data-preview~='hover']) {
+    @slot;
+  }
+}
+@custom-variant active {
+  &:active {
+    @slot;
+  }
+  &:where([data-preview~='active']) {
+    @slot;
+  }
+}
+@custom-variant focus-visible {
+  &:focus-visible {
+    @slot;
+  }
+  &:where([data-preview~='focus']) {
+    @slot;
+  }
+}
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  html {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+  }
+}

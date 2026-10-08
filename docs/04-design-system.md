@@ -16,7 +16,7 @@ The default brand name, *Shuru*, means *beginning*. The site should feel like th
 
 ## 2. Color
 
-Tokens are defined once in `apps/web/src/styles/globals.css` as CSS variables, exposed to Tailwind via `@theme`. **Components use semantic tokens only**, never palette tokens.
+Tokens are defined once in `apps/web/src/styles/tokens.css` (imported by `globals.css`) as CSS variables, exposed to Tailwind via `@theme`. Tailwind's default palette, type sizes, radii, shadows and easings are removed, so only token utilities exist (`bg-surface`, `text-h2`, `rounded-md`, `shadow-raise`, `ease-out`, `z-header`, `duration-fast`). **Components use semantic tokens only**, never palette tokens.
 
 The full palette, the semantic tokens for light and dark, the verified contrast matrix and the usage rules live in **[10-design-guidelines.md](10-design-guidelines.md)**, which is the single source of truth for color. In summary:
 
