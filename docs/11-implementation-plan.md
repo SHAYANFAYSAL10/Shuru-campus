@@ -24,8 +24,8 @@ A step-by-step task list. Work through the milestones **in order**. Within a mil
 
 | Milestone | Goal | Tasks | Size | Status |
 | --- | --- | --- | --- | --- |
-| M0 | Repo & tooling foundation | 8 | ~4d | ☐ |
-| M1 | Shared contracts & seed data | 4 | ~2d | ☐ |
+| M0 | Repo & tooling foundation | 8 | ~4d | ☑ |
+| M1 | Shared contracts & seed data | 4 | ~2d | ☑ |
 | M2 | NestJS API (public + auth + admin) | 10 | ~6d | ☐ |
 | M3 | Design foundation in code | 8 | ~5d | ☐ |
 | M4 | Layout shell | 5 | ~3d | ☐ |
@@ -41,53 +41,54 @@ A step-by-step task list. Work through the milestones **in order**. Within a mil
 
 ## M0 — Repo & tooling foundation
 
-- [ ] **T0.1 Initialize repo** (S)
+- [x] **T0.1 Initialize repo** (S)
   `git init`, `.gitignore`, `.editorconfig`, `.nvmrc` (24), `.gitattributes` (LF), root `package.json` with npm workspaces (`apps/*`, `packages/*`), `engines`.
   *Done when:* `npm install` works on a clean clone.
 
-- [ ] **T0.2 Shared TS and lint config** (S). *Depends on:* T0.1
-  `packages/tsconfig` (base, `strict` + `noUncheckedIndexedAccess`, `nextjs`, `nestjs`, `library` presets), `packages/eslint-config` (flat config: typescript-eslint strict, import order, jsx-a11y, react-hooks), Prettier + `prettier-plugin-tailwindcss`.
+- [x] **T0.2 Shared TS and lint config** (S). *Depends on:* T0.1
+  TypeScript 6.0 + ESLint 9 (the newest versions typescript-eslint and jsx-a11y support). `packages/tsconfig` (base, `strict` + `noUncheckedIndexedAccess`, `nextjs`, `nestjs`, `library` presets), `packages/eslint-config` (flat config: typescript-eslint strict, import order, jsx-a11y, react-hooks), Prettier + `prettier-plugin-tailwindcss`.
   *Done when:* `npm run lint` and `npm run typecheck` run across workspaces (even if empty).
 
-- [ ] **T0.3 Turborepo pipeline** (S). *Depends on:* T0.2
+- [x] **T0.3 Turborepo pipeline** (S). *Depends on:* T0.2
   `turbo.json` tasks: `dev`, `build`, `lint`, `typecheck`, `test`, `test:e2e`, with correct `dependsOn` and outputs.
   *Done when:* `npm run build` builds packages before apps, and a second run is a cache hit.
 
-- [ ] **T0.4 Scaffold apps** (M). *Depends on:* T0.2
-  `apps/web`: create-next-app (TS, App Router, Tailwind v4, `src/`, alias `@/*`). `apps/api`: Nest CLI (strict). Remove the boilerplate, wire up shared configs, set ports 3000/4000, add `.env.example` files.
+- [x] **T0.4 Scaffold apps** (M). *Depends on:* T0.2
+  `apps/web`: create-next-app (TS, App Router, Tailwind v4, `src/`, alias `@/*`). `apps/api`: Nest CLI (strict, ESM: Nest 12 is ESM-only, tested with Vitest). Remove the boilerplate, wire up shared configs, set ports 3000/4000, add `.env.example` files.
   *Done when:* `npm run dev` serves both apps, and the web hello page fetches `GET /api/v1/health` through the rewrite.
 
-- [ ] **T0.5 Git hooks** (S). *Depends on:* T0.2
+- [x] **T0.5 Git hooks** (S). *Depends on:* T0.2
   Husky + lint-staged (eslint --fix, prettier on staged files), commitlint (conventional).
   *Done when:* a bad commit message is rejected.
 
-- [ ] **T0.6 CI skeleton** (S). *Depends on:* T0.3
+- [x] **T0.6 CI skeleton** (S). *Depends on:* T0.3
   GitHub Actions: install (cached) → lint → typecheck → test → build. Node 24, `TZ=America/Los_Angeles`.
   *Done when:* the pipeline is green on the main branch.
 
-- [ ] **T0.7 No-DB guard** (S). *Depends on:* T0.6
+- [x] **T0.7 No-DB guard** (S). *Depends on:* T0.6
   The `scripts/check-no-db.mjs` script fails if any workspace `package.json` depends on a database or ORM package (`prisma`, `@prisma/client`, `drizzle-orm`, `typeorm`, `@nestjs/typeorm`, `mongoose`, `@nestjs/mongoose`, `sequelize`, `pg`, `mysql2`, `sqlite3`, `better-sqlite3`, `@neondatabase/serverless`, `knex`, `kysely`). It also fails if `DATA_SOURCE` accepts anything other than `memory`. It runs in CI and in the pre-commit hook. It will be removed in Phase 2.
   *Done when:* adding `pg` to any workspace fails CI with a clear message pointing to this doc.
 
-- [ ] **T0.8 Brand-literal guard** (S). *Depends on:* T0.6
+- [x] **T0.8 Brand-literal guard** (S). *Depends on:* T0.6
   `scripts/check-brand-literals.mjs` fails if `/shuru|শুরু/i` appears in `apps/*/src` or `apps/web/content` (only `packages/contracts/src/seed/` is exempt). It runs in CI and pre-commit.
   *Done when:* typing "Shuru" into a component fails the check with a hint to use `useBrand()`.
 
 ## M1 — Shared contracts & seed data
 
-- [ ] **T1.1 `@campus/contracts` package** (S). *Depends on:* M0
-  Build with `tsup` (ESM + CJS + d.ts) and Vitest. Export the barrel.
+- [x] **T1.1 `@campus/contracts` package** (S). *Depends on:* M0
+  Build with `tsdown` (ESM + CJS + d.ts) and Vitest. Export the barrel. (`tsup` was replaced: its d.ts step sets `baseUrl`, which TypeScript 6 rejects.)
   *Done when:* both apps import a dummy schema with full types.
 
-- [ ] **T1.2 Schemas** (M). *Depends on:* T1.1
+- [x] **T1.2 Schemas** (M). *Depends on:* T1.1
+  These are **Zod validation schemas** for API payloads, forms and seed data, not database schemas. Phase 1 has no DB.
   `SiteSettings`, `OpeningHours`, `Plan`, `Rate`, `Amenity`, `GalleryImage`, `InquiryCreate`, `LoginRequest`, `AuthUser`, `AdminConfig`, `PreviewSaveResult`, `ApiError`, plus enums (`PlanSlug`, `RateUnit`, `GalleryCategory`). Exactly per `06-api.md`.
   *Tests:* accept and reject cases for each schema (boundaries, e.g. message 9/10/2000/2001 chars, BD phone formats, honeypot).
 
-- [ ] **T1.3 Seed data** (M). *Depends on:* T1.2
+- [x] **T1.3 Seed data** (M). *Depends on:* T1.2
   Typed seed files in `packages/contracts/src/seed/` (shared by api now and by the DB seed script later): **brand** (`brand.ts`, the only place the brand name is written), site, 6 plans, 11 amenities, gallery placeholders. Values copied **exactly** from `02-content.md`, with `TODO(client)` comments on the ⚠️ items.
   *Tests:* every seed passes its schema, plan slugs are unique, prices are positive integers, and hours are Sat–Thu 09:00–19:00 with Friday closed.
 
-- [ ] **T1.4 Shared domain helpers** (S). *Depends on:* T1.2
+- [x] **T1.4 Shared domain helpers** (S). *Depends on:* T1.2
   `formatBdt(amount)`, `rateLabel(rate)`, `isOpenAt(hours, instant)`, `nextChange(hours, instant)`. They're pure, timezone-safe (`Intl` with `Asia/Dhaka`), and live in contracts so both apps share them.
   *Tests:* the Dhaka boundaries listed in `08-testing.md`, Friday, the midnight rollover and a non-Dhaka machine TZ.
 

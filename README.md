@@ -7,7 +7,7 @@ Marketing website and admin console for **Shuru Campus**, a co-working space in 
 - **Shared:** `@campus/contracts` (Zod schemas + inferred types used by both apps)
 - **Phase 1:** no database. Content comes from typed seed data behind repository interfaces, so a DB can be added later without touching controllers or UI.
 
-> **Status:** Documentation phase. Read the docs below before writing code.
+> **Status:** Phase 1 in progress. M0 (tooling) and M1 (contracts + seed data) are done. See [docs/11-implementation-plan.md](docs/11-implementation-plan.md).
 
 ## Documentation
 
