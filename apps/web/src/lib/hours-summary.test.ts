@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { siteSeed, type OpeningHours } from '@campus/contracts';
 
-import { hoursSummary } from '@/lib/hours-summary';
+import { hoursByDay, hoursSummary } from '@/lib/hours-summary';
 
 function week(times: Record<number, [string, string] | null>): OpeningHours {
   return {
@@ -33,5 +33,28 @@ describe('hoursSummary', () => {
   it('splits days whose times differ, even when they are neighbours', () => {
     const hours = week({ 6: ['09:00', '19:00'], 0: ['09:00', '17:00'] });
     expect(hoursSummary(hours).map((row) => row.days)).toEqual(['Sat', 'Sun', 'Mon–Fri']);
+  });
+});
+
+describe('hoursByDay', () => {
+  it('lists the seed week from Saturday, one row per day', () => {
+    const rows = hoursByDay(siteSeed.hours);
+    expect(rows.map((row) => row.name)).toEqual([
+      'Saturday',
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+    ]);
+    expect(rows[0]).toEqual({ day: 6, name: 'Saturday', time: '9:00–19:00' });
+    expect(rows.at(-1)).toEqual({ day: 5, name: 'Friday', time: null });
+  });
+
+  it('keeps each day’s own times', () => {
+    const rows = hoursByDay(week({ 4: ['09:30', '13:00'] }));
+    expect(rows.find((row) => row.day === 4)?.time).toBe('9:30–13:00');
+    expect(rows.filter((row) => row.time === null)).toHaveLength(6);
   });
 });

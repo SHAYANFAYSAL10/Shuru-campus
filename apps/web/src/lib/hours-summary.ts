@@ -62,3 +62,28 @@ export function hoursSummary(hours: OpeningHours): HoursRow[] {
     };
   });
 }
+
+export interface DayRow {
+  /** 0 = Sunday … 6 = Saturday. */
+  day: number;
+  /** "Saturday". */
+  name: string;
+  /** "9:00–19:00", or `null` when closed. */
+  time: string | null;
+}
+
+/** One row per day, from Saturday, for the hours table on Home (Visit us). */
+export function hoursByDay(hours: OpeningHours): DayRow[] {
+  return WEEK_FROM_SATURDAY.flatMap((day) => {
+    const entry = hours.weekly.find((d) => d.day === day);
+    if (!entry) return [];
+    const { open, close } = entry;
+    return [
+      {
+        day,
+        name: LONG_DAY[day],
+        time: open && close ? `${displayTime(open)}–${displayTime(close)}` : null,
+      },
+    ];
+  });
+}

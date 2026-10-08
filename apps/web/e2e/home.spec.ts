@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { amenitiesSeed, defaultBrand, plansSeed } from '@campus/contracts';
+import { amenitiesSeed, defaultBrand, plansSeed, siteSeed } from '@campus/contracts';
 
 /** Tailwind's `md`: plan cards stop scrolling and the amenity bento replaces the marquee. */
 const MD = 768;
@@ -109,6 +109,56 @@ test.describe('Home', () => {
     );
   });
 
+  test('shows how to visit: map, address, hours with today marked, phones and email', async ({
+    page,
+    context,
+  }) => {
+    await page.goto('/');
+    const visit = page.getByRole('region', { name: 'Come and see it for yourself.' });
+    await visit.scrollIntoViewIfNeeded();
+
+    await expect(visit.getByRole('link', { name: 'Open in Google Maps' })).toHaveAttribute(
+      'href',
+      siteSeed.contact.mapUrl,
+    );
+    await expect(visit.locator('address')).toContainText(siteSeed.contact.addressLines[0] ?? '');
+
+    const table = visit.getByRole('table', { name: 'Opening hours, Dhaka time' });
+    await expect(table.getByRole('row')).toHaveCount(8);
+    // Exactly one day is today, marked in words once hydrated.
+    await expect(table.getByRole('row').filter({ hasText: 'Today' })).toHaveCount(1);
+
+    await expect(visit.getByRole('link', { name: '+88 09666-731731' })).toHaveAttribute(
+      'href',
+      'tel:+8809666731731',
+    );
+
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']).catch(() => undefined);
+    await visit.getByRole('button', { name: 'Copy email address' }).click();
+    await expect(page.getByText('Email address copied', { exact: true })).toBeVisible();
+  });
+
+  test('ends with an inquiry call to action', async ({ page }) => {
+    await page.goto('/');
+    const cta = page.getByRole('region', { name: 'Ready when you are.' });
+
+    await expect(cta.getByRole('link', { name: 'Send an inquiry' })).toHaveAttribute(
+      'href',
+      '/contact',
+    );
+    await expect(cta.getByRole('link', { name: '+88 09666-731731' })).toBeVisible();
+  });
+
+  test('describes the business as structured data', async ({ page }) => {
+    await page.goto('/');
+    const raw = await page.locator('script[type="application/ld+json"]').first().textContent();
+    const data = JSON.parse(raw ?? '{}') as Record<string, unknown>;
+
+    expect(data['@type']).toBe('LocalBusiness');
+    expect(data.name).toBe(defaultBrand.name);
+    expect(data.telephone).toBe(siteSeed.contact.phones[0]);
+  });
+
   test('describes itself to search engines and social cards', async ({ page }) => {
     await page.goto('/');
 
@@ -142,6 +192,11 @@ test.describe('Home', () => {
         page.getByRole('list', { name: 'Amenities' }).filter({ visible: true }),
       ).toHaveCount(1);
       await expect(page.getByRole('blockquote').first()).toBeVisible();
+      // The hours are all there; only the today marker waits for JS.
+      await expect(
+        page.getByRole('table', { name: 'Opening hours, Dhaka time' }).getByRole('row'),
+      ).toHaveCount(8);
+      await expect(page.getByRole('link', { name: 'Send an inquiry' })).toBeVisible();
       // The carousel buttons need JS, so they aren't there without it.
       await expect(page.getByRole('button', { name: 'Next plan' })).toHaveCount(0);
     });

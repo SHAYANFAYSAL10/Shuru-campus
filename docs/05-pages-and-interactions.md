@@ -21,7 +21,7 @@ The header is transparent over the hero. On scroll it condenses (height 80→64p
 | 7 | **Gallery teaser** | 5 photos in an asymmetric grid | Opens the lightbox |
 | 8 | **Why co-working** | Shared economy and co-working explainers (with citations) as two editorial columns | Pull-quote reveal |
 | 9 | **Visit us** | Map (static image + "Open in Google Maps" link; no heavy embed until click), address, hours table with today highlighted, phones, email | Click-to-call/copy email with a toast |
-| 10 | **CTA band** | "Ready to begin?" + inquiry button | Magnetic CTA |
+| 10 | **CTA band** | "Ready when *you* are." + inquiry button, with a phone number as the alternative (a call button when the inquiry form is off). Not "Ready to begin?": the footer's "Let's begin." follows right below, and the brand thread is once per screen (B5). | Magnetic CTA |
 
 ## Spaces & Pricing `/spaces`
 
