@@ -11,3 +11,4 @@ export * from './schemas/inquiry';
 export * from './schemas/plan';
 export * from './schemas/primitives';
 export * from './schemas/site';
+export * from './seed';
