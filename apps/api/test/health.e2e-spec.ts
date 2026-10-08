@@ -1,24 +1,15 @@
-import { type INestApplication } from '@nestjs/common';
-import { Test } from '@nestjs/testing';
+import { type NestExpressApplication } from '@nestjs/platform-express';
 import request from 'supertest';
-import { type App } from 'supertest/types.js';
 
 import { HealthResponse } from '@campus/contracts';
 
-import { AppModule } from '#src/app.module.js';
-import { loadConfig } from '#src/config/app-config.js';
-import { testEnv } from '#test/fixtures/env.js';
+import { createTestApp } from '#test/helpers/test-app.js';
 
 describe('GET /api/v1/health', () => {
-  let app: INestApplication<App>;
+  let app: NestExpressApplication;
 
   beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({
-      imports: [AppModule.forRoot(loadConfig(testEnv()))],
-    }).compile();
-    app = moduleRef.createNestApplication();
-    app.setGlobalPrefix('api/v1');
-    await app.init();
+    ({ app } = await createTestApp());
   });
 
   afterAll(async () => {
@@ -27,6 +18,8 @@ describe('GET /api/v1/health', () => {
 
   it('returns a payload matching the HealthResponse contract', async () => {
     const res = await request(app.getHttpServer()).get('/api/v1/health').expect(200);
-    expect(HealthResponse.parse(res.body)).toMatchObject({ status: 'ok', dataSource: 'memory' });
+    const health = HealthResponse.parse(res.body);
+    expect(health).toMatchObject({ status: 'ok', dataSource: 'memory' });
+    expect(health.version).toMatch(/^\d+\.\d+\.\d+/);
   });
 });

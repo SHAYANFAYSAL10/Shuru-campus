@@ -97,7 +97,7 @@ A step-by-step task list. Work through the milestones **in order**. Within a mil
 - [x] **T2.1 Config module** (S). Env schema (Zod) per `03-architecture.md`. Startup fails with readable errors.
   *Tests:* missing or short `JWT_SECRET` and missing `ADMIN_PASSWORD_HASH` both fail to boot.
 
-- [ ] **T2.2 Common layer** (M). `ZodValidationPipe`, global exception filter → `ApiError` shape, request-id middleware + `X-Request-Id`, `nestjs-pino` with redaction, Helmet, CORS, global prefix `/api/v1`, `Cache-Control` interceptor (public vs `no-store`).
+- [x] **T2.2 Common layer** (M). `ZodValidationPipe`, global exception filter → `ApiError` shape, request-id middleware + `X-Request-Id`, `nestjs-pino` with redaction, Helmet, CORS, global prefix `/api/v1`, `Cache-Control` interceptor (public vs `no-store`).
   *Tests:* unit tests for the pipe and filter (validation → 400 shape, unknown → 500 with no stack in prod).
 
 - [ ] **T2.3 Health module** (S). `GET /health`.

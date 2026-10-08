@@ -2,9 +2,7 @@ import 'reflect-metadata';
 
 import { existsSync } from 'node:fs';
 
-import { NestFactory } from '@nestjs/core';
-
-import { AppModule } from './app.module.js';
+import { createApp } from './app.factory.js';
 import { ConfigError, loadConfig, type AppConfig } from './config/app-config.js';
 
 function configOrExit(): AppConfig {
@@ -21,12 +19,6 @@ function configOrExit(): AppConfig {
   }
 }
 
-async function bootstrap(): Promise<void> {
-  const config = configOrExit();
-  const app = await NestFactory.create(AppModule.forRoot(config));
-  app.setGlobalPrefix('api/v1');
-  app.enableShutdownHooks();
-  await app.listen(config.env.PORT);
-}
-
-await bootstrap();
+const config = configOrExit();
+const app = await createApp(config);
+await app.listen(config.env.PORT);

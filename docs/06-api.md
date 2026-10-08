@@ -27,8 +27,9 @@ Base path: `/api/v1`. JSON only. All schemas live in `@campus/contracts`. This d
 | 429 | `RATE_LIMITED` (+ `Retry-After` header) |
 | 500 | `INTERNAL` (no internals leaked) |
 
-- Every response carries `X-Request-Id`.
-- Public GET responses send `Cache-Control: public, max-age=60, stale-while-revalidate=600`. Admin and auth responses send `no-store`.
+- Every response carries `X-Request-Id`. A safe incoming `X-Request-Id` (8–64 chars of `[A-Za-z0-9_-]`) is reused so web and API logs correlate. Otherwise the API generates a UUID.
+- Public GET responses send `Cache-Control: public, max-age=60, stale-while-revalidate=600`. Everything else (admin, auth, inquiries, `/health` and all errors) sends `no-store`.
+- Bodies are JSON only (100 KB max). Malformed or oversized bodies return `400 VALIDATION_FAILED` with a message saying which.
 
 ## Public endpoints
 
