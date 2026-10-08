@@ -42,6 +42,6 @@ npm run dev          # web on :3000, api on :4000 (web proxies /api → api)
 | `npm run build` | Production build of all workspaces |
 | `npm run lint` | ESLint + Prettier check |
 | `npm run typecheck` | `tsc --noEmit` in every workspace |
-| `npm test` | Unit and integration tests (Vitest for web, Jest for api) |
+| `npm test` | Unit and integration tests (Vitest in every workspace) |
 | `npm run test:e2e` | Playwright across the device matrix |
 | `npm run admin:hash -- <password>` | Generate the admin password hash for `.env` |

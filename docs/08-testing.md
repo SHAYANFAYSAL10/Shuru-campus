@@ -7,8 +7,8 @@
 | Contracts | Vitest | `packages/contracts/src/**/*.test.ts` | Schema accept/reject cases, seed data validity, `formatBdt`, `isOpenAt` / `nextChange` (Asia/Dhaka, Friday, boundaries at 08:59/09:00/18:59/19:00) |
 | Web logic | Vitest | `apps/web/src/lib/**/*.test.ts` | `recommendPlan`, `safeNextPath`, API client error mapping, token contrast |
 | Web components | Vitest + React Testing Library + `user-event` | `apps/web/src/**/*.test.tsx` | Forms (validation, focus to first error, pending/success/error), SegmentedControl keyboard, Dialog focus trap/restore, word-cycle pause control, reduced-motion branches |
-| API unit | Jest (Nest default) | `apps/api/src/**/*.spec.ts` | Services, guards (AdminGuard, OriginGuard), ZodValidationPipe, exception filter, in-memory repositories |
-| API integration | Jest + supertest | `apps/api/test/*.e2e-spec.ts` | Every endpoint: happy path, validation errors, auth (no cookie / bad / expired JWT), throttling (429 + Retry-After), Origin check, honeypot, `persisted:false` + unchanged follow-up GET |
+| API unit | Vitest (Nest 12 ESM default) | `apps/api/src/**/*.spec.ts` | Services, guards (AdminGuard, OriginGuard), ZodValidationPipe, exception filter, in-memory repositories |
+| API integration | Vitest + supertest | `apps/api/test/*.e2e-spec.ts` | Every endpoint: happy path, validation errors, auth (no cookie / bad / expired JWT), throttling (429 + Retry-After), Origin check, honeypot, `persisted:false` + unchanged follow-up GET |
 | End-to-end | Playwright | `apps/web/e2e/*.spec.ts` | Real web + api servers (`webServer` config), user journeys below |
 | Accessibility | `@axe-core/playwright` | inside e2e | 0 violations (WCAG 2.2 A/AA tags) on every route, both themes |
 | Responsive | Playwright | `e2e/responsive.spec.ts` | Overflow and layout invariants on every route × every viewport |
@@ -75,3 +75,5 @@ For every public route and admin route (logged in), on every project:
 `install → lint → typecheck → unit (contracts, web, api) with coverage → build → api integration → playwright (sharded by project) → lighthouse-ci → upload reports`
 
 The merge is blocked on any failure, a coverage drop below the floor, any axe violation or a missed Lighthouse budget.
+
+> **Why Vitest for the API:** NestJS 12 ships ESM-only, and its official ESM starter uses Vitest. Jest would need `--experimental-vm-modules`. Using Vitest everywhere also gives one runner, one config style and one coverage tool (`@vitest/coverage-v8`).
