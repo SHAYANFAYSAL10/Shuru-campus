@@ -57,6 +57,7 @@ export function base({ tsconfigRootDir, ignores = [] }) {
             pathGroups: [
               { pattern: '@campus/**', group: 'internal', position: 'before' },
               { pattern: '@/**', group: 'internal' },
+              { pattern: '@content/**', group: 'internal' },
             ],
             pathGroupsExcludedImportTypes: ['builtin'],
             'newlines-between': 'always',

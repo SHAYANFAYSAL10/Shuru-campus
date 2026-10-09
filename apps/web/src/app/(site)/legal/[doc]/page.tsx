@@ -1,6 +1,3 @@
-import * as privacy from '@content/legal/privacy.mdx';
-import * as refund from '@content/legal/refund.mdx';
-import * as terms from '@content/legal/terms.mdx';
 import { notFound } from 'next/navigation';
 
 import { LegalContents } from '@/components/legal/legal-contents';
@@ -19,6 +16,9 @@ import {
 } from '@/lib/legal';
 import { pageMetadata } from '@/lib/metadata';
 import { SITE_URL } from '@/lib/site-url';
+import * as privacy from '@content/legal/privacy.mdx';
+import * as refund from '@content/legal/refund.mdx';
+import * as terms from '@content/legal/terms.mdx';
 
 import type { Metadata } from 'next';
 
