@@ -36,6 +36,18 @@ cp apps/web/.env.example apps/web/.env.local
 npm run dev          # web on :3000, api on :4000 (web proxies /api → api)
 ```
 
+## Run with Docker
+
+Needs only Docker (with Compose v2). It runs production builds of both apps, and the API stays private behind the web app's `/api` proxy.
+
+```bash
+docker compose up --build   # site on http://localhost:3000
+```
+
+No setup is needed. On the first start, the API generates its JWT secret and an admin password, then prints the sign-in once in its log (`docker compose logs api`). Both are kept in the `api-secrets` volume, and `docker compose down -v` resets them. To set your own values (site URL, port, admin email or password hash), copy `.env.docker.example` to `.env`.
+
+`SITE_URL` is baked into the web build, so rebuild after you change it. The admin session cookie is `Secure` in production, and browsers accept that over plain HTTP only on `localhost`. To sign in to the admin from another host, serve the site over HTTPS (for example, behind a TLS reverse proxy) and set `SITE_URL` to that `https://` address.
+
 | Script | What it does |
 | --- | --- |
 | `npm run dev` | Run web + api in watch mode |
