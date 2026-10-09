@@ -105,4 +105,4 @@ The full text of the Privacy Policy, Terms & Conditions and Refund Policy (with 
 
 ## Media
 
-The reference site has three photos (`home_slider/01–03.JPG`). ⚠️ We need high-resolution originals and usage rights from the client. Until then, use clearly marked placeholder imagery (`/public/placeholder/*`) at the correct aspect ratios so layouts are final.
+The reference site has three photos (`home_slider/01–03.JPG`). ⚠️ We need high-resolution originals and usage rights from the client. Until then, `/public/placeholder/*` holds free-licensed stock stand-ins (CC0 Unsplash imports on Wikimedia Commons, and Pexels), chosen for the warm palette (wood, daylight, plants, ochre accents) and cropped to the correct aspect ratios so layouts are final. `apps/web/scripts/fetch-photos.mjs` fetches and crops them and writes `CREDITS.md` next to them. Their alt text still begins "Placeholder photo:" so they're never mistaken for the venue.
