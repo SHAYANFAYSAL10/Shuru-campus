@@ -8,12 +8,6 @@
   --reveal-distance: 20px;
 }
 
-/* Inline, so the utility reads --marquee-duration on the track that sets it (<Marquee>). As a
-   theme variable it would resolve on :root, where it's unset, and the animation would drop out. */
-@theme inline {
-  --animate-marquee: marquee var(--marquee-duration) linear infinite;
-}
-
 @theme {
   --animate-reveal: reveal var(--duration-slow) var(--ease-out) both;
   --animate-mask-up: mask-up var(--duration-slow) var(--ease-out) both;
@@ -176,13 +170,6 @@
       transform: rotate(360deg);
     }
   }
-
-  /* The track holds two copies of the content, so -50% is one seamless loop. */
-  @keyframes marquee {
-    to {
-      transform: translateX(-50%);
-    }
-  }
 }
 
 /* A word's clipping window for mask-up. The padding/negative-margin pair widens the clip box
@@ -207,10 +194,6 @@
 /* Where the 404's begin line comes to rest: 78% drawn, short of its end point. */
 @utility begin-line-short {
   stroke-dashoffset: 0.22;
-}
-
-@utility animation-paused {
-  animation-play-state: paused;
 }
 
 /*

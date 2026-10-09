@@ -41,7 +41,7 @@ describe('AmenitiesSection', () => {
 
   it('is a plain list of names in the SSR HTML on phones (the marquee only moves with JS)', () => {
     const html = renderToString(<AmenitiesSection amenities={amenitiesSeed} />);
-    expect(html).not.toContain('animate-marquee');
+    expect(html).not.toContain('Pause scrolling list');
     expect(html).toContain('Unlimited Tea &amp; Coffee');
   });
 

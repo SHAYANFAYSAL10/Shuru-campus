@@ -98,25 +98,37 @@ test.describe('Home', () => {
     );
   });
 
-  test('the amenity marquee moves, pauses and resumes on phones', async ({ page }) => {
+  test('the amenity marquee drifts, can be scrolled by hand and pauses on phones', async ({
+    page,
+  }) => {
     await page.goto('/');
     test.skip((page.viewportSize()?.width ?? 0) >= MD, 'The marquee is phones only.');
     const amenities = page.getByRole('region', { name: 'Everything the day needs.' });
     await amenities.scrollIntoViewIfNeeded();
-    const track = amenities.getByTestId('marquee-track');
-    const animation = () => track.evaluate((el) => getComputedStyle(el).animationName);
+    const viewport = amenities.getByTestId('marquee-viewport');
+    const scrolled = () => viewport.evaluate((el) => el.scrollLeft);
     const pause = amenities.getByRole('button', { name: 'Pause scrolling list' });
 
-    // A class alone isn't enough: the keyframes must actually apply.
-    await expect.poll(animation).toBe('marquee');
+    // It drifts on its own.
+    const start = await expect.poll(scrolled).toBeGreaterThan(0).then(scrolled);
+    await expect.poll(scrolled).toBeGreaterThan(start + 10);
+
+    // Paused, it stays put, even with focus left on the button...
     await pause.click();
     await expect(pause).toHaveAttribute('aria-pressed', 'true');
-    await expect.poll(animation).toBe('none');
-    // The button keeps focus here, which must not hold the strip still.
+    const held = await scrolled();
+    await page.waitForTimeout(500);
+    expect(Math.abs((await scrolled()) - held)).toBeLessThan(1);
+
+    // ...but can still be scrolled by hand to reach every item.
+    await viewport.hover();
+    await page.mouse.wheel(300, 0);
+    await expect.poll(scrolled).toBeGreaterThan(held + 200);
+
     await pause.click();
     await expect(pause).toHaveAttribute('aria-pressed', 'false');
-    await expect.poll(animation).toBe('marquee');
-    await expect(track).toHaveCSS('animation-play-state', 'running');
+    const resumed = await scrolled();
+    await expect.poll(scrolled).toBeGreaterThan(resumed + 10);
   });
 
   test('explains co-working with cited sources', async ({ page }) => {
