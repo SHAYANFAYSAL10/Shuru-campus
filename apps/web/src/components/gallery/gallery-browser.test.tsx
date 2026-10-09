@@ -40,8 +40,8 @@ describe('GalleryBrowser', () => {
     expect(chip('Café')).toHaveAttribute('aria-pressed', 'true');
     expect(chip('All')).toHaveAttribute('aria-pressed', 'false');
     expect(photos().map((img) => img.getAttribute('alt'))).toEqual([
-      'Placeholder photo: the café counter',
-      'Placeholder photo: the timeout zone',
+      'Placeholder photo: a barista at the café counter',
+      'Placeholder photo: iced coffees in a sofa corner',
     ]);
   });
 
