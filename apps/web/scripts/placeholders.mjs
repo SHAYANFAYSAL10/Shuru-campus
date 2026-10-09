@@ -25,6 +25,17 @@ const IMAGES = {
   'plan-seminar-room': [960, 1200, 'SEMINAR ROOM · 4:5'],
   // About story (lib/about-media.ts), editorial 3:2.
   'about-story': [1800, 1200, 'ABOUT · 3:2'],
+  // Gallery (packages/contracts/src/seed/gallery.ts), at the seed's original ratios.
+  'workspace-1': [1600, 1067, 'WORKSPACE · 3:2'],
+  'workspace-2': [1200, 1500, 'WORKSPACE · 4:5'],
+  'workspace-3': [1920, 1080, 'WORKSPACE · 16:9'],
+  'meeting-1': [1600, 1067, 'MEETING ROOMS · 3:2'],
+  'meeting-2': [1200, 1500, 'MEETING ROOMS · 4:5'],
+  'meeting-3': [1920, 1080, 'MEETING ROOMS · 16:9'],
+  'cafe-1': [1200, 1500, 'CAFÉ · 4:5'],
+  'cafe-2': [1600, 1067, 'CAFÉ · 3:2'],
+  'events-1': [1920, 1080, 'EVENTS · 16:9'],
+  'events-2': [1600, 1067, 'EVENTS · 3:2'],
 };
 
 // Warm, low-contrast stand-ins for a sunlit room: wall, windows, a desk line. Colors are fixed
