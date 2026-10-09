@@ -16,7 +16,7 @@ The header is transparent over the hero. On scroll it condenses (height 80→64p
 | 2 | **Manifesto** | "Empower · Enhance · Enrich": three short statements drawn from the About copy | Words fade from `fg-subtle` to `fg` as they scroll into view (scroll-linked; static under reduced motion) |
 | 3 | **Spaces** | 6 plan cards (Hot Desk → Seminar Room), each with audience, "from" price and 3 key features | Card hover lift + image reveal. Click → plan sheet (shared-element). Horizontal snap carousel below `md` with prev/next buttons. |
 | 4 | **Plan finder** | 3 questions: *Who's working?* (just me / 2–6 people / event group) · *How often?* (hours · days · weekly · monthly) · *Need?* (desk / private room / meeting) → recommended plan + price + CTA | `SegmentedControl` springs, the result card animates in with `layout`. Pure function `recommendPlan()` is unit-tested. |
-| 5 | **Amenities** | 11 amenities with icons | Bento grid on desktop; marquee row on mobile (pausable, static under reduced motion) |
+| 5 | **Amenities** | 11 amenities with icons | Bento grid on desktop; marquee row on mobile (drifts, swipeable, pausable; static under reduced motion) |
 | 6 | **A day at {shortName}** | 9:00 arrive & coffee · 10:00 deep work (Silent Room) · 13:00 lunch · 15:00 meeting room · 17:00 timeout zone · 19:00 close | Horizontal timeline; the begin line marks the **current Dhaka time**; snap scroll |
 | 7 | **Gallery teaser** | 5 photos in an asymmetric grid | Opens the lightbox |
 | 8 | **Why co-working** | Shared economy and co-working explainers (with citations) as two editorial columns | Pull-quote reveal |

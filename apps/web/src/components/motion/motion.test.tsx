@@ -174,42 +174,28 @@ describe('Marquee', () => {
 
   it('is a plain wrapped list in the SSR HTML (no motion before JS can pause it)', () => {
     const html = renderToString(<Marquee items={items} label="Who works here" />);
-    expect(html).not.toContain('animate-marquee');
     expect(html).not.toContain('<button');
+    expect(html).not.toContain('tabindex');
     expect(html).toContain('Remote teams');
   });
 
-  it('scrolls once hydrated and has a visible pause control', async () => {
+  it('once hydrated, is a keyboard-scrollable row with a visible pause control', async () => {
     const user = userEvent.setup();
     render(<Marquee items={items} label="Who works here" />);
     expect(screen.getByRole('list', { name: 'Who works here' })).toBeInTheDocument();
-    // The duplicate copy is hidden from assistive tech.
+    // The loop copies are hidden from assistive tech.
     expect(screen.getAllByRole('listitem')).toHaveLength(items.length);
+    const viewport = screen.getByTestId('marquee-viewport');
+    expect(viewport).toHaveAttribute('tabindex', '0');
+    expect(viewport).toHaveClass('overflow-x-auto');
 
     const pause = screen.getByRole('button', { name: 'Pause scrolling list' });
+    expect(viewport).not.toContainElement(pause);
     expect(pause).toHaveAttribute('aria-pressed', 'false');
     await user.click(pause);
     expect(pause).toHaveAttribute('aria-pressed', 'true');
-    expect(screen.getByTestId('marquee-track')).toHaveClass('animation-paused');
-  });
-
-  it('can be swiped through while paused, and resumes from the button', async () => {
-    const user = userEvent.setup();
-    render(<Marquee items={items} label="Who works here" />);
-    const track = screen.getByTestId('marquee-track');
-    const pause = screen.getByRole('button', { name: 'Pause scrolling list' });
-
     await user.click(pause);
-    expect(track.parentElement).toHaveClass('overflow-x-auto');
-    expect(track.parentElement).toHaveAttribute('tabindex', '0');
-
-    // The button keeps focus after the click; that must not hold the strip paused.
-    await user.click(pause);
-    expect(pause).toHaveFocus();
     expect(pause).toHaveAttribute('aria-pressed', 'false');
-    expect(track).not.toHaveClass('animation-paused');
-    expect(track.parentElement).toHaveClass('overflow-hidden');
-    expect(track.parentElement).not.toContainElement(pause);
   });
 
   it('stops and becomes a static list under reduced motion', () => {

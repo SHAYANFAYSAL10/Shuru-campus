@@ -16,7 +16,6 @@ const twMerge = extendTailwindMerge<'type-role'>({
         'draw',
         'fade-in',
         'fade-out',
-        'marquee',
         'spin',
         'pulse-dot',
         'skeleton',

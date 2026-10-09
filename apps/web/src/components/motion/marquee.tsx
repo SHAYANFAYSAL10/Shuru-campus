@@ -1,14 +1,7 @@
 'use client';
 
 import { Pause, Play } from 'lucide-react';
-import {
-  type CSSProperties,
-  type ReactNode,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 
 import { IconButton } from '@/components/ui/icon-button';
 import { cn } from '@/lib/cn';
@@ -23,57 +16,108 @@ export interface MarqueeProps {
   className?: string;
 }
 
+// The row holds three copies and keeps its scroll inside the middle one, so it loops seamlessly
+// whichever way it's swiped.
+const COPIES = 3;
+
 /**
- * A slow, endless horizontal scroll of items, with a visible pause button (WCAG 2.2.2). It also
- * pauses on hover and while focus is inside. Without JS or with reduced motion it's a plain
- * wrapped list, so nothing moves that the user can't stop.
+ * A slow, endless horizontal drift of items that people can also swipe, scroll or arrow through
+ * themselves, with a visible pause button (WCAG 2.2.2). It drifts by scrolling, not by a
+ * transform, so native touch, momentum and wheel scrolling just work; the drift holds while the
+ * pointer is over it, focus is inside or someone is scrolling, and picks up again shortly after.
+ * Without JS or with reduced motion it's a plain wrapped list, so nothing moves on its own.
  */
 export function Marquee({ items, label, className }: MarqueeProps) {
   const hydrated = useHydrated();
   const reduced = useReducedMotion();
   const [paused, setPaused] = useState(false);
-  const [seconds, setSeconds] = useState<number>();
-  // How far into one loop (0–1) the track is, carried between the animation and manual scroll.
-  const [progress, setProgress] = useState(0);
-  const groupRef = useRef<HTMLUListElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
+  // Read by the drift loop, so toggling pause doesn't restart it (and lose its place).
+  const pausedRef = useRef(paused);
   const viewportRef = useRef<HTMLDivElement>(null);
+  const groupRef = useRef<HTMLUListElement>(null);
   const animated = hydrated && !reduced;
 
-  // Constant speed whatever the content width: duration = one copy's width / px per second.
   useEffect(() => {
-    const group = groupRef.current;
-    if (!animated || !group) return;
-    const observer = new ResizeObserver(() => {
-      setSeconds(group.scrollWidth / marquee.pxPerSecond);
-    });
-    observer.observe(group);
-    return () => {
-      observer.disconnect();
-    };
-  }, [animated]);
-
-  // Paused, the track stops animating and the viewport scrolls instead, so every item can be
-  // swiped to. Start the scroll where the animation stopped, so nothing jumps.
-  useLayoutEffect(() => {
     const viewport = viewportRef.current;
     const group = groupRef.current;
-    if (!viewport || !group) return;
-    viewport.scrollLeft = paused ? progress * group.scrollWidth : 0;
-  }, [paused, progress]);
+    if (!animated || !viewport || !group) return;
 
-  function toggle() {
-    const group = groupRef.current;
-    const width = group?.scrollWidth ?? 0;
-    if (width > 0 && !paused && trackRef.current) {
-      const { transform } = getComputedStyle(trackRef.current);
-      const x = !transform || transform === 'none' ? 0 : new DOMMatrixReadOnly(transform).m41;
-      setProgress((-x % width) / width);
-    } else if (width > 0 && viewportRef.current) {
-      setProgress((viewportRef.current.scrollLeft % width) / width);
-    }
-    setPaused((value) => !value);
-  }
+    // Our own position, kept as a float: browsers may round scrollLeft, which would stall a
+    // sub-pixel step per frame.
+    let position = 0;
+    let width = 0;
+    let holdUntil = 0;
+    let hovered = false;
+    let touching = false;
+    let frame = 0;
+    let last = performance.now();
+
+    const wrap = (x: number) => (width > 0 ? width + ((((x - width) % width) + width) % width) : x);
+    const jump = (x: number) => {
+      position = wrap(x);
+      viewport.scrollLeft = position;
+    };
+    const hold = () => {
+      holdUntil = performance.now() + marquee.resumeAfter;
+    };
+
+    const tick = (now: number) => {
+      const held =
+        pausedRef.current ||
+        hovered ||
+        touching ||
+        now < holdUntil ||
+        viewport.contains(document.activeElement);
+      if (!held && width > 0) jump(position + (marquee.pxPerSecond * (now - last)) / 1000);
+      last = now;
+      frame = requestAnimationFrame(tick);
+    };
+
+    // Scrolls we didn't make are the user's: follow them, and loop once they leave the middle copy.
+    const onScroll = () => {
+      if (Math.abs(viewport.scrollLeft - position) < 1) return;
+      hold();
+      position = viewport.scrollLeft;
+      if (width > 0 && (position < width || position >= 2 * width) && !touching) jump(position);
+    };
+    const onPointerEnter = (event: PointerEvent) => {
+      if (event.pointerType === 'mouse') hovered = true;
+    };
+    const onPointerLeave = () => {
+      hovered = false;
+    };
+    const onTouchStart = () => {
+      touching = true;
+    };
+    const onTouchEnd = () => {
+      touching = false;
+      hold();
+    };
+
+    const observer = new ResizeObserver(() => {
+      const offset = width > 0 ? position - width : 0;
+      width = group.offsetWidth;
+      jump(width + offset);
+    });
+    observer.observe(group);
+    viewport.addEventListener('scroll', onScroll, { passive: true });
+    viewport.addEventListener('pointerenter', onPointerEnter);
+    viewport.addEventListener('pointerleave', onPointerLeave);
+    viewport.addEventListener('touchstart', onTouchStart, { passive: true });
+    viewport.addEventListener('touchend', onTouchEnd, { passive: true });
+    viewport.addEventListener('touchcancel', onTouchEnd, { passive: true });
+    frame = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      viewport.removeEventListener('scroll', onScroll);
+      viewport.removeEventListener('pointerenter', onPointerEnter);
+      viewport.removeEventListener('pointerleave', onPointerLeave);
+      viewport.removeEventListener('touchstart', onTouchStart);
+      viewport.removeEventListener('touchend', onTouchEnd);
+      viewport.removeEventListener('touchcancel', onTouchEnd);
+    };
+  }, [animated]);
 
   const listItems = items.map((item, i) => (
     // Items are static content in a fixed order.
@@ -90,48 +134,30 @@ export function Marquee({ items, label, className }: MarqueeProps) {
     );
   }
 
-  // A negative delay resumes the loop from where it was paused or scrolled to.
-  const trackStyle =
-    seconds === undefined
-      ? undefined
-      : ({
-          '--marquee-duration': `${seconds}s`,
-          animationDelay: `${-progress * seconds}s`,
-        } as CSSProperties);
-
   return (
     <div className={cn('flex items-center gap-4', className)}>
-      {/* Hover and focus pause only this strip. Scoping the group here keeps the button out of
-          it: a tapped button keeps focus, which would otherwise hold the strip paused. */}
       <div
         ref={viewportRef}
-        // Focusable while it scrolls, so keyboards can reach every item too (axe's
-        // scrollable-region-focusable): its items aren't focusable themselves.
+        data-testid="marquee-viewport"
+        // A scroll region whose items aren't focusable, so keyboards need it to be (axe's
+        // scrollable-region-focusable).
         // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-        tabIndex={paused ? 0 : undefined}
-        className={cn(
-          'group/marquee min-w-0 flex-1',
-          paused ? 'scrollbar-none overflow-x-auto overscroll-x-contain' : 'overflow-hidden',
-        )}
+        tabIndex={0}
+        className="scrollbar-none min-w-0 flex-1 overflow-x-auto overscroll-x-contain"
       >
-        <div
-          ref={trackRef}
-          data-testid="marquee-track"
-          className={cn(
-            'flex w-max',
-            seconds !== undefined && !paused && 'animate-marquee',
-            'group-focus-within/marquee:animation-paused group-hover/marquee:animation-paused',
-            paused && 'animation-paused',
+        <div className="flex w-max">
+          {Array.from({ length: COPIES }, (_, copy) =>
+            copy === 1 ? (
+              <ul key={copy} ref={groupRef} aria-label={label} className="flex shrink-0 gap-8 pr-8">
+                {listItems}
+              </ul>
+            ) : (
+              // The outer copies make the loop seamless; assistive tech and keyboards skip them.
+              <ul key={copy} aria-hidden="true" inert className="flex shrink-0 gap-8 pr-8">
+                {listItems}
+              </ul>
+            ),
           )}
-          style={trackStyle}
-        >
-          <ul ref={groupRef} aria-label={label} className="flex shrink-0 gap-8 pr-8">
-            {listItems}
-          </ul>
-          {/* The second copy makes the loop seamless; assistive tech and keyboards skip it. */}
-          <ul aria-hidden="true" inert className="flex shrink-0 gap-8 pr-8">
-            {listItems}
-          </ul>
         </div>
       </div>
       <IconButton
@@ -140,7 +166,10 @@ export function Marquee({ items, label, className }: MarqueeProps) {
         aria-pressed={paused}
         variant="secondary"
         size="sm"
-        onClick={toggle}
+        onClick={() => {
+          pausedRef.current = !paused;
+          setPaused(!paused);
+        }}
       />
     </div>
   );

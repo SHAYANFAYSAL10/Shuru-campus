@@ -48,8 +48,12 @@ export const distance = {
   magnetic: 6,
 } as const;
 
-/** Marquee speed: constant px per second, whatever the content width. */
-export const marquee = { pxPerSecond: 40 } as const;
+/** Marquee drift: constant px per second, whatever the content width. */
+export const marquee = {
+  pxPerSecond: 40,
+  /** How long the drift waits, in ms, after someone scrolls or swipes it themselves. */
+  resumeAfter: 2000,
+} as const;
 
 /** Hover delay before a tooltip opens, in ms. */
 export const tooltipDelay = 400;
