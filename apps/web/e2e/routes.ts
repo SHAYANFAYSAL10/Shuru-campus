@@ -15,4 +15,8 @@ export const PUBLIC_ROUTES = [
   { name: 'Contact', path: '/contact' },
   // The longest option in the space select, pre-selected.
   { name: 'Contact, pre-filled', path: '/contact?plan=seminar-room&rate=up-to-30' },
+  { name: 'Privacy', path: '/legal/privacy' },
+  // The longest policy, with the sticky contents.
+  { name: 'Terms', path: '/legal/terms' },
+  { name: 'Refunds', path: '/legal/refund' },
 ] as const;

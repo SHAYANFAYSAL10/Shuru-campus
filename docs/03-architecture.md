@@ -51,7 +51,7 @@ shuru-campus/
 │  │  ├─ src/styles/           # globals.css (@theme tokens), motion.ts
 │  │  ├─ src/proxy.ts          # per-request CSP nonce; /admin cookie redirect (T7.1)
 │  │  ├─ assets/fonts/         # static WOFF files for the generated OG image
-│  │  ├─ content/legal/*.mdx
+│  │  ├─ content/legal/*.mdx  # @next/mdx; src/lib/mdx/remark-legal.mjs adds heading ids + `toc`
 │  │  └─ e2e/                  # Playwright specs
 │  └─ api/
 │     ├─ src/

@@ -39,7 +39,7 @@ Story ("We are dreamers…") beside an editorial photo, the meaning of the name 
 
 ## Gallery `/gallery`
 
-A masonry grid (CSS columns; no JS layout), filter chips (*Workspace · Meeting rooms · Café · Events*) with a `layout` re-flow animation, and a lightbox (keyboard, swipe, counter, captions, focus restore). Images are lazy below the fold.
+A masonry grid (CSS columns; no JS layout), filter chips (*All · Workspace · Meeting rooms · Café · Events*, synced to `?category=`; without JS they submit a GET form) with a `layout` re-flow animation, a polite live summary ("Showing 3 photos of the café."), and a lightbox (keyboard, swipe, counter, captions, focus restore). An empty category says "Nothing in *Events* yet. Try *Workspace*." with a button to it. Images are lazy below the fold. With `features.gallery` off the page is a 404.
 
 ## Contact `/contact`
 
@@ -52,7 +52,7 @@ A masonry grid (CSS columns; no JS layout), filter chips (*Workspace · Meeting 
 
 ## Legal `/legal/privacy` · `/legal/terms` · `/legal/refund`
 
-MDX rendered with a readable prose style, a sticky table of contents on desktop (scroll-spy) and "Last updated". Print stylesheet included.
+MDX rendered with a readable prose style, a sticky table of contents on desktop (scroll-spy) and "Last updated". Pills link the three policies. Below `lg` the contents are a closed "On this page" disclosure; a policy with fewer than two sections (Privacy) has none. Print stylesheet included: ink on white, no header, footer or on-screen navigation, link URLs printed.
 
 ## 404 / error
 

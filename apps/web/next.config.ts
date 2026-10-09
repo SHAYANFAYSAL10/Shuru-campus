@@ -1,3 +1,7 @@
+import { fileURLToPath } from 'node:url';
+
+import createMDX from '@next/mdx';
+
 import { securityHeaders } from './src/lib/security/csp';
 import { SITE_URL } from './src/lib/site-url';
 
@@ -20,4 +24,12 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// Legal pages are MDX (content/legal). Turbopack needs serialisable options, so the remark
+// plugin is passed as a path, which the loader imports.
+const withMDX = createMDX({
+  options: {
+    remarkPlugins: [fileURLToPath(new URL('./src/lib/mdx/remark-legal.mjs', import.meta.url))],
+  },
+});
+
+export default withMDX(nextConfig);

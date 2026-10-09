@@ -1,5 +1,7 @@
 import { type FeatureFlags } from '@campus/contracts';
 
+import { LEGAL_DOCS, legalHref } from '@/lib/legal';
+
 export interface NavItem {
   href: string;
   label: string;
@@ -38,8 +40,7 @@ export function navCurrent(pathname: string, href: string): 'page' | 'true' | un
 export const MAIN_CONTENT_ID = 'main';
 
 /** Legal pages (docs/05-pages-and-interactions.md → Legal), linked from the footer. */
-export const LEGAL_NAV: readonly NavItem[] = [
-  { href: '/legal/privacy', label: 'Privacy' },
-  { href: '/legal/terms', label: 'Terms' },
-  { href: '/legal/refund', label: 'Refunds' },
-];
+export const LEGAL_NAV: readonly NavItem[] = LEGAL_DOCS.map(({ slug, navLabel }) => ({
+  href: legalHref(slug),
+  label: navLabel,
+}));
