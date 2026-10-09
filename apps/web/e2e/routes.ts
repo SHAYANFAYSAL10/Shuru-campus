@@ -9,6 +9,7 @@ export const PUBLIC_ROUTES = [
   // The plan with the longest rate list and the one priced by size cover both layouts' extremes.
   { name: 'Plan detail', path: '/spaces/meeting-room' },
   { name: 'Plan detail, priced by size', path: '/spaces/private-office' },
+  { name: 'About', path: '/about' },
   { name: 'Contact', path: '/contact' },
   // The longest option in the space select, pre-selected.
   { name: 'Contact, pre-filled', path: '/contact?plan=seminar-room&rate=up-to-30' },

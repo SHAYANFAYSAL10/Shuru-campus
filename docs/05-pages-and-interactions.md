@@ -35,7 +35,7 @@ The header is transparent over the hero. On scroll it condenses (height 80→64p
 
 ## About `/about`
 
-Story ("We are dreamers…"), the meaning of the name (only when `brand.nameMeaning` is set), the Empower/Enhance/Enrich pillars, the shared-economy and co-working explainers and "Who it's for" (4 audience tiles linking to the matching plan).
+Story ("We are dreamers…") beside an editorial photo, the meaning of the name (only when `brand.nameMeaning` is set: the word at display size in its own script and `lang`, on the lake band), the Empower/Enhance/Enrich pillars, the shared-economy and co-working explainers and "Who it's for" (4 audience tiles, each one link to the matching plan with its "from" price, or to Spaces when plans fail to load), then the CTA band.
 
 ## Gallery `/gallery`
 

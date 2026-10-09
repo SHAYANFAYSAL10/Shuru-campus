@@ -19,14 +19,18 @@ export interface ManifestoStatement {
   rest: string;
 }
 
+/** The rest of a pillar's statement, or `undefined` when none is written for it. */
+export function pillarStatement(pillar: string): string | undefined {
+  return STATEMENTS[pillar.trim().toLowerCase()];
+}
+
 /**
  * The Home manifesto (docs/05-pages-and-interactions.md → Home #2): one statement per brand
  * pillar, in the brand's order. Pillars without a statement are left out.
  */
 export function manifestoStatements(pillars: Brand['pillars']): ManifestoStatement[] {
   return pillars.flatMap((pillar) => {
-    const name = pillar.trim();
-    const rest = STATEMENTS[name.toLowerCase()];
-    return rest ? [{ pillar: name, rest }] : [];
+    const rest = pillarStatement(pillar);
+    return rest ? [{ pillar: pillar.trim(), rest }] : [];
   });
 }

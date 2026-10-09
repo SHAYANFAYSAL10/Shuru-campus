@@ -23,6 +23,8 @@ const IMAGES = {
   'plan-private-office': [960, 1200, 'PRIVATE OFFICE · 4:5'],
   'plan-meeting-room': [960, 1200, 'MEETING ROOM · 4:5'],
   'plan-seminar-room': [960, 1200, 'SEMINAR ROOM · 4:5'],
+  // About story (lib/about-media.ts), editorial 3:2.
+  'about-story': [1800, 1200, 'ABOUT · 3:2'],
 };
 
 // Warm, low-contrast stand-ins for a sunlit room: wall, windows, a desk line. Colors are fixed

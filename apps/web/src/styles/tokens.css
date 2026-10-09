@@ -61,6 +61,9 @@
   --font-display: var(--font-display-face), ui-serif, Georgia, serif;
   --font-sans: var(--font-sans-face), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-mono-face), ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  /* The brand name's original word on About (styles/fonts-name.ts), then the display face. */
+  --font-name:
+    var(--font-name-face, var(--font-display-face)), var(--font-display-face), ui-serif, serif;
 
   /*
    * Fluid type scale (04 §3): min @ 360px → max @ 1440px, linear in between.

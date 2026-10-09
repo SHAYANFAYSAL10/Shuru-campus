@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { defaultBrand } from '@campus/contracts';
 
-import { manifestoStatements } from '@/lib/manifesto';
+import { manifestoStatements, pillarStatement } from '@/lib/manifesto';
 
 describe('manifestoStatements', () => {
   it('has a statement for every default pillar, in order', () => {
@@ -23,5 +23,15 @@ describe('manifestoStatements', () => {
   it('leaves out pillars it has no statement for', () => {
     expect(manifestoStatements(['Focus', 'Enhance']).map((s) => s.pillar)).toEqual(['Enhance']);
     expect(manifestoStatements(['Focus'])).toEqual([]);
+  });
+});
+
+describe('pillarStatement', () => {
+  it('finds a pillar’s statement whatever its case', () => {
+    expect(pillarStatement(' Enhance ')).toMatch(/^your work/);
+  });
+
+  it('has none for a pillar nobody has written one for', () => {
+    expect(pillarStatement('Innovate')).toBeUndefined();
   });
 });
