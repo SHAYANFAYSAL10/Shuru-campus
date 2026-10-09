@@ -12,6 +12,12 @@ const apiOrigin = process.env.API_ORIGIN ?? 'http://localhost:4000';
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // The Docker image (apps/web/Dockerfile) ships the self-contained server. Off otherwise, so
+  // `next start` keeps working. Tracing starts at the repo root to pick up workspace packages.
+  ...(process.env.BUILD_STANDALONE === 'true' && {
+    output: 'standalone',
+    outputFileTracingRoot: fileURLToPath(new URL('../..', import.meta.url)),
+  }),
   // The browser only ever talks to the web origin; /api/* is proxied to the API
   // so the admin cookie stays first-party (docs/03-architecture.md).
   rewrites() {

@@ -37,9 +37,14 @@ COPY --from=build /repo/packages/contracts/package.json packages/contracts/
 COPY --from=build /repo/packages/contracts/dist packages/contracts/dist
 COPY --from=build /repo/apps/api/package.json apps/api/
 COPY --from=build /repo/apps/api/dist apps/api/dist
+# The entry point (fills in missing secrets) and the admin hash helper, so
+# `docker compose run --rm --no-deps api node scripts/admin-hash.mjs` works without Node installed.
+COPY --from=build /repo/apps/api/scripts apps/api/scripts
+# Generated secrets live here; owned by `node` so a fresh named volume inherits it.
+RUN mkdir /data && chown node:node /data
 WORKDIR /app/apps/api
 USER node
 EXPOSE 4000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s \
   CMD ["node", "-e", "fetch(`http://127.0.0.1:${process.env.PORT}/api/v1/health`).then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))"]
-CMD ["node", "dist/main.js"]
+CMD ["node", "scripts/docker-start.mjs"]

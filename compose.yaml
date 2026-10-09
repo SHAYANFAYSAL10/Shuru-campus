@@ -1,0 +1,50 @@
+# Production-like stack: `docker compose up --build`, then open SITE_URL (default localhost:3000).
+# Works with no setup: missing secrets are generated on the first start and the admin password
+# is printed in the api log. Optional overrides go in .env (see .env.docker.example).
+name: campus
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      WEB_ORIGINS: ${SITE_URL:-http://localhost:3000}
+      # Blank → generated once and kept in the `api-secrets` volume (scripts/docker-start.mjs).
+      JWT_SECRET: ${JWT_SECRET:-}
+      JWT_TTL: ${JWT_TTL:-8h}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
+      ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH:-}
+      DATA_SOURCE: memory
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      # Requests arrive from the web container on the private compose network.
+      TRUST_PROXY: uniquelocal
+    volumes:
+      - api-secrets:/data
+    # No published port: browsers reach the API only through the web app's /api proxy.
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        API_ORIGIN: http://api:4000
+        NEXT_PUBLIC_SITE_URL: ${SITE_URL:-http://localhost:3000}
+      # The build prerenders against a throwaway API inside the build container (see the
+      # Dockerfile), reached at the same http://api:4000 the running app uses.
+      extra_hosts:
+        - 'api:127.0.0.1'
+    restart: unless-stopped
+    environment:
+      API_ORIGIN: http://api:4000
+    ports:
+      - '${WEB_PORT:-3000}:3000'
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  api-secrets:
