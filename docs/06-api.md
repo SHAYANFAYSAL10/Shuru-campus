@@ -65,7 +65,7 @@ Brand {
   legalName: string (1..120);    // "Shuru Campus Ltd.": legal pages, copyright
   tagline: string; subTagline: string;
   pillars: string[] (1..4);      // ["Empower", "Enhance", "Enrich"]
-  nameMeaning?: { word: string; language: string; meaning: string }; // optional; hides the "meaning of the name" block when absent
+  nameMeaning?: { word: string; language: string; lang?: string /* BCP 47, e.g. "bn" */; meaning: string }; // optional; hides the "meaning of the name" block when absent
   logo: { kind: "wordmark" } | { kind: "image"; src: string; srcDark?: string; alt: string };
 }
 

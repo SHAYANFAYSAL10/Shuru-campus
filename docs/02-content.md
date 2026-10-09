@@ -13,7 +13,7 @@ These are the **default values of the brand config** (`packages/contracts/src/se
 | `name` | Shuru Campus |
 | `shortName` | Shuru |
 | `legalName` | Shuru Campus Ltd. |
-| `nameMeaning` | শুরু (Bangla) = "beginning" |
+| `nameMeaning` | শুরু (Bangla, language tag `bn`) = "beginning" |
 | `tagline` | Shared Workspace & Beyond |
 | `subTagline` | Designed for Work Empowerment, Enhancement & Enrichment |
 | `pillars` | Empower · Enhance · Enrich |
