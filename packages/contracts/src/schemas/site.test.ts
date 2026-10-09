@@ -54,6 +54,21 @@ describe('Brand', () => {
     expect(Brand.safeParse({ ...brand, pillars: ['a', 'b', 'c', 'd', 'e'] }).success).toBe(false);
   });
 
+  it('takes an optional language tag for the name meaning', () => {
+    const nameMeaning = { word: 'Ακμή', language: 'Greek', meaning: 'peak' };
+    expect(Brand.safeParse({ ...brand, nameMeaning }).success).toBe(true);
+    for (const lang of ['el', 'bn-BD', 'zh-Hant-TW']) {
+      expect(Brand.safeParse({ ...brand, nameMeaning: { ...nameMeaning, lang } }).success).toBe(
+        true,
+      );
+    }
+    for (const lang of ['', 'Greek', 'bn_BD', 'e']) {
+      expect(Brand.safeParse({ ...brand, nameMeaning: { ...nameMeaning, lang } }).success).toBe(
+        false,
+      );
+    }
+  });
+
   it('requires alt text for an image logo', () => {
     const logo = { kind: 'image', src: '/brand/logo.svg' };
     expect(Brand.safeParse({ ...brand, logo }).success).toBe(false);

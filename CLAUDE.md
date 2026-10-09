@@ -28,7 +28,7 @@ The client is a **UI/UX expert**. Assume every pixel, transition and empty state
 **Rendering**
 - Server Components by default. Add `"use client"` only for components that need state, effects, browser APIs or motion. Push client boundaries as far down the tree as possible.
 - Fetch data in Server Components through the typed client in `src/lib/api`. Never call `fetch` ad hoc from components.
-- Every route has `loading.tsx` or a skeleton where data is awaited, plus `error.tsx`. Provide `not-found.tsx` at the root.
+- Public pages (`(site)`) arrive as complete HTML: **no route-level `loading.tsx`** above their content, because a streamed Suspense boundary needs JS to reveal it and no-JS visitors would see the skeleton forever. Skeletons belong to client islands and non-essential `<Suspense>` parts (`OpenStatus` before hydration). Admin routes may use `loading.tsx`. Every route has `error.tsx`. Provide `not-found.tsx` at the root.
 - Generate `metadata` for every page (title, description, Open Graph). Add JSON-LD `LocalBusiness` on Home and Contact.
 
 **Styling**

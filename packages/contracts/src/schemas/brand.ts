@@ -34,6 +34,11 @@ export const Brand = z.object({
     .object({
       word: text(1, 40, 'Word'),
       language: text(1, 40, 'Language'),
+      /** BCP 47 tag of `word` (`bn`), so screen readers and fonts treat it as that language. */
+      lang: z
+        .string()
+        .regex(/^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$/, { error: 'Use a language tag, e.g. bn.' })
+        .optional(),
       meaning: text(1, 120, 'Meaning'),
     })
     .optional(),

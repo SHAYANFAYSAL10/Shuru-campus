@@ -9,3 +9,6 @@ package-lock.json
 docs
 CLAUDE.md
 README.md
+
+# Prettier rewrites MDX comments ({/* */} → {/_ _/}) and breaks text after JSX onto new lines.
+*.mdx

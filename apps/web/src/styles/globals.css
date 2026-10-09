@@ -2,6 +2,10 @@
 @import './tokens.css';
 @import './base.css';
 @import './animations.css';
+@import './header.css';
+@import './announcement.css';
+@import './spaces.css';
+@import './legal.css';
 
 /*
  * Interaction variants. Hover only applies on fine pointers (04 §6); touch gets press states.

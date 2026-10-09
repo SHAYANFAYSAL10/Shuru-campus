@@ -1,0 +1,141 @@
+/*
+ * Site header (docs/05-pages-and-interactions.md → header). Transparent at the top of the page;
+ * once scrolled it condenses from --header-height-expanded to --header-height and takes a
+ * translucent surface; it hides on scroll-down and returns on scroll-up. `<HeaderShell>` sets the
+ * data attributes. Every state change moves `translate` or `opacity` only, so nothing reflows:
+ * condensing slides the whole bar up by --header-shift (the empty band above the row) while the
+ * row drops back to centre.
+ */
+
+:root {
+  --header-height: 4rem;
+  --header-height-expanded: 5rem;
+  --header-shift: calc(var(--header-height-expanded) - var(--header-height));
+  /* Space the page reserves above its content for the fixed header. */
+  --header-offset: calc(var(--header-height-expanded) + env(safe-area-inset-top));
+  /* Translucent surface: how much page shows through, and how much it blurs. */
+  --header-surface-opacity: 80%;
+  --header-backdrop: saturate(1.4) blur(12px);
+}
+
+/* Short screens (landscape phones): stay compact so the header never takes over 20% of the view. */
+@media (max-height: 30rem) {
+  :root {
+    --header-height-expanded: var(--header-height);
+  }
+}
+
+/*
+ * Where sticky page UI (the pricing table's header) sticks: under the condensed header while it
+ * shows, at the very top while it's hidden. It jumps rather than slides (only translate and
+ * opacity animate), and the header, sliding above it, covers the jump.
+ */
+:root {
+  --sticky-top: 0px;
+}
+
+:root:has([data-site-header]:not([data-hidden])) {
+  --sticky-top: calc(var(--header-height) + env(safe-area-inset-top));
+}
+
+/* Anchor jumps and focused elements stop below the condensed header (WCAG 2.4.11). */
+:root:has([data-site-header]) {
+  scroll-padding-top: calc(var(--header-height) + env(safe-area-inset-top) + var(--spacing) * 4);
+}
+
+[data-site-header] {
+  transition:
+    translate var(--duration-base) var(--ease-out),
+    opacity var(--duration-base) var(--ease-out);
+
+  &[data-condensed] {
+    translate: 0 calc(var(--header-shift) * -1);
+  }
+
+  /* Exits are quicker than entrances (04 §6). */
+  &[data-hidden] {
+    translate: 0 -100%;
+    transition-duration: var(--duration-fast);
+    transition-timing-function: var(--ease-in);
+  }
+}
+
+[data-header-row] {
+  translate: 0 calc(var(--header-shift) / -2);
+  transition: translate var(--duration-base) var(--ease-out);
+
+  [data-condensed] & {
+    translate: 0 0;
+  }
+}
+
+[data-header-surface] {
+  opacity: 0;
+  background-color: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+  transition: opacity var(--duration-base) var(--ease-out);
+
+  [data-condensed] & {
+    opacity: 1;
+  }
+
+  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    background-color: color-mix(
+      in srgb,
+      var(--color-bg) var(--header-surface-opacity),
+      transparent
+    );
+    -webkit-backdrop-filter: var(--header-backdrop);
+    backdrop-filter: var(--header-backdrop);
+  }
+
+  @media (prefers-reduced-transparency: reduce), (prefers-contrast: more), (forced-colors: active) {
+    background-color: var(--color-bg);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  /* Without JS the header can't tell it's scrolled, so it keeps its surface over the content. */
+  @media (scripting: none) {
+    opacity: 1;
+  }
+}
+
+/* Reduced motion: no sliding. Condensing is instant and hiding is a short crossfade. */
+@media (prefers-reduced-motion: reduce) {
+  [data-site-header] {
+    transition: opacity var(--duration-crossfade) linear;
+
+    &[data-hidden] {
+      translate: 0 calc(var(--header-shift) * -1);
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+
+  [data-header-row] {
+    transition: none;
+  }
+
+  [data-header-surface] {
+    transition-duration: var(--duration-crossfade);
+  }
+}
+
+/* Horizontal page margin that also clears notches in landscape. */
+@utility px-page-safe {
+  padding-left: max(var(--spacing-page), env(safe-area-inset-left));
+  padding-right: max(var(--spacing-page), env(safe-area-inset-right));
+}
+
+/*
+ * The full-screen sheet's top bar (the mobile menu) takes the header's current height, so its
+ * close button lands exactly where the menu button was, expanded or condensed.
+ */
+[data-sheet-bar] {
+  --sheet-bar-height: var(--header-height-expanded);
+
+  :root:has([data-site-header][data-condensed]) & {
+    --sheet-bar-height: var(--header-height);
+  }
+}

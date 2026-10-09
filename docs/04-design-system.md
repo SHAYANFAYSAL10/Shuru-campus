@@ -51,7 +51,7 @@ Loaded through `next/font` (self-hosted, `display: swap`, subset `latin`, metric
 
 Measure: body copy is `max-width: 65ch`. Headlines use `text-wrap: balance`, paragraphs `text-wrap: pretty`.
 
-**Type roles in code** (`apps/web/src/styles/base.css`): `type-display`, `type-h1`, `type-h2` and `type-h3` set Fraunces with its size, line-height, tracking and a pinned optical size (144 / 144 / 96 / 72) plus `SOFT 50`. `type-lead` and `type-eyebrow` (Geist Mono, uppercase, 0.12em) cover the rest. The bare `text-*` size utilities stay available for Geist text. Fonts load in `src/styles/fonts.ts`.
+**Type roles in code** (`apps/web/src/styles/base.css`): `type-display`, `type-h1`, `type-h2` and `type-h3` set Fraunces with its size, line-height, tracking and a pinned optical size (144 / 144 / 96 / 72) plus `SOFT 50`. `type-pullquote` is Fraunces at the h3 size but regular weight, 1.3 leading and a hanging opening quote mark. `type-lead` and `type-eyebrow` (Geist Mono, uppercase, 0.12em) cover the rest. The bare `text-*` size utilities stay available for Geist text. Fonts load in `src/styles/fonts.ts`.
 
 ## 4. Space, layout and shape
 
@@ -128,6 +128,6 @@ Motion explains **where things come from and what changed.** It's never decorati
 - At 320px nothing truncates critical info. Long words wrap (`overflow-wrap: anywhere` on user-generated content and emails).
 - Browser zoom 200% and 400% reflow without horizontal scroll (WCAG 1.4.10). Text spacing overrides (WCAG 1.4.12) don't clip content.
 - Navigation is a full-screen sheet below `lg`, with a focus trap, `Esc` to close and scroll lock that preserves position.
-- Tables (pricing comparison) become stacked cards below `md`. They never scroll sideways without a visible affordance.
+- Tables (pricing comparison) become stacked cards below `lg`. They never scroll sideways without a visible affordance.
 - `forced-colors: active` (Windows High Contrast) keeps borders and focus rings visible.
-- It works without JS: all content is readable, links work and the contact form posts via a server action fallback.
+- It works without JS: all content is readable, links work and the contact form posts via a server action fallback. So public pages have no route-level `loading.tsx` (streamed content needs JS to reveal); their data is cached (60s) and awaited before the HTML is sent.

@@ -13,7 +13,7 @@ These are the **default values of the brand config** (`packages/contracts/src/se
 | `name` | Shuru Campus |
 | `shortName` | Shuru |
 | `legalName` | Shuru Campus Ltd. |
-| `nameMeaning` | শুরু (Bangla) = "beginning" |
+| `nameMeaning` | শুরু (Bangla, language tag `bn`) = "beginning" |
 | `tagline` | Shared Workspace & Beyond |
 | `subTagline` | Designed for Work Empowerment, Enhancement & Enrichment |
 | `pillars` | Empower · Enhance · Enrich |
@@ -95,7 +95,7 @@ Plan {
 
 ## Policies
 
-The full text of the Privacy Policy, Terms & Conditions and Refund Policy (with the company name replaced by `<Brand field="legalName" />`) is preserved in `apps/web/content/legal/*.mdx` (copied from the reference site's modals). Key facts:
+The full text of the Privacy Policy, Terms & Conditions and Refund Policy (with the company name replaced by `<Brand field="legalName" />`) is preserved in `apps/web/content/legal/*.mdx` (copied from the reference site's modals). The common name is `<Brand field="name" />`, a name closing a sentence takes `endsSentence` (so "Ltd." never gets a second full stop) and the reference's own domain is `<SiteDomain />` (this site's host). Only structure was added: run-in labels ("Signage:") became headings without their colons, the refund information became lists and a sentence the source split across two lines was joined. Key facts:
 
 - **Terms:** The agreement is a serviced-office agreement, not a lease. No signage without approval. Keys and cards remain company property. No cooking appliances, hazardous materials, firearms, animals (except assistance animals) or smoking anywhere. Business attire and conduct are expected. No overnight stays. A returned or declined payment costs **৳2,000**. Packages must be collected within 48 hours. The IT policy prohibits unlawful use and security violations, and there's no SLA on internet.
 - **Refund:** Requests are answered within **48 hours** (2 business days). Cancel/void requests must arrive before 6:00 PM on the payment date and at least 48 hours before the service starts. Provide your name, the payment date/time, the authorization code, the card's last 4 digits and the statement ID.
@@ -105,4 +105,4 @@ The full text of the Privacy Policy, Terms & Conditions and Refund Policy (with 
 
 ## Media
 
-The reference site has three photos (`home_slider/01–03.JPG`). ⚠️ We need high-resolution originals and usage rights from the client. Until then, use clearly marked placeholder imagery (`/public/placeholder/*`) at the correct aspect ratios so layouts are final.
+The reference site has three photos (`home_slider/01–03.JPG`). ⚠️ We need high-resolution originals and usage rights from the client. Until then, `/public/placeholder/*` holds free-licensed stock stand-ins (CC0 Unsplash imports on Wikimedia Commons, and Pexels), chosen for the warm palette (wood, daylight, plants, ochre accents) and cropped to the correct aspect ratios so layouts are final. `apps/web/scripts/fetch-photos.mjs` fetches and crops them and writes `CREDITS.md` next to them. Their alt text still begins "Placeholder photo:" so they're never mistaken for the venue.

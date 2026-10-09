@@ -6,6 +6,8 @@ export const MEDIA = {
   reducedMotion: '(prefers-reduced-motion: reduce)',
   /** A mouse or trackpad: the only pointers that get hover effects (04 §6). */
   finePointer: '(hover: hover) and (pointer: fine)',
+  /** Tailwind's `lg`: the desktop nav replaces the mobile menu. */
+  wideNav: '(min-width: 64rem)',
 } as const;
 
 /**

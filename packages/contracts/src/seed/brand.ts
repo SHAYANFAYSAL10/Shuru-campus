@@ -13,7 +13,7 @@ export const defaultBrand: Brand = {
   tagline: 'Shared Workspace & Beyond',
   subTagline: 'Designed for Work Empowerment, Enhancement & Enrichment',
   pillars: ['Empower', 'Enhance', 'Enrich'],
-  nameMeaning: { word: 'শুরু', language: 'Bangla', meaning: 'beginning' },
+  nameMeaning: { word: 'শুরু', language: 'Bangla', lang: 'bn', meaning: 'beginning' },
   // TODO(client): logo files and brand guidelines (docs/09-roadmap.md #2). Wordmark until supplied.
   logo: { kind: 'wordmark' },
 };

@@ -1,0 +1,55 @@
+/*
+ * Legal pages in print (docs/10-design-guidelines.md → A8): black text on white paper, no site
+ * chrome (header, announcement, footer) and no on-screen navigation (the other policies, the
+ * contents), and each link's address printed after it. Only pages with `[data-legal-doc]`.
+ */
+@media print {
+  :root:has([data-legal-doc]) {
+    color-scheme: light;
+    /* The page's own colors, not the theme's: print is always ink on white. */
+    --color-bg: var(--palette-white);
+    --color-bg-alt: var(--palette-white);
+    --color-surface: var(--palette-white);
+    --color-fg: var(--palette-ink);
+    --color-fg-muted: var(--palette-ink);
+    --color-fg-subtle: var(--palette-ink);
+    --color-accent-text: var(--palette-ink);
+
+    & body::before,
+    & [data-site-header],
+    & :has(> main) > :not(main) {
+      display: none;
+    }
+
+    /* The column no longer has a fixed header to clear. */
+    & :has(> main) {
+      padding-top: 0;
+    }
+  }
+
+  [data-legal-doc] {
+    padding: 0;
+
+    & nav,
+    & details {
+      display: none;
+    }
+
+    & article {
+      max-width: none;
+    }
+
+    & :is(h1, h2, h3, h4) {
+      break-after: avoid;
+    }
+
+    & :is(p, li) {
+      orphans: 3;
+      widows: 3;
+    }
+
+    & article a[href]:not([href^='#'])::after {
+      content: ' (' attr(href) ')';
+    }
+  }
+}

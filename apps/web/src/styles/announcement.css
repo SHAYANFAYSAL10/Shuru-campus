@@ -1,0 +1,9 @@
+/*
+ * Announcement bar (components/layout/announcement-bar.tsx). Without JS the close button can't
+ * work, so it is hidden; it keeps its space, so the bar is the same height either way.
+ */
+@media (scripting: none) {
+  [data-announcement-dismiss] {
+    visibility: hidden;
+  }
+}

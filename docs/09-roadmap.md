@@ -25,5 +25,5 @@ Online booking for meeting and seminar rooms (availability calendar), payments (
 | 7 | Where should inquiries go (email address) once email is enabled? | info@shurucampus.com |
 | 8 | Is "40 Mbps" still accurate? (It's dated for 2026.) | Shown as listed |
 | 9 | Do member sign-in and sign-up still use OfficeRnD? | Yes, links configurable |
-| 10 | Legal text review by counsel before launch | Verbatim text with a "Last updated" date |
+| 10 | Legal text review by counsel before launch | Verbatim text with a "Last updated" date (the capture date, 2026-10-07, until the client gives the real ones). Flagged for counsel: the Refund Policy's cut-off sentence ("All payments submitted through this website at"), its "for the following reasons:" with no reasons after it, "broached" and "fellowships" |
 | 11 | Hosting target (Vercel + Render/Fly/Railway, or a single VPS with Docker)? | Dockerfiles for both apps + a Vercel-ready web |

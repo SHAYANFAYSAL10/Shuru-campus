@@ -12,6 +12,7 @@
   --animate-reveal: reveal var(--duration-slow) var(--ease-out) both;
   --animate-mask-up: mask-up var(--duration-slow) var(--ease-out) both;
   --animate-draw: draw var(--duration-story) var(--ease-out) both;
+  --animate-draw-short: draw-short calc(var(--duration-story) + var(--duration-slow)) linear both;
   --animate-fade-in: fade-in var(--duration-crossfade) linear both;
   --animate-marquee: marquee var(--marquee-duration) linear infinite;
   --animate-spin: spin var(--duration-story) linear infinite;
@@ -29,12 +30,20 @@
   --animate-toast-swipe-out: toast-swipe-out var(--duration-fast) var(--ease-in) both;
   --animate-pulse-dot: pulse-dot calc(var(--duration-story) * 2) var(--ease-out) infinite;
   --animate-skeleton: skeleton calc(var(--duration-story) * 2) var(--ease-in-out) infinite;
+  --animate-settle: settle calc(var(--duration-story) * 2) var(--ease-out) both;
 
   /* Section reveal: up from --reveal-distance, opacity 0 → 1. */
   @keyframes reveal {
     from {
       opacity: 0;
       transform: translateY(var(--reveal-distance));
+    }
+  }
+
+  /* The hero photo's slow scale-in (05 → Home #1). Starts fully visible, so it never holds up LCP. */
+  @keyframes settle {
+    from {
+      transform: scale(1.05);
     }
   }
 
@@ -49,6 +58,19 @@
   @keyframes draw {
     from {
       stroke-dashoffset: 1;
+    }
+  }
+
+  /* The 404's begin line: reaches for its end point, then falls back short of it (the rest
+     offset comes from begin-line-short). Easing per segment, so the keyframe sets it. */
+  @keyframes draw-short {
+    from {
+      stroke-dashoffset: 1;
+      animation-timing-function: var(--ease-out);
+    }
+    65% {
+      stroke-dashoffset: 0.1;
+      animation-timing-function: var(--ease-in-out);
     }
   }
 
@@ -177,6 +199,11 @@
   stroke-dashoffset: 1;
 }
 
+/* Where the 404's begin line comes to rest: 78% drawn, short of its end point. */
+@utility begin-line-short {
+  stroke-dashoffset: 0.22;
+}
+
 @utility animation-paused {
   animation-play-state: paused;
 }
@@ -191,7 +218,9 @@
     content: '';
     position: absolute;
     inset-inline: 0;
-    bottom: -0.2em;
+    /* Under the text line, even when the link is taller than its text (a 44px touch target with
+       centred text): half the box, less half a line, puts it at the text's foot. */
+    bottom: calc(50% - 0.5lh - 0.2em);
     height: 1.5px;
     background-color: var(--color-accent);
     transform: scaleX(0);
