@@ -98,6 +98,27 @@ test.describe('Home', () => {
     );
   });
 
+  test('the amenity marquee moves, pauses and resumes on phones', async ({ page }) => {
+    await page.goto('/');
+    test.skip((page.viewportSize()?.width ?? 0) >= MD, 'The marquee is phones only.');
+    const amenities = page.getByRole('region', { name: 'Everything the day needs.' });
+    await amenities.scrollIntoViewIfNeeded();
+    const track = amenities.getByTestId('marquee-track');
+    const animation = () => track.evaluate((el) => getComputedStyle(el).animationName);
+    const pause = amenities.getByRole('button', { name: 'Pause scrolling list' });
+
+    // A class alone isn't enough: the keyframes must actually apply.
+    await expect.poll(animation).toBe('marquee');
+    await pause.click();
+    await expect(pause).toHaveAttribute('aria-pressed', 'true');
+    await expect.poll(animation).toBe('none');
+    // The button keeps focus here, which must not hold the strip still.
+    await pause.click();
+    await expect(pause).toHaveAttribute('aria-pressed', 'false');
+    await expect.poll(animation).toBe('marquee');
+    await expect(track).toHaveCSS('animation-play-state', 'running');
+  });
+
   test('explains co-working with cited sources', async ({ page }) => {
     await page.goto('/');
     const why = page.getByRole('region', { name: 'Why share a workspace?' });
