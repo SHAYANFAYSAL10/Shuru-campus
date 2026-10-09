@@ -193,6 +193,25 @@ describe('Marquee', () => {
     expect(screen.getByTestId('marquee-track')).toHaveClass('animation-paused');
   });
 
+  it('can be swiped through while paused, and resumes from the button', async () => {
+    const user = userEvent.setup();
+    render(<Marquee items={items} label="Who works here" />);
+    const track = screen.getByTestId('marquee-track');
+    const pause = screen.getByRole('button', { name: 'Pause scrolling list' });
+
+    await user.click(pause);
+    expect(track.parentElement).toHaveClass('overflow-x-auto');
+    expect(track.parentElement).toHaveAttribute('tabindex', '0');
+
+    // The button keeps focus after the click; that must not hold the strip paused.
+    await user.click(pause);
+    expect(pause).toHaveFocus();
+    expect(pause).toHaveAttribute('aria-pressed', 'false');
+    expect(track).not.toHaveClass('animation-paused');
+    expect(track.parentElement).toHaveClass('overflow-hidden');
+    expect(track.parentElement).not.toContainElement(pause);
+  });
+
   it('stops and becomes a static list under reduced motion', () => {
     reduceMotion();
     render(<Marquee items={items} label="Who works here" />);

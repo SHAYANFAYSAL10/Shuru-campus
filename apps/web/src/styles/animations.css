@@ -8,13 +8,18 @@
   --reveal-distance: 20px;
 }
 
+/* Inline, so the utility reads --marquee-duration on the track that sets it (<Marquee>). As a
+   theme variable it would resolve on :root, where it's unset, and the animation would drop out. */
+@theme inline {
+  --animate-marquee: marquee var(--marquee-duration) linear infinite;
+}
+
 @theme {
   --animate-reveal: reveal var(--duration-slow) var(--ease-out) both;
   --animate-mask-up: mask-up var(--duration-slow) var(--ease-out) both;
   --animate-draw: draw var(--duration-story) var(--ease-out) both;
   --animate-draw-short: draw-short calc(var(--duration-story) + var(--duration-slow)) linear both;
   --animate-fade-in: fade-in var(--duration-crossfade) linear both;
-  --animate-marquee: marquee var(--marquee-duration) linear infinite;
   --animate-spin: spin var(--duration-story) linear infinite;
   --animate-fade-out: fade-out var(--duration-fast) var(--ease-in) both;
   --animate-overlay-in: fade-in var(--duration-base) var(--ease-out) both;

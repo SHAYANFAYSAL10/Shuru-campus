@@ -1,7 +1,14 @@
 'use client';
 
 import { Pause, Play } from 'lucide-react';
-import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from 'react';
+import {
+  type CSSProperties,
+  type ReactNode,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { IconButton } from '@/components/ui/icon-button';
 import { cn } from '@/lib/cn';
@@ -26,7 +33,11 @@ export function Marquee({ items, label, className }: MarqueeProps) {
   const reduced = useReducedMotion();
   const [paused, setPaused] = useState(false);
   const [seconds, setSeconds] = useState<number>();
+  // How far into one loop (0–1) the track is, carried between the animation and manual scroll.
+  const [progress, setProgress] = useState(0);
   const groupRef = useRef<HTMLUListElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
   const animated = hydrated && !reduced;
 
   // Constant speed whatever the content width: duration = one copy's width / px per second.
@@ -41,6 +52,28 @@ export function Marquee({ items, label, className }: MarqueeProps) {
       observer.disconnect();
     };
   }, [animated]);
+
+  // Paused, the track stops animating and the viewport scrolls instead, so every item can be
+  // swiped to. Start the scroll where the animation stopped, so nothing jumps.
+  useLayoutEffect(() => {
+    const viewport = viewportRef.current;
+    const group = groupRef.current;
+    if (!viewport || !group) return;
+    viewport.scrollLeft = paused ? progress * group.scrollWidth : 0;
+  }, [paused, progress]);
+
+  function toggle() {
+    const group = groupRef.current;
+    const width = group?.scrollWidth ?? 0;
+    if (width > 0 && !paused && trackRef.current) {
+      const { transform } = getComputedStyle(trackRef.current);
+      const x = !transform || transform === 'none' ? 0 : new DOMMatrixReadOnly(transform).m41;
+      setProgress((-x % width) / width);
+    } else if (width > 0 && viewportRef.current) {
+      setProgress((viewportRef.current.scrollLeft % width) / width);
+    }
+    setPaused((value) => !value);
+  }
 
   const listItems = items.map((item, i) => (
     // Items are static content in a fixed order.
@@ -57,18 +90,37 @@ export function Marquee({ items, label, className }: MarqueeProps) {
     );
   }
 
+  // A negative delay resumes the loop from where it was paused or scrolled to.
   const trackStyle =
-    seconds === undefined ? undefined : ({ '--marquee-duration': `${seconds}s` } as CSSProperties);
+    seconds === undefined
+      ? undefined
+      : ({
+          '--marquee-duration': `${seconds}s`,
+          animationDelay: `${-progress * seconds}s`,
+        } as CSSProperties);
 
   return (
-    <div className={cn('group flex items-center gap-4', className)}>
-      <div className="min-w-0 flex-1 overflow-hidden">
+    <div className={cn('flex items-center gap-4', className)}>
+      {/* Hover and focus pause only this strip. Scoping the group here keeps the button out of
+          it: a tapped button keeps focus, which would otherwise hold the strip paused. */}
+      <div
+        ref={viewportRef}
+        // Focusable while it scrolls, so keyboards can reach every item too (axe's
+        // scrollable-region-focusable): its items aren't focusable themselves.
+        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+        tabIndex={paused ? 0 : undefined}
+        className={cn(
+          'group/marquee min-w-0 flex-1',
+          paused ? 'scrollbar-none overflow-x-auto overscroll-x-contain' : 'overflow-hidden',
+        )}
+      >
         <div
+          ref={trackRef}
           data-testid="marquee-track"
           className={cn(
             'flex w-max',
-            seconds !== undefined && 'animate-marquee',
-            'group-focus-within:animation-paused group-hover:animation-paused',
+            seconds !== undefined && !paused && 'animate-marquee',
+            'group-focus-within/marquee:animation-paused group-hover/marquee:animation-paused',
             paused && 'animation-paused',
           )}
           style={trackStyle}
@@ -88,9 +140,7 @@ export function Marquee({ items, label, className }: MarqueeProps) {
         aria-pressed={paused}
         variant="secondary"
         size="sm"
-        onClick={() => {
-          setPaused((value) => !value);
-        }}
+        onClick={toggle}
       />
     </div>
   );
