@@ -184,6 +184,6 @@ The brand name (and logo, legal name, taglines) is **configuration, not code**.
 Both apps can run as two Vercel projects from the same repo. This is for test previews only; production follows T9.1 (API on a long-running host).
 
 - **web**: Root Directory `apps/web`. `apps/web/vercel.json` builds through turbo so `@campus/contracts` is built first.
-- **api**: Root Directory `apps/api`. `apps/api/vercel.json` builds `dist/` and routes every path to `apps/api/api/index.js`, which boots the same `createApp()` once per cold start and reuses it while warm. Set `TRUST_PROXY=true`.
-- **Node 24:** both apps pin `engines.node` to `24.x`, which Vercel reads from each Root Directory. Nest 12 is ESM-only and `@nestjs/throttler` `require()`s it, which needs Node ≥ 22.12.
+- **api**: Root Directory `apps/api`. `apps/api/vercel.json` builds `dist/`, then `bundle:serverless` bundles `src/vercel.ts` (compiled) into `dist/serverless/handler.mjs`, and routes every path to `apps/api/api/index.js`, which re-exports it. The handler boots the same `createApp()` once per cold start and reuses it while warm. Set `TRUST_PROXY=true`.
+- **Why a bundle:** Nest 12 is ESM-only, and CJS packages such as `@nestjs/throttler` `require()` it. Vercel's function runtime doesn't support `require()` of ES modules (even on Node 24), so the bundler resolves those requires at build time; only `argon2` (native) stays external. Both apps also pin `engines.node` to `24.x`, matching the Dockerfiles.
 - **Known limits:** the throttler's counters live in each instance's memory, so rate limits are best-effort; the first request after idle pays Nest's boot time.

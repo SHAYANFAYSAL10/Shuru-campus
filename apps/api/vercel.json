@@ -2,12 +2,12 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
   "installCommand": "cd ../.. && npm ci --include=dev",
-  "buildCommand": "cd ../.. && npx turbo run build --filter=@campus/api",
+  "buildCommand": "cd ../.. && npx turbo run build --filter=@campus/api && npm run bundle:serverless -w @campus/api",
   "outputDirectory": "public",
   "regions": ["sin1"],
   "functions": {
     "api/index.js": {
-      "includeFiles": "{dist/**,package.json}"
+      "includeFiles": "{dist/serverless/**,package.json}"
     }
   },
   "rewrites": [
