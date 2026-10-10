@@ -101,6 +101,8 @@ Motion explains **where things come from and what changed.** It's never decorati
 
 ### Implementation (`apps/web/src/components/motion/`)
 - **Reveals are CSS, toggled by one IntersectionObserver hook** (`useProgressiveReveal`). `<Reveal>`, `<SplitText>` and `<BeginLine>` use the `animate-reveal` / `animate-mask-up` / `animate-draw` keyframes from `src/styles/animations.css`, so they add almost no JS. Their `mount` variants run from CSS on first paint, before hydration and without JS.
+- **Scroll-linked text is CSS too.** `<ScrollText>` (a Server Component) gives each word its own stretch of the paragraph's view timeline (`styles/scroll-text.css`, `lib/scroll-text.ts`, `scrollText` tokens), animating opacity from `scrollText.dim` (reads as `fg-subtle`, still AA for body text) to 1. It runs without JS; where scroll timelines aren't supported, under reduced motion, in forced colors, with more contrast and in print, the words are plain `fg`.
+- **Hover is gated in one place.** Tailwind's `hover:` (and so `group-hover:`) is redefined in `globals.css` to `(hover: hover) and (pointer: fine)`; hand-written `:hover` rules (`link-draw`, `hover-lift`, `hover-raise`) use the same query. `e2e/micro-interactions.spec.ts` fails on any `:hover` rule shipped outside it. Card hovers use `hover-lift` (4px, `translate`, none under reduced motion) and `hover-raise` (the raise shadow on a pseudo-element, opacity only).
 - **`motion` is for springs and layout** (`<Magnetic>`, the segmented-control thumb, shared-element transitions). Its features load lazily through `<MotionProvider>` (`LazyMotion strict` + `MotionConfig reducedMotion="user"`), so use `m.*` from `motion/react-m`, never `motion.*`.
 - **Reduced motion:** `useReducedMotion()` (`src/lib/hooks/use-media-query.ts`) for JS and the `motion-reduce:` variant for CSS. Reveals render their final state, line-draws appear drawn, `<Marquee>` becomes a wrapped list.
 - `<Marquee>` only moves after hydration, when its pause button works. Without JS it's a static list. It drifts by scrolling (`marquee.pxPerSecond`), not by a transform, so people can also swipe, wheel or arrow through it in either direction; it loops seamlessly. The drift holds under the mouse, while focus is inside and while someone scrolls it, then resumes after `marquee.resumeAfter`. Pause stops the drift; the row stays scrollable.
@@ -114,7 +116,7 @@ Motion explains **where things come from and what changed.** It's never decorati
 4. **Pricing period toggle:** the segmented control's thumb springs, and prices roll digit by digit (odometer, tabular nums so width never jumps).
 5. **Day at {shortName} timeline:** a horizontal 9:00→19:00 rail. The begin line marks the **current Dhaka time**, and scroll-linked progress highlights moments (coffee, deep work, meetings, timeout). It's a native horizontal scroll with snap on mobile.
 6. **Gallery lightbox:** a shared-layout zoom from thumbnail to fullscreen with swipe, keyboard arrows and Esc, and focus is trapped and restored.
-7. **Magnetic primary CTA:** a ≤ 6px pull toward the cursor on fine pointers only.
+7. **Magnetic primary CTA:** a ≤ 6px pull toward the cursor (capped in every direction, corners included: `magneticOffset()`, `lib/magnetic.ts`) on fine pointers only, mouse and pen (not touch on a hybrid). It lets go at once if reduced motion is switched on.
 
 ## 7. Imagery and iconography
 
