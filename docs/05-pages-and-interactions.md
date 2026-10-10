@@ -25,7 +25,7 @@ The header is transparent over the hero. On scroll it condenses (height 80→64p
 
 ## Spaces & Pricing `/spaces`
 
-- Intro + **period filter** (`Hourly · Daily · Weekly · Monthly`, synced to `?period=`; nothing chosen shows every plan). It hides plans without a matching rate and highlights the matching rates (block rates count as hourly), says what it shows (`aria-live`) and offers "Show all plans". Without JS it is a GET form. The odometer (T6.3) animates prices.
+- Intro + **period filter** (`Hourly · Daily · Weekly · Monthly`, synced to `?period=`; nothing chosen shows every plan). It hides plans without a matching rate and highlights the matching rates (block rates count as hourly), says what it shows (`aria-live`) and offers "Show all plans". Without JS it is a GET form. Each plan leads with a price under its name that follows the period (its lowest rate paid by it; "From" when there's more than one), and its digits roll when the period changes (the odometer, T6.3); the summary line reads the new prices out.
 - Plan sections (anchor IDs = slugs) with rates, an "Included" checklist and capacity.
 - **Comparison table** (features × plans, features grouped into rows by kind; what every plan includes is said once in the lead). From `lg` a table whose header sticks under the site header; it fits the page, so it never scrolls sideways and the first column needs no sticking. Below `lg`, stacked cards (a 7-column table is too cramped at `md`).
 - Each rate's "Book this" → `/contact?plan=<slug>&rate=<rateId>` (the stable rate ID, matching `InquiryCreate.rateId`), which pre-fills the inquiry.
