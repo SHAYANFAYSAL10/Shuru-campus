@@ -1,11 +1,19 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
+  "installCommand": "cd ../.. && npm ci --include=dev",
   "buildCommand": "cd ../.. && npx turbo run build --filter=@campus/api && mkdir -p apps/api/public",
   "outputDirectory": "public",
   "regions": ["sin1"],
   "functions": {
-    "api/index.js": { "includeFiles": "{dist/**,package.json}" }
+    "api/index.js": {
+      "includeFiles": "{dist/**,package.json}"
+    }
   },
-  "rewrites": [{ "source": "/(.*)", "destination": "/api" }]
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/api"
+    }
+  ]
 }
