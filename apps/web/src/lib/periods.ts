@@ -1,4 +1,4 @@
-import { type Plan, type Rate, type RateUnit } from '@campus/contracts';
+import { formatBdt, type Plan, type Rate, rateUnitLabel, type RateUnit } from '@campus/contracts';
 
 /**
  * The Spaces page's period filter (docs/05-pages-and-interactions.md → Spaces & Pricing), in
@@ -34,6 +34,48 @@ export function ratePeriod(rate: Pick<Rate, 'unit'>): Period {
 export function planPeriods(plan: Pick<Plan, 'rates'>): Period[] {
   const offered = new Set(plan.rates.map(ratePeriod));
   return PERIODS.map((period) => period.value).filter((period) => offered.has(period));
+}
+
+export interface PeriodPrice {
+  rate: Rate;
+  /** Other rates are paid by the same period (or, with none chosen, at all), so say "From". */
+  isFrom: boolean;
+}
+
+/**
+ * The price a plan leads with on Spaces: its lowest rate paid by `period`, or its lowest rate of
+ * all with no period chosen (planFromRate's "From"). Ties keep the first listed rate. `undefined`
+ * when the plan can't be booked by that period (the filter hides it then).
+ */
+export function periodPrice(
+  plan: Pick<Plan, 'rates'>,
+  period: Period | undefined,
+): PeriodPrice | undefined {
+  const rates = period ? plan.rates.filter((rate) => ratePeriod(rate) === period) : plan.rates;
+  const [first, ...rest] = rates;
+  if (!first) return undefined;
+  const rate = rest.reduce((low, next) => (next.amountBdt < low.amountBdt ? next : low), first);
+  return { rate, isFrom: rates.length > 1 };
+}
+
+/**
+ * The plans' prices for `period`, for screen readers when the period changes: "Hot Desk, 650 taka
+ * per day; …". `undefined` with no period, or when no plan can be booked by it.
+ */
+export function periodPriceSummary(
+  plans: readonly Pick<Plan, 'name' | 'rates'>[],
+  period: Period | undefined,
+): string | undefined {
+  if (!period) return undefined;
+  const parts = plans.flatMap((plan) => {
+    const price = periodPrice(plan, period);
+    if (!price) return [];
+    const amount = formatBdt(price.rate.amountBdt).replace('৳', '');
+    return [
+      `${plan.name}, ${price.isFrom ? 'from ' : ''}${amount} taka per ${rateUnitLabel(price.rate)}`,
+    ];
+  });
+  return parts.length > 0 ? `${parts.join('; ')}.` : undefined;
 }
 
 /** `?period=` as a period, or `undefined` (show everything) when missing, repeated or unknown. */

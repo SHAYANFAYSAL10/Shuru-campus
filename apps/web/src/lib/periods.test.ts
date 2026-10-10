@@ -2,7 +2,14 @@ import { describe, expect, it } from 'vitest';
 
 import { plansSeed, type Plan } from '@campus/contracts';
 
-import { parsePeriod, periodSummary, planPeriods, ratePeriod } from '@/lib/periods';
+import {
+  parsePeriod,
+  periodPrice,
+  periodPriceSummary,
+  periodSummary,
+  planPeriods,
+  ratePeriod,
+} from '@/lib/periods';
 
 function seedPlan(slug: Plan['slug']): Plan {
   const plan = plansSeed.find((p) => p.slug === slug);
@@ -54,6 +61,54 @@ describe('parsePeriod', () => {
     expect(parsePeriod('Monthly')).toBeUndefined();
     expect(parsePeriod('yearly')).toBeUndefined();
     expect(parsePeriod(['monthly', 'weekly'])).toBeUndefined();
+  });
+});
+
+describe('periodPrice', () => {
+  it('leads with the only rate paid by the period', () => {
+    const price = periodPrice(seedPlan('hot-desk'), 'daily');
+    expect(price?.rate.id).toBe('daily');
+    expect(price?.isFrom).toBe(false);
+  });
+
+  it('leads with the lowest of several rates, as "From"', () => {
+    const price = periodPrice(seedPlan('executive-seating'), 'monthly');
+    expect(price?.rate.amountBdt).toBe(14000);
+    expect(price?.isFrom).toBe(true);
+  });
+
+  it('counts block rates as hourly', () => {
+    const price = periodPrice(seedPlan('seminar-room'), 'hourly');
+    expect(price?.rate.amountBdt).toBe(3000);
+    expect(price?.rate.id).toBe('up-to-14');
+  });
+
+  it('falls back to the lowest rate of all with no period', () => {
+    const price = periodPrice(seedPlan('hot-desk'), undefined);
+    expect(price?.rate.id).toBe('hourly');
+    expect(price?.isFrom).toBe(true);
+  });
+
+  it('has nothing for a period the plan is not booked by', () => {
+    expect(periodPrice(seedPlan('hot-desk'), 'monthly')).toBeUndefined();
+  });
+});
+
+describe('periodPriceSummary', () => {
+  const plans = ['hot-desk', 'business-seating', 'executive-seating'].map((slug) =>
+    seedPlan(slug as Plan['slug']),
+  );
+
+  it('reads out each bookable plan with its price', () => {
+    expect(periodPriceSummary(plans, 'monthly')).toBe(
+      'Business Seating, 10,000 taka per month; Executive Seating, from 14,000 taka per month.',
+    );
+    expect(periodPriceSummary(plans, 'daily')).toBe('Hot Desk, 650 taka per day.');
+  });
+
+  it('says nothing without a period or a bookable plan', () => {
+    expect(periodPriceSummary(plans, undefined)).toBeUndefined();
+    expect(periodPriceSummary([seedPlan('hot-desk')], 'weekly')).toBeUndefined();
   });
 });
 

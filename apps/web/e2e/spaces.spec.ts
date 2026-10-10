@@ -41,6 +41,29 @@ test.describe('Spaces', () => {
     await expect(hotDesk).toBeVisible();
   });
 
+  test('rolls each plan’s lead price to the period and reads the prices out', async ({ page }) => {
+    await page.goto('/spaces');
+    const hotDesk = page.getByRole('region', { name: 'Hot Desk', exact: true });
+    const lead = hotDesk.locator('[data-odometer]').first();
+    await expect(lead).not.toHaveAttribute('data-rolled');
+
+    await page
+      .getByRole('group', { name: 'How would you like to pay?' })
+      .locator('label')
+      .filter({ hasText: /^Daily$/ })
+      .click();
+
+    await expect(lead).toHaveAttribute('data-rolled', '');
+    await expect(
+      page.locator('[aria-live="polite"]').filter({ hasText: 'Showing the one plan' }),
+    ).toContainText('Hot Desk, 650 taka per day.');
+    // Tabular figures: every digit column is the same width, so nothing jitters as it rolls.
+    const widths = await lead
+      .locator('[data-odometer-digit]')
+      .evaluateAll((columns) => columns.map((c) => c.getBoundingClientRect().width.toFixed(2)));
+    expect(new Set(widths).size).toBe(1);
+  });
+
   test('arrives filtered from a shared link', async ({ page }) => {
     await page.goto('/spaces?period=weekly');
 

@@ -10,7 +10,14 @@ import { getBrand, getPlans, getSiteSettings } from '@/lib/api';
 import { spacesFaq } from '@/lib/faq';
 import { listText } from '@/lib/list-text';
 import { pageMetadata } from '@/lib/metadata';
-import { parsePeriod, PERIOD_PARAM, PERIODS, planPeriods, type Period } from '@/lib/periods';
+import {
+  parsePeriod,
+  PERIOD_PARAM,
+  periodPriceSummary,
+  PERIODS,
+  planPeriods,
+  type Period,
+} from '@/lib/periods';
 import { sortPlans } from '@/lib/plans';
 
 import type { Metadata } from 'next';
@@ -49,6 +56,9 @@ export default async function SpacesPage({ searchParams }: PageProps<'/spaces'>)
       sorted.filter((plan) => planPeriods(plan).includes(value)).length,
     ]),
   ) as Record<Period, number>;
+  const prices: Partial<Record<Period, string>> = Object.fromEntries(
+    PERIODS.map(({ value }) => [value, periodPriceSummary(sorted, value)]),
+  );
 
   return (
     <>
@@ -71,7 +81,12 @@ export default async function SpacesPage({ searchParams }: PageProps<'/spaces'>)
                 <div className="flex flex-col gap-4">
                   <PlanJumpNav plans={sorted} />
                   {/* Right above the plans it describes; it holds its line even when empty. */}
-                  <PeriodSummary counts={counts} total={sorted.length} resetHref={PATH} />
+                  <PeriodSummary
+                    counts={counts}
+                    total={sorted.length}
+                    prices={prices}
+                    resetHref={PATH}
+                  />
                 </div>
               </div>
             ) : (

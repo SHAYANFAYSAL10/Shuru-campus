@@ -18,6 +18,14 @@ export function usePeriod(): PeriodState {
   return state;
 }
 
+/**
+ * The chosen period when there's a `<PeriodScope>` around, else `undefined`: for parts that are
+ * also used outside Spaces (a plan section on its own page).
+ */
+export function useScopedPeriod(): Period | undefined {
+  return useContext(PeriodContext)?.period;
+}
+
 export interface PeriodScopeProps {
   /** From `?period=`, read by the page, so the server HTML is already filtered. */
   initialPeriod: Period | undefined;

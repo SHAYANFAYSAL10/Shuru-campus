@@ -8,12 +8,13 @@ import { PeriodSummary } from '@/components/spaces/period-summary';
 import { type Period } from '@/lib/periods';
 
 const COUNTS: Record<Period, number> = { hourly: 3, daily: 1, weekly: 2, monthly: 3 };
+const PRICES: Partial<Record<Period, string>> = { daily: 'Hot Desk, 650 taka per day.' };
 
 function renderFilter(initialPeriod?: Period) {
   return render(
     <PeriodScope initialPeriod={initialPeriod}>
       <PeriodFilter action="/spaces#pricing" />
-      <PeriodSummary counts={COUNTS} total={6} resetHref="/spaces" />
+      <PeriodSummary counts={COUNTS} total={6} prices={PRICES} resetHref="/spaces" />
       <section data-testid="plan" data-offers="hourly daily" />
     </PeriodScope>,
   );
@@ -57,9 +58,11 @@ describe('Spaces period filter', () => {
 
     expect(scope()).toHaveAttribute('data-period', 'daily');
     expect(scope()).toHaveAttribute('data-period-changed');
-    expect(screen.getByText('Showing the one plan you can book by the day.')).toHaveAttribute(
-      'aria-live',
-      'polite',
+    const live = screen.getByText('Showing the one plan you can book by the day.');
+    expect(live).toHaveAttribute('aria-live', 'polite');
+    // The prices the plans now lead with are read out in the same announcement.
+    expect(live).toHaveTextContent(
+      'Showing the one plan you can book by the day. Hot Desk, 650 taka per day.',
     );
     expect(window.location.search).toBe('?period=daily');
     expect(window.location.hash).toBe('#hot-desk');
