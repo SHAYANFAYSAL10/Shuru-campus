@@ -2,6 +2,7 @@ import { AmenitiesSection } from '@/components/home/amenities-section';
 import { CtaBand } from '@/components/home/cta-band';
 import { HomeHero } from '@/components/home/home-hero';
 import { Manifesto } from '@/components/home/manifesto';
+import { PlanFinderSection } from '@/components/home/plan-finder-section';
 import { SpacesSection } from '@/components/home/spaces-section';
 import { VisitSection } from '@/components/home/visit-section';
 import { WhyCoworking } from '@/components/home/why-coworking';
@@ -32,10 +33,14 @@ export default async function HomePage() {
     getAmenities(),
   ]);
 
+  const planList = plans.ok ? plans.data : [];
   const amenityList = amenities.ok ? amenities.data : [];
-  // Amenities step aside when they fail to load, so the numbers after them close up.
-  const why = amenityList.length > 0 ? 3 : 2;
-  const numbers = { spaces: 1, amenities: 2, why, visit: why + 1 };
+  // The plan finder and amenities step aside when there's nothing to show, so the numbers after
+  // them close up. (Spaces stays, saying why it's empty.)
+  const finder = planList.length > 0 ? 2 : undefined;
+  const amenitiesAt = (finder ?? 1) + 1;
+  const why = amenityList.length > 0 ? amenitiesAt + 1 : amenitiesAt;
+  const numbers = { spaces: 1, finder, amenities: amenitiesAt, why, visit: why + 1 };
 
   return (
     <>
@@ -43,6 +48,7 @@ export default async function HomePage() {
       <HomeHero hours={site.hours} plans={plans.ok ? plans.data : null} />
       <Manifesto pillars={site.brand.pillars} />
       <SpacesSection plans={plans.ok ? plans.data : null} number={numbers.spaces} />
+      {numbers.finder ? <PlanFinderSection plans={planList} number={numbers.finder} /> : null}
       <AmenitiesSection amenities={amenityList} number={numbers.amenities} />
       <WhyCoworking number={numbers.why} />
       <VisitSection contact={site.contact} hours={site.hours} number={numbers.visit} />

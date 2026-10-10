@@ -2,7 +2,7 @@
 
 import { type LucideIcon } from 'lucide-react';
 import * as m from 'motion/react-m';
-import { useId } from 'react';
+import { type ReactNode, useId } from 'react';
 
 import { cn } from '@/lib/cn';
 import { spring } from '@/styles/motion';
@@ -15,8 +15,10 @@ export interface SegmentedOption<T extends string> {
 
 export interface SegmentedControlProps<T extends string> {
   /** Names the group for screen readers (and visually, unless `hideLegend`). */
-  legend: string;
+  legend: ReactNode;
   hideLegend?: boolean;
+  /** Replaces the visible legend's styling (e.g. a question set as a heading). */
+  legendClassName?: string;
   options: readonly SegmentedOption<T>[];
   /** `undefined` selects nothing (e.g. before the current value is known). */
   value: T | undefined;
@@ -37,6 +39,7 @@ export interface SegmentedControlProps<T extends string> {
 export function SegmentedControl<T extends string>({
   legend,
   hideLegend = false,
+  legendClassName,
   options,
   value,
   onValueChange,
@@ -50,7 +53,11 @@ export function SegmentedControl<T extends string>({
 
   return (
     <fieldset className={cn('inline-flex min-w-0 flex-col gap-2', className)}>
-      <legend className={cn(hideLegend ? 'sr-only' : 'mb-2 text-small text-fg-muted')}>
+      <legend
+        className={cn(
+          hideLegend ? 'sr-only' : (legendClassName ?? 'mb-2 text-small text-fg-muted'),
+        )}
+      >
         {legend}
       </legend>
       <div className="inline-flex max-w-full flex-wrap gap-1 self-start rounded-full bg-bg-alt p-1">
