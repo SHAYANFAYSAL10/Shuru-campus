@@ -6,6 +6,7 @@
 @import './announcement.css';
 @import './spaces.css';
 @import './legal.css';
+@import './word-cycle.css';
 
 /*
  * Interaction variants. Hover only applies on fine pointers (04 §6); touch gets press states.

@@ -117,6 +117,8 @@ export function auditLayout(page: Page): Promise<LayoutAudit> {
       (element) =>
         (ownText(element) || element.tagName === 'IMG') &&
         !element.closest('.sr-only, [hidden], [inert]') &&
+        // Deliberately hidden (the hero's waiting words), not a reveal that never played.
+        getComputedStyle(element).visibility === 'visible' &&
         hasBox(element) &&
         opacity(element) === 0,
     );

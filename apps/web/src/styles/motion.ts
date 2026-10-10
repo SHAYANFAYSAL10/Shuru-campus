@@ -26,6 +26,13 @@ export const ease = {
   in: [0.55, 0, 1, 0.45],
 } as const satisfies Record<string, readonly [number, number, number, number]>;
 
+export type EaseToken = keyof typeof ease;
+
+/** An easing as a CSS `cubic-bezier()`, for the Web Animations API. */
+export function cssEase(token: EaseToken): string {
+  return `cubic-bezier(${ease[token].join(', ')})`;
+}
+
 export const spring = {
   /** Toggles, segmented controls. */
   snappy: { type: 'spring', stiffness: 400, damping: 30 },
@@ -53,6 +60,12 @@ export const marquee = {
   pxPerSecond: 40,
   /** How long the drift waits, in ms, after someone scrolls or swipes it themselves. */
   resumeAfter: 2000,
+} as const;
+
+/** The hero's changing word (04 §6, signature moment 1). */
+export const wordCycle = {
+  /** How long each word stays, in ms, before the next one slides in. */
+  interval: 2800,
 } as const;
 
 /** Hover delay before a tooltip opens, in ms. */
