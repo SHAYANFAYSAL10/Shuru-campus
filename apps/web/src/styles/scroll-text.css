@@ -1,0 +1,34 @@
+/*
+ * Scroll-linked statements (components/motion/scroll-text.tsx, 05 → Home #2). Each word brightens
+ * over its own stretch (--word-from → --word-to) of the paragraph's view timeline, opacity only.
+ * Words rest at full `fg` unless scroll timelines are supported and motion is welcome, so the
+ * text is never dimmed where it couldn't brighten.
+ */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-text {
+      view-timeline: --scroll-text block;
+    }
+
+    .scroll-text-word {
+      animation-name: scroll-text-word;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: --scroll-text;
+      animation-range: cover var(--word-from) cover var(--word-to);
+    }
+  }
+}
+
+@keyframes scroll-text-word {
+  from {
+    opacity: var(--scroll-text-dim);
+  }
+}
+
+/* System colors and the high-contrast preference get the text at full strength; so does paper. */
+@media (forced-colors: active), (prefers-contrast: more), print {
+  .scroll-text-word {
+    animation: none;
+  }
+}

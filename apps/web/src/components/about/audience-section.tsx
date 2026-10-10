@@ -86,10 +86,8 @@ export function AudienceSection({ plans }: AudienceSectionProps) {
                     aria-labelledby={`audience-${tile.id}`}
                     className={cn(
                       'group/tile relative flex w-full flex-col rounded-md border border-border bg-surface p-6 focus-ring-within',
-                      // Hover (A6: Card): lifts, and the raise shadow fades in on a pseudo-element
-                      // (opacity only, never box-shadow itself).
-                      'transition-transform duration-base ease-out hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0',
-                      'before:pointer-events-none before:absolute before:inset-0 before:rounded-md before:opacity-0 before:shadow-raise before:transition-opacity before:duration-base before:ease-out hover:before:opacity-100',
+                      // Hover (A6: Card): lifts, and the raise shadow fades in.
+                      'hover-raise hover-lift',
                     )}
                   >
                     {/* The 48px icon circle (B3): fills with accent-subtle on hover. */}

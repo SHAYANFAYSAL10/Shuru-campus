@@ -2,10 +2,11 @@
 
 import { useSpring } from 'motion/react';
 import * as m from 'motion/react-m';
-import { type PointerEvent, type ReactNode } from 'react';
+import { type PointerEvent, type ReactNode, useEffect } from 'react';
 
 import { cn } from '@/lib/cn';
 import { useFinePointer, useReducedMotion } from '@/lib/hooks/use-media-query';
+import { magneticOffset } from '@/lib/magnetic';
 import { distance, spring } from '@/styles/motion';
 
 export interface MagneticProps {
@@ -17,13 +18,10 @@ export interface MagneticProps {
 
 const { stiffness, damping } = spring.soft;
 
-function clampUnit(value: number): number {
-  return Math.max(-1, Math.min(1, value));
-}
-
 /**
- * Pulls its child a few pixels toward the pointer (signature moment 7). Fine pointers only,
- * and off under reduced motion. The child keeps its own hit area and focus ring.
+ * Pulls its child a few pixels toward the pointer (signature moment 7), never more than
+ * `strength` in any direction. Mouse and pen on fine-pointer devices only: a touch on a hybrid
+ * laptop doesn't drag it. Off under reduced motion. The child keeps its own hit area and focus ring.
  */
 export function Magnetic({ children, strength = distance.magnetic, className }: MagneticProps) {
   const finePointer = useFinePointer();
@@ -32,13 +30,22 @@ export function Magnetic({ children, strength = distance.magnetic, className }: 
   const x = useSpring(0, { stiffness, damping });
   const y = useSpring(0, { stiffness, damping });
 
+  // Switching reduced motion on (or plugging in a touch screen) mid-pull lets go at once.
+  useEffect(() => {
+    if (active) return;
+    x.jump(0);
+    y.jump(0);
+  }, [active, x, y]);
+
   function handleMove(event: PointerEvent<HTMLSpanElement>) {
-    if (!active) return;
-    const rect = event.currentTarget.getBoundingClientRect();
-    const dx = (event.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
-    const dy = (event.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
-    x.set(clampUnit(dx) * strength);
-    y.set(clampUnit(dy) * strength);
+    if (!active || event.pointerType === 'touch') return;
+    const offset = magneticOffset(
+      { x: event.clientX, y: event.clientY },
+      event.currentTarget.getBoundingClientRect(),
+      strength,
+    );
+    x.set(offset.x);
+    y.set(offset.y);
   }
 
   function handleLeave() {
