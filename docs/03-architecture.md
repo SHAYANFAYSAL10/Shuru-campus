@@ -178,3 +178,11 @@ The brand name (and logo, legal name, taglines) is **configuration, not code**.
 | api | `THROTTLE_INQUIRY_LIMIT` | Inquiries/min/IP, default `5` |
 | web | `API_ORIGIN` | `http://localhost:4000` (server-side only) |
 | web | `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` (canonical URLs, OG) |
+
+## Test deployment on Vercel
+
+Both apps can run as two Vercel projects from the same repo. This is for test previews only; production follows T9.1 (API on a long-running host).
+
+- **web**: Root Directory `apps/web`. `apps/web/vercel.json` builds through turbo so `@campus/contracts` is built first.
+- **api**: Root Directory `apps/api`. `apps/api/vercel.json` builds `dist/` and routes every path to `apps/api/api/index.js`, which boots the same `createApp()` once per cold start and reuses it while warm. Set `TRUST_PROXY=true`.
+- **Known limits:** the throttler's counters live in each instance's memory, so rate limits are best-effort; the first request after idle pays Nest's boot time.
