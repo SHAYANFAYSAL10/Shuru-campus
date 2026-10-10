@@ -1,0 +1,45 @@
+/*
+ * Plan card → detail (components/motion/plan-morph.tsx, 04 §6 signature moment 3). Where the View
+ * Transitions API runs, React names the card's photo and the plan page's photo alike and gives
+ * the pair the `plan-morph` class, only on a navigation from a card (the `plan-open` type).
+ */
+
+/* The photo grows from the card into place, cropped like `object-fit: cover` all the way. */
+::view-transition-group(.plan-morph) {
+  animation-duration: var(--duration-slow);
+  animation-timing-function: var(--ease-out);
+  border-radius: var(--radius-lg);
+  overflow: clip;
+}
+
+/* The card is 4:5 and the plan page's photo 3:2 below `lg`: each snapshot covers the box (cropped,
+   never stretched), and the card's crop hands over to the page's early in the flight. */
+::view-transition-old(.plan-morph),
+::view-transition-new(.plan-morph) {
+  block-size: 100%;
+  object-fit: cover;
+  animation-duration: var(--duration-base);
+  animation-timing-function: var(--ease-out);
+}
+
+/* The rest of the page changes under it with a quick crossfade, the other cards' photos with it. */
+:root:active-view-transition-type(plan-open)::view-transition-old(root),
+::view-transition-old(.plan-leave),
+:root:active-view-transition-type(plan-open)::view-transition-new(root) {
+  animation-duration: var(--duration-fast);
+}
+
+/* Reduced motion: no flight. The photo crossfades in place and the page with it. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(.plan-morph) {
+    animation: none;
+  }
+
+  ::view-transition-old(.plan-morph),
+  ::view-transition-new(.plan-morph),
+  ::view-transition-old(.plan-leave),
+  :root:active-view-transition-type(plan-open)::view-transition-old(root),
+  :root:active-view-transition-type(plan-open)::view-transition-new(root) {
+    animation-duration: var(--duration-crossfade);
+  }
+}

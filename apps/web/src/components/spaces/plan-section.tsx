@@ -3,6 +3,7 @@ import Image from 'next/image';
 
 import { type Plan } from '@campus/contracts';
 
+import { PlanMorphTarget } from '@/components/motion/plan-morph';
 import { PlanLeadPrice } from '@/components/spaces/plan-lead-price';
 import { RateList } from '@/components/spaces/rate-list';
 import { Badge } from '@/components/ui/badge';
@@ -24,6 +25,8 @@ export interface PlanSectionProps {
   eager?: boolean;
   /** `h1` on the plan's own page, where the plan is the page; its parts then use `h2`. */
   headingLevel?: 'h1' | 'h2';
+  /** The photo a plan card's photo grows into (the plan's own page). */
+  morphTarget?: boolean;
   className?: string;
 }
 
@@ -39,6 +42,7 @@ export function PlanSection({
   index,
   eager = false,
   headingLevel: Heading = 'h2',
+  morphTarget = false,
   className,
 }: PlanSectionProps) {
   const Subheading = Heading === 'h1' ? 'h2' : 'h3';
@@ -46,6 +50,19 @@ export function PlanSection({
   const titleId = `${plan.slug}-title`;
   const ratesId = `${plan.slug}-rates`;
   const flipped = index % 2 === 1;
+  const photoClassName = 'relative aspect-3/2 overflow-hidden rounded-lg bg-bg-alt lg:aspect-4/5';
+
+  const image = photo ? (
+    <Image
+      src={photo.src}
+      width={photo.width}
+      height={photo.height}
+      alt={photo.alt}
+      sizes={SIZES}
+      loading={eager ? 'eager' : 'lazy'}
+      className="size-full object-cover photo-tone"
+    />
+  ) : null;
 
   return (
     <section
@@ -63,19 +80,13 @@ export function PlanSection({
           flipped ? 'lg:col-start-8' : 'lg:col-start-1',
         )}
       >
-        <div className="relative aspect-3/2 overflow-hidden rounded-lg bg-bg-alt lg:aspect-4/5">
-          {photo ? (
-            <Image
-              src={photo.src}
-              width={photo.width}
-              height={photo.height}
-              alt={photo.alt}
-              sizes={SIZES}
-              loading={eager ? 'eager' : 'lazy'}
-              className="size-full object-cover photo-tone"
-            />
-          ) : null}
-        </div>
+        {morphTarget ? (
+          <PlanMorphTarget slug={plan.slug} className={photoClassName}>
+            {image}
+          </PlanMorphTarget>
+        ) : (
+          <div className={photoClassName}>{image}</div>
+        )}
       </div>
 
       <div
