@@ -123,6 +123,37 @@ test.describe('Home', () => {
     await expect(previous).toBeEnabled();
   });
 
+  test('suggests a plan from three answers and books it', async ({ page }) => {
+    await page.goto('/');
+    const finder = page.getByRole('region', { name: 'Not sure which one?' });
+    const result = finder.getByRole('region', { name: 'Your match' });
+    const question = (name: string) => finder.getByRole('group', { name });
+    await finder.scrollIntoViewIfNeeded();
+    await expect(result).toContainText('0 of 3 answered');
+
+    // Pointer for the first two, keyboard for the last: Tab into the group, arrows to choose.
+    await question('Who’s working?').getByText('Just me').click();
+    await question('How often?').getByText('Monthly').click();
+    await expect(result).toContainText('2 of 3 answered');
+    await page.keyboard.press('Tab');
+    await expect(question('What do you need?').getByRole('radio', { name: 'Desk' })).toBeFocused();
+    await page.keyboard.press('ArrowRight');
+
+    await expect(result.getByRole('heading', { name: 'Executive Seating' })).toBeVisible();
+    await expect(page.getByRole('status').filter({ hasText: 'Suggested plan' })).toHaveText(
+      'Suggested plan: Executive Seating, 14,000 taka per month.',
+    );
+
+    // Another answer swaps the suggestion in place.
+    await question('Who’s working?').getByText('2–6 people').click();
+    await expect(result.getByRole('heading', { name: 'Private Office' })).toBeVisible();
+    await expect(result).toContainText('From');
+
+    await question('Who’s working?').getByText('Just me').click();
+    await result.getByRole('link', { name: 'Book Executive Seating' }).click();
+    await expect(page).toHaveURL('/contact?plan=executive-seating&rate=monthly');
+  });
+
   test('lists the amenities: a bento from md, a marquee below', async ({ page }) => {
     await page.goto('/');
     const wide = (page.viewportSize()?.width ?? 0) >= MD;
@@ -267,6 +298,12 @@ test.describe('Home', () => {
       await expect(
         page.getByRole('list', { name: 'Plans' }).getByRole('heading', { level: 3 }).first(),
       ).toBeVisible();
+      // The finder's questions are there; its card points to every plan instead.
+      await expect(page.getByRole('group', { name: 'Who’s working?' })).toBeVisible();
+      // Playwright's text queries skip `<noscript>`, even with JS off, so this finds it by tag.
+      await expect(page.locator('noscript > p')).toContainText('Suggestions need JavaScript.');
+      await expect(page.locator('noscript > p')).toBeVisible();
+      await expect(page.getByRole('link', { name: 'Or compare every plan' })).toBeVisible();
       await expect(
         page.getByRole('list', { name: 'Amenities' }).filter({ visible: true }),
       ).toHaveCount(1);
