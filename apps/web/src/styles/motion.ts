@@ -68,5 +68,13 @@ export const wordCycle = {
   interval: 2800,
 } as const;
 
+/** The gallery lightbox (04 §6, signature moment 6). */
+export const lightbox = {
+  /** How far a photo slides as the next one comes in, as a share of its own width. */
+  slide: 0.12,
+  /** Scale a photo starts from (and leaves at) when there's no thumbnail on screen to zoom from. */
+  settle: 0.96,
+} as const;
+
 /** Hover delay before a tooltip opens, in ms. */
 export const tooltipDelay = 400;

@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it } from 'vitest';
 
@@ -103,5 +103,67 @@ describe('GalleryBrowser', () => {
     expect(imgs[0]).toHaveAttribute('loading', 'eager');
     expect(imgs[0]).toHaveAttribute('fetchpriority', 'high');
     expect(imgs.at(-1)).toHaveAttribute('loading', 'lazy');
+  });
+});
+
+describe('GalleryBrowser lightbox', () => {
+  const thumbnail = (name: string | RegExp) =>
+    within(screen.getByRole('list')).getByRole('link', { name });
+  const status = (dialog: HTMLElement) => within(dialog).getByText(/^Photo \d+ of \d+:/);
+
+  it('links each photo to its full-size file, so it opens without JS too', () => {
+    renderGallery('cafe');
+    expect(thumbnail(/barista/)).toHaveAttribute(
+      'href',
+      gallerySeed.find((image) => image.alt.includes('barista'))?.src,
+    );
+    expect(thumbnail(/barista/)).toHaveAttribute('aria-haspopup', 'dialog');
+  });
+
+  it('opens on the photo clicked, steps through the filtered photos and returns focus', async () => {
+    const user = userEvent.setup();
+    renderGallery('meeting');
+
+    await user.click(thumbnail(/brick wall/));
+    const dialog = await screen.findByRole('dialog', { name: 'Photo viewer' });
+    expect(status(dialog)).toHaveTextContent(
+      'Photo 1 of 3: Placeholder photo: a meeting table against a brick wall',
+    );
+    expect(within(dialog).getByText('1 / 3')).toBeVisible();
+    expect(within(dialog).getByRole('button', { name: 'Close photo viewer' })).toHaveFocus();
+
+    await user.keyboard('{ArrowRight}');
+    expect(status(dialog)).toHaveTextContent(/^Photo 2 of 3/);
+    await user.keyboard('{End}');
+    expect(status(dialog)).toHaveTextContent(/^Photo 3 of 3/);
+    await user.click(within(dialog).getAllByRole('button', { name: 'Next photo' })[0]!);
+    expect(status(dialog)).toHaveTextContent(/^Photo 1 of 3/);
+    await user.click(within(dialog).getAllByRole('button', { name: 'Previous photo' })[0]!);
+    const last = status(dialog).textContent.replace(/^Photo 3 of 3: /, '');
+
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    // Focus lands on the photo last seen, not the one it opened on.
+    expect(thumbnail(last)).toHaveFocus();
+  });
+
+  it('has no step buttons for a single photo', async () => {
+    const user = userEvent.setup();
+    renderGallery(
+      'cafe',
+      gallerySeed.filter((image) => image.alt.includes('barista')),
+    );
+
+    await user.click(thumbnail(/barista/));
+    const dialog = await screen.findByRole('dialog');
+    expect(within(dialog).queryByRole('button', { name: 'Next photo' })).not.toBeInTheDocument();
+    await user.keyboard('{ArrowRight}');
+    expect(status(dialog)).toHaveTextContent(/^Photo 1 of 1/);
+  });
+
+  it('leaves new-tab clicks to the link', () => {
+    renderGallery('cafe');
+    fireEvent.click(thumbnail(/barista/), { ctrlKey: true });
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 });

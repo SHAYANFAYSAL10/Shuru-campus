@@ -26,6 +26,13 @@ export function primaryNav(features: Pick<FeatureFlags, 'gallery'>): NavItem[] {
 export const BOOK_VISIT_HREF = '/contact';
 
 /**
+ * Where "Member login" leads. The member portal isn't built yet, so this is an internal path with
+ * no route: it lands on the site's own 404 instead of an external site that isn't ready.
+ * TODO(client): point it back at `site.memberPortal.loginUrl` once the portal is live.
+ */
+export const MEMBER_LOGIN_HREF = '/members/login';
+
+/**
  * How `href` relates to the current path, as an `aria-current` value: `page` on the page
  * itself, `true` inside its section (`/spaces/hot-desk` under Spaces), otherwise nothing.
  */

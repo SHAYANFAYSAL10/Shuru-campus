@@ -11,7 +11,7 @@ import { SOCIAL_LABEL, SocialIcon } from '@/components/ui/social-icon';
 import { getSiteSettings } from '@/lib/api';
 import { telHref } from '@/lib/contact';
 import { hoursSummary } from '@/lib/hours-summary';
-import { BOOK_VISIT_HREF, LEGAL_NAV, primaryNav } from '@/lib/navigation';
+import { BOOK_VISIT_HREF, LEGAL_NAV, MEMBER_LOGIN_HREF, primaryNav } from '@/lib/navigation';
 
 import type { ReactNode } from 'react';
 
@@ -28,7 +28,7 @@ function Column({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-/** A link leaving the site, marked with the same arrow as the header's Member login. */
+/** A link leaving the site, marked with an up-right arrow. */
 function OutboundLink({ href, children }: { href: string; children: ReactNode }) {
   return (
     <a href={href} className={`group inline-flex min-h-hit items-center gap-1 ${LINK}`}>
@@ -149,7 +149,12 @@ export async function SiteFooter() {
                   </li>
                 ))}
                 <li>
-                  <OutboundLink href={site.memberPortal.loginUrl}>Member login</OutboundLink>
+                  <NextLink
+                    href={MEMBER_LOGIN_HREF}
+                    className={`inline-flex min-h-hit items-center ${LINK}`}
+                  >
+                    Member login
+                  </NextLink>
                 </li>
               </ul>
             </nav>

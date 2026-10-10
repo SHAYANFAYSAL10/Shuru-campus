@@ -1,4 +1,3 @@
-import { ArrowUpRight } from 'lucide-react';
 import NextLink from 'next/link';
 
 import { HeaderShell } from '@/components/layout/header-shell';
@@ -10,7 +9,7 @@ import { OpenStatus } from '@/components/ui/open-status';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { getSiteSettings } from '@/lib/api';
 import { cn } from '@/lib/cn';
-import { BOOK_VISIT_HREF, MAIN_CONTENT_ID, primaryNav } from '@/lib/navigation';
+import { BOOK_VISIT_HREF, MAIN_CONTENT_ID, MEMBER_LOGIN_HREF, primaryNav } from '@/lib/navigation';
 
 /**
  * The public site header (docs/05-pages-and-interactions.md): logo, nav, open status, theme
@@ -44,22 +43,17 @@ export async function SiteHeader() {
         <PrimaryNav items={items} className="hidden lg:mr-auto lg:block" />
         <OpenStatus hours={site.hours} className="hidden shrink-0 xl:inline-flex" />
         <ThemeToggle className="hidden shrink-0 lg:flex" />
-        <a
-          href={site.memberPortal.loginUrl}
-          className="group hidden min-h-hit items-center gap-1 rounded-sm text-small font-medium whitespace-nowrap text-fg-muted transition-colors hover:text-fg lg:inline-flex"
+        <NextLink
+          href={MEMBER_LOGIN_HREF}
+          className="hidden min-h-hit items-center rounded-sm text-small font-medium whitespace-nowrap text-fg-muted transition-colors hover:text-fg lg:inline-flex"
         >
           Member login
-          <ArrowUpRight
-            aria-hidden="true"
-            className="size-4 transition-transform duration-fast ease-out group-hover:translate-x-px group-hover:-translate-y-px motion-reduce:transition-none"
-            strokeWidth={1.5}
-          />
-        </a>
+        </NextLink>
         {cta}
         <MobileNav
           items={items}
           hours={site.hours}
-          memberLoginUrl={site.memberPortal.loginUrl}
+          memberLoginUrl={MEMBER_LOGIN_HREF}
           bar={
             <>
               {logo}
