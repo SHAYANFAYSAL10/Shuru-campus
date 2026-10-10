@@ -43,7 +43,9 @@ export interface PlanFinderProps {
  * beside them turns into the suggested plan, its price and a "Book" link that carries the plan
  * (and rate, when one fits) into the inquiry form. Changing an answer swaps the suggestion: the
  * card resizes with a `layout` animation (transform only) while its content crossfades, and the
- * begin line traces the new plan's name (04 §1). Reduced motion: a short crossfade, no glide.
+ * begin line traces the new plan's name (04 §1). A new rate of the same plan ("How often?" from
+ * hours to days) keeps the card and rolls the price's digits instead (the odometer, 04 §6).
+ * Reduced motion: a short crossfade, no glide, digits change at once.
  * A polite status line tells screen readers what's suggested.
  *
  * Without JS the questions render but can't answer; the card says so and links every plan.
@@ -55,7 +57,8 @@ export function PlanFinder({ plans, className }: PlanFinderProps) {
   const complete = completeAnswers(answers);
   const resolved = complete ? resolveRecommendation(recommendPlan(complete), plans) : undefined;
   const state = !complete ? 'pending' : resolved ? 'match' : 'none';
-  const contentKey = resolved ? `${resolved.plan.slug}:${resolved.price.id}` : state;
+  // Keyed by plan, not rate: a new rate of the same plan rolls its price (the odometer) in place.
+  const contentKey = resolved ? resolved.plan.slug : state;
 
   const fade = { duration: seconds(reduced ? 'crossfade' : 'base'), ease: ease.out };
 
@@ -157,7 +160,7 @@ function MatchCard({ resolved, note }: { resolved: ResolvedRecommendation; note?
 
       <p className="mt-6 flex flex-wrap items-baseline gap-x-2 gap-y-1 text-fg">
         {isFrom ? <span className="text-small text-fg-muted">From</span> : null}
-        <Price amount={price.amountBdt} rate={price} size="lg" />
+        <Price amount={price.amountBdt} rate={price} size="lg" roll />
         {size ? (
           <span className="text-small text-fg-muted">
             {size.title}

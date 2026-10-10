@@ -59,6 +59,30 @@ describe('PlanFinder', () => {
     );
   });
 
+  it('keeps the card and rolls the price when only the rate changes', async () => {
+    const user = userEvent.setup();
+    render(<PlanFinder plans={plansSeed} />);
+    await answer('Just me', 'Hours', 'Desk');
+
+    const result = screen.getByRole('region', { name: 'Your match' });
+    const heading = await within(result).findByRole('heading', { name: 'Hot Desk' });
+    expect(result).toHaveTextContent('100 taka per hour');
+
+    await user.click(
+      within(screen.getByRole('group', { name: 'How often?' })).getByRole('radio', {
+        name: 'Days',
+      }),
+    );
+
+    // Same plan, same card: the heading isn't remounted, and the digits rolled to the new rate.
+    expect(within(result).getByRole('heading', { name: 'Hot Desk' })).toBe(heading);
+    expect(result).toHaveTextContent('650 taka per day');
+    expect(result.querySelector('[data-odometer]')).toHaveAttribute('data-rolled');
+    expect(screen.getByRole('status')).toHaveTextContent(
+      'Suggested plan: Hot Desk, 650 taka per day.',
+    );
+  });
+
   it('shows a "from" price and says how the plan is booked when the period does not fit', async () => {
     render(<PlanFinder plans={plansSeed} />);
     await answer('2–6 people', 'Weekly', 'Private room');

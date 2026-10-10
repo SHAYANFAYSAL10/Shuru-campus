@@ -3,6 +3,7 @@ import Image from 'next/image';
 
 import { type Plan } from '@campus/contracts';
 
+import { PlanLeadPrice } from '@/components/spaces/plan-lead-price';
 import { RateList } from '@/components/spaces/rate-list';
 import { Badge } from '@/components/ui/badge';
 import { Link } from '@/components/ui/link';
@@ -28,7 +29,7 @@ export interface PlanSectionProps {
 
 /**
  * One plan on Spaces (05 → Spaces & Pricing), anchored at its slug (`/spaces#hot-desk`): photo,
- * name, who it's for, its rates with "Book this", and the full "Included" checklist. From `lg` a
+ * name, the price it leads with (following the period filter), who it's for, its rates with "Book this", and the full "Included" checklist. From `lg` a
  * 5/6 split that alternates sides down the page. It carries the periods it offers, so the period
  * filter can hide it (`styles/spaces.css`). The plan's own page (`/spaces/[slug]`) renders the
  * same section with the plan's name as the page heading.
@@ -89,6 +90,7 @@ export function PlanSection({
           </Heading>
           {plan.highlight ? <Badge tone="accent">Popular</Badge> : null}
         </div>
+        <PlanLeadPrice rates={plan.rates} className="mt-3" />
         <p className="mt-3 text-fg-muted">For {listText(plan.audience.map(lowerFirst))}</p>
         <p className="mt-4 max-w-xl type-lead text-fg-muted">{plan.summary}</p>
 

@@ -7,22 +7,29 @@ export interface PeriodSummaryProps {
   /** How many plans offer each period. */
   counts: Readonly<Record<Period, number>>;
   total: number;
+  /** Each period's prices, read out after the count (`periodPriceSummary()`). */
+  prices: Readonly<Partial<Record<Period, string>>>;
   /** The unfiltered page, for "Show all plans" without JS. */
   resetHref: string;
 }
 
 /**
  * What the period filter is showing, announced politely as it changes ("Showing the 3 plans you
- * can book by the month."), with the way back to every plan. Empty, but present, with no period,
- * so the live region exists before the first change.
+ * can book by the month."), with the way back to every plan. Screen readers also hear the prices
+ * the plans now lead with (rolling on screen, the odometer) in the same announcement. Empty, but
+ * present, with no period, so the live region exists before the first change.
  */
-export function PeriodSummary({ counts, total, resetHref }: PeriodSummaryProps) {
+export function PeriodSummary({ counts, total, prices, resetHref }: PeriodSummaryProps) {
   const { period, setPeriod } = usePeriod();
   const summary = periodSummary(period, period ? counts[period] : total, total);
+  const priced = period ? prices[period] : undefined;
 
   return (
     <div className="flex min-h-hit flex-wrap items-center gap-x-4 text-small text-fg-muted">
-      <p aria-live="polite">{summary}</p>
+      <p aria-live="polite">
+        {summary}
+        {priced ? <span className="sr-only"> {priced}</span> : null}
+      </p>
       {period ? (
         <a
           href={resetHref}

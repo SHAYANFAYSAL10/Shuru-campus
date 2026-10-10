@@ -1,0 +1,16 @@
+/*
+ * Price odometer (components/motion/odometer.tsx). Digits roll by the inline transform; this only
+ * fades in the places a growing figure adds on the left ("2,800" → "10,000"). `data-rolled` is set
+ * once the figure has changed, so nothing fades in on first paint.
+ */
+[data-odometer][data-rolled] [data-odometer-digit] {
+  transition: opacity var(--duration-base) var(--ease-out);
+
+  @starting-style {
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition-duration: var(--duration-crossfade);
+  }
+}
