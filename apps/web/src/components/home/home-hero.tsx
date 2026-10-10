@@ -46,7 +46,7 @@ export function HomeHero({ hours, plans }: HomeHeroProps) {
     >
       <HeroHeadline id="hero-title" />
 
-      <div className="mt-8 grid gap-10 lg:mt-12 lg:grid-cols-12 lg:items-end lg:gap-gutter">
+      <div className="mt-8 grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-gutter">
         <div className="lg:col-span-7">
           <p className="max-w-xl type-lead text-fg-muted">
             Shared workspace &amp; beyond, in the heart of Gulshan.

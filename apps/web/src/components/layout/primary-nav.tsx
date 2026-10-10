@@ -5,13 +5,15 @@ import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import { BeginLine } from '@/components/motion/begin-line';
+import { BeginLineHandoffTarget } from '@/components/motion/begin-line-handoff';
 import { cn } from '@/lib/cn';
 import { navCurrent, type NavItem } from '@/lib/navigation';
 import { ease, seconds } from '@/styles/motion';
 
 /**
- * Shared `layoutId` of the begin line under the current nav item. The hero's begin line hands
- * off to it (04 §6, signature moment 2), and it glides between items on navigation.
+ * Shared `layoutId` of the begin line under the current nav item, so it glides between items on
+ * navigation. Leaving Home through the nav, the hero's begin line flies up into it instead
+ * (`BeginLineHandoffTarget`, 04 §6, signature moment 2).
  */
 export const NAV_BEGIN_LINE_ID = 'nav-begin-line';
 
@@ -49,7 +51,9 @@ export function PrimaryNav({ items, className }: PrimaryNavProps) {
                     transition={{ duration: seconds('base'), ease: ease.inOut }}
                     className="absolute inset-x-3 bottom-2"
                   >
-                    <BeginLine />
+                    <BeginLineHandoffTarget>
+                      <BeginLine />
+                    </BeginLineHandoffTarget>
                   </m.span>
                 ) : null}
               </NextLink>

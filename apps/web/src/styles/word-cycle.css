@@ -1,0 +1,58 @@
+/*
+ * The hero's changing word (T6.1; docs/04-design-system.md §6, signature moment 1). Every word
+ * sits in the same grid cell inside a `mask-line`, so the slot is as wide and tall as the longest
+ * word and nothing around it moves when the word changes. The current word slides up out of the
+ * mask as the next one rises in behind it; reduced motion crossfades instead. Words out of view
+ * are also `visibility: hidden`, so they never peek through the mask's padding, print or show in
+ * forced colors. Only transform, opacity and visibility change.
+ */
+
+[data-word-slot] {
+  grid-area: 1 / 1;
+  justify-self: start;
+  /* A word that fits on one line sits on the slot's last line, beside "begins here.", when the
+     longest one wraps (very narrow screens, large zoom). */
+  align-self: end;
+  /* Past the mask's 0.12em padding and the glyphs' overhang beyond the 0.95 line box, so a
+     waiting word is fully out of sight. */
+  --word-travel: calc(100% + 0.25em);
+}
+
+[data-word-slot='waiting'] {
+  visibility: hidden;
+  transform: translateY(var(--word-travel));
+}
+
+[data-word-slot='current'] {
+  transition: transform var(--duration-slow) var(--ease-out);
+}
+
+/* Hidden once it has slid out (the visibility change waits for the slide). */
+[data-word-slot='leaving'] {
+  visibility: hidden;
+  transform: translateY(calc(-1 * var(--word-travel)));
+  transition:
+    transform var(--duration-slow) var(--ease-out),
+    visibility 0s linear var(--duration-slow);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-word-slot] {
+    transform: none;
+  }
+
+  [data-word-slot='waiting'] {
+    opacity: 0;
+  }
+
+  [data-word-slot='current'] {
+    transition: opacity var(--duration-crossfade) linear;
+  }
+
+  [data-word-slot='leaving'] {
+    opacity: 0;
+    transition:
+      opacity var(--duration-crossfade) linear,
+      visibility 0s linear var(--duration-crossfade);
+  }
+}

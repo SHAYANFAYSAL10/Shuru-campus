@@ -31,6 +31,49 @@ test.describe('Home', () => {
     await expect(facts).toContainText('Sat–Thu 9:00–19:00');
   });
 
+  test('changes the word after "Your", until the pause button stops it', async ({ page }) => {
+    await page.goto('/');
+    const heading = page.getByRole('heading', { level: 1 });
+    // The words are decoration (screen readers get the sentence), so there's no accessible handle.
+    const word = heading.locator('[data-word-slot="current"]');
+    const pause = page.getByRole('button', { name: 'Pause changing word' });
+    // A word's turn (`wordCycle.interval`) with room to spare.
+    const turn = { timeout: 6000 };
+
+    await expect(word).toHaveText('startup');
+    await expect(word).toHaveText('big idea', turn);
+    await expect(heading).toHaveAccessibleName('Your startup begins here.');
+
+    await pause.click();
+    await expect(pause).toHaveAttribute('aria-pressed', 'true');
+    // Off the button too, so only the pause holds it.
+    await page.keyboard.press('Tab');
+    await page.mouse.move(0, 0);
+    const held = (await word.textContent()) ?? '';
+    await page.waitForTimeout(4000);
+    await expect(word).toHaveText(held);
+
+    await pause.click();
+    await expect(pause).toHaveAttribute('aria-pressed', 'false');
+    await expect(word).not.toHaveText(held, turn);
+  });
+
+  test('hands the begin line off to the nav underline', async ({ page }) => {
+    await page.goto('/');
+    test.skip(!(await page.getByRole('navigation', { name: 'Main' }).isVisible()), 'nav from lg');
+
+    await page
+      .getByRole('navigation', { name: 'Main' })
+      .getByRole('link', { name: 'Spaces' })
+      .click();
+    await page.waitForURL('**/spaces');
+    const underline = page.locator('nav[aria-label="Main"] [aria-current] .origin-top-left');
+    // It arrives flying (a running transform animation), then rests in place.
+    expect(await underline.evaluate((el) => el.getAnimations().length)).toBe(1);
+    await expect.poll(() => underline.evaluate((el) => el.getAnimations().length)).toBe(0);
+    await expect(underline).toBeVisible();
+  });
+
   test('loads the hero photo', async ({ page }) => {
     await page.goto('/');
     const photo = page.getByRole('img', { name: /^Placeholder photo: a sunlit/ });
@@ -214,6 +257,9 @@ test.describe('Home', () => {
       await page.goto('/');
 
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+      // The first word stays; the pause button keeps its place but isn't offered.
+      await expect(page.locator('[data-word-slot="current"]')).toHaveText('startup');
+      await expect(page.getByRole('button', { name: 'Pause changing word' })).toHaveCount(0);
       await expect(page.getByRole('img', { name: /^Placeholder photo: a sunlit/ })).toBeVisible();
       for (const pillar of defaultBrand.pillars) {
         await expect(page.locator('p').filter({ hasText: `${pillar} your ` })).toBeVisible();

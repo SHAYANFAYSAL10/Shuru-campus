@@ -3,7 +3,16 @@ import { readFileSync } from 'node:fs';
 
 import { describe, expect, it } from 'vitest';
 
-import { distance, duration, ease, seconds, staggerDelay, stagger } from '@/styles/motion';
+import {
+  cssEase,
+  distance,
+  duration,
+  ease,
+  seconds,
+  staggerDelay,
+  stagger,
+  wordCycle,
+} from '@/styles/motion';
 
 const read = (file: string) => readFileSync(new URL(file, import.meta.url), 'utf8');
 const css = read('./tokens.css') + read('./animations.css');
@@ -24,7 +33,12 @@ describe('motion tokens', () => {
     ['inOut', 'ease-in-out'],
     ['in', 'ease-in'],
   ] as const)('ease.%s matches --%s in CSS', (name, cssName) => {
-    expect(cssVar(cssName)).toBe(`cubic-bezier(${ease[name].join(', ')})`);
+    expect(cssVar(cssName)).toBe(cssEase(name));
+    expect(cssEase(name)).toBe(`cubic-bezier(${ease[name].join(', ')})`);
+  });
+
+  it('holds the hero word long enough to read, well past its own slide', () => {
+    expect(wordCycle.interval).toBeGreaterThanOrEqual(2 * duration.slow + duration.story);
   });
 
   it('keeps the reveal distance within 16–24px and in sync with CSS', () => {
