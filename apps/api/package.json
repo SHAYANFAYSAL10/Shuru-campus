@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build": "nest build",
+    "bundle:serverless": "node scripts/bundle-serverless.mjs",
     "dev": "nest start --watch",
     "start": "node dist/main.js",
     "lint": "eslint .",
@@ -54,6 +55,7 @@
     "@types/supertest": "^7.2.1",
     "@vitest/coverage-v8": "^5.0.3",
     "pino-pretty": "^13.2.0",
+    "rolldown": "^1.2.13",
     "supertest": "^7.3.1",
     "vitest": "^5.0.3"
   }
