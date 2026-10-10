@@ -23,4 +23,9 @@ describe('listText', () => {
     expect(listText(['a', 'b'])).toBe('a and b');
     expect(listText(['a', 'b', 'c'])).toBe('a, b and c');
   });
+
+  it('offers alternatives with "or"', () => {
+    expect(listText(['a', 'b'], 'or')).toBe('a or b');
+    expect(listText(['a', 'b', 'c'], 'or')).toBe('a, b or c');
+  });
 });

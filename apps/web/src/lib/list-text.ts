@@ -5,8 +5,8 @@ export function lowerFirst(text: string): string {
   return text.charAt(0).toLowerCase() + text.slice(1);
 }
 
-/** "a", "a and b", "a, b and c". */
-export function listText(items: readonly string[]): string {
-  if (items.length <= 2) return items.join(' and ');
-  return `${items.slice(0, -1).join(', ')} and ${items.at(-1) ?? ''}`;
+/** "a", "a and b", "a, b and c" (or "a, b or c"). */
+export function listText(items: readonly string[], conjunction: 'and' | 'or' = 'and'): string {
+  if (items.length <= 2) return items.join(` ${conjunction} `);
+  return `${items.slice(0, -1).join(', ')} ${conjunction} ${items.at(-1) ?? ''}`;
 }
