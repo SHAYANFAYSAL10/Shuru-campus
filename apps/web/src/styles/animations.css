@@ -232,6 +232,48 @@
   }
 }
 
+/*
+ * Card hover (A6, 05 → Home #3): the card lifts 4px. Fine pointers only, and it stays put under
+ * reduced motion. Uses `translate`, so it composes with a card's own `transform`.
+ */
+@utility hover-lift {
+  transition: translate var(--duration-base) var(--ease-out);
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    &:hover {
+      translate: 0 calc(var(--spacing) * -1);
+    }
+  }
+  &[data-preview~='hover'] {
+    translate: 0 calc(var(--spacing) * -1);
+  }
+}
+
+/*
+ * Card hover (A6): the raise shadow fades in. It sits on a pseudo-element so only its opacity
+ * animates, never box-shadow. Needs a positioned card that doesn't clip its own overflow (the
+ * shadow falls outside it). An opacity fade, so it stays under reduced motion.
+ */
+@utility hover-raise {
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: var(--shadow-raise);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--duration-base) var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    &:hover::before {
+      opacity: 1;
+    }
+  }
+  &[data-preview~='hover']::before {
+    opacity: 1;
+  }
+}
+
 /* Printing never waits for a scroll. */
 @media print {
   [data-reveal='hidden'],

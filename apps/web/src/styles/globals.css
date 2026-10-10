@@ -10,6 +10,7 @@
 @import './day-timeline.css';
 @import './legal.css';
 @import './word-cycle.css';
+@import './scroll-text.css';
 
 /*
  * Interaction variants. Hover only applies on fine pointers (04 §6); touch gets press states.

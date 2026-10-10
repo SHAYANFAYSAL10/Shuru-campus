@@ -55,6 +55,26 @@ export const distance = {
   magnetic: 6,
 } as const;
 
+/**
+ * Manifesto statements brighten word by word as they scroll up (05 → Home #2), driven by each
+ * statement's own view timeline (`styles/scroll-text.css`, `lib/scroll-text.ts`).
+ */
+export const scrollText = {
+  /**
+   * Opacity of a word not yet reached. `fg` at this strength reads like `fg-subtle` and keeps AA
+   * contrast for body-size text on `bg-alt` in both themes (scroll-text.test.ts).
+   */
+  dim: 0.62,
+  /**
+   * Where the first word starts and the last one finishes, as the statement's `cover` progress
+   * (%): from just inside the bottom of the viewport to its middle.
+   */
+  start: 10,
+  end: 50,
+  /** How many words' worth of scrolling each word takes, so a few are on their way at once. */
+  spread: 3,
+} as const;
+
 /** Marquee drift: constant px per second, whatever the content width. */
 export const marquee = {
   pxPerSecond: 40,

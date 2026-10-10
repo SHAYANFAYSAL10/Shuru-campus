@@ -46,8 +46,9 @@ export function SpacesSection({ plans, number }: SpacesSectionProps) {
           // A grid in both layouts, so cards can share rows (see PlanCard): one column per card
           // below `md` (80%, 45% from `sm`: the next card peeks in, so the row reads as
           // scrollable), then 2 and 3 columns that wrap. Card rows are spaced by the cards' bottom
-          // margin, not a row gap: Chromium adds the list's row gap into the subgrid's rows.
-          listClassName="grid grid-flow-col auto-cols-[80%] max-md:bleed-page-x sm:auto-cols-[45%] md:grid-flow-row md:grid-cols-2 gap-y-0 md:gap-x-gutter md:overflow-visible lg:grid-cols-3"
+          // margin, not a row gap: Chromium adds the list's row gap into the subgrid's rows. While
+          // it scrolls, 4px of top padding leave room for a card's hover lift (a mouse at 200% zoom).
+          listClassName="grid grid-flow-col auto-cols-[80%] max-md:bleed-page-x max-md:pt-1 sm:auto-cols-[45%] md:grid-flow-row md:grid-cols-2 gap-y-0 md:gap-x-gutter md:overflow-visible lg:grid-cols-3"
           buttonsClassName="md:hidden"
           controlsClassName="md:mt-0"
           aside={

@@ -48,7 +48,7 @@ export function PlanCard({
         // Five rows (photo, name, audience, price, features) on the list's subgrid, so names,
         // prices and feature lists line up across cards even when an audience wraps.
         'group relative row-span-5 grid snap-start grid-rows-subgrid content-start gap-y-0 rounded-md focus-ring-within',
-        'transition-transform duration-base ease-out hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0',
+        'hover-lift',
         className,
       )}
     >

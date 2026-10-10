@@ -16,12 +16,20 @@ export async function scrollThrough(page: Page): Promise<void> {
   await settleAnimations(page);
 }
 
-/** Waits for every finite animation and transition on the page to finish. */
+/**
+ * Waits for every finite, time-based animation and transition on the page to finish. Scroll-driven
+ * ones (the manifesto's words) are left out: they follow the scroll position and only "finish"
+ * once scrolled to their end, so there is nothing to wait for.
+ */
 export async function settleAnimations(page: Page): Promise<void> {
   await page.evaluate(async () => {
     const finite = document
       .getAnimations()
-      .filter((animation) => animation.effect?.getComputedTiming().iterations !== Infinity);
+      .filter(
+        (animation) =>
+          animation.timeline instanceof DocumentTimeline &&
+          animation.effect?.getComputedTiming().iterations !== Infinity,
+      );
     await Promise.all(finite.map((animation) => animation.finished.catch(() => undefined)));
   });
 }

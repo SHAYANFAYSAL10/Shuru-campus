@@ -1,13 +1,14 @@
 import { type Brand } from '@campus/contracts';
 
-import { Reveal } from '@/components/motion/reveal';
+import { ScrollText } from '@/components/motion/scroll-text';
 import { manifestoStatements } from '@/lib/manifesto';
 
 /**
  * Home #2 (docs/05-pages-and-interactions.md): the brand's pillars as the section title, then
- * one large statement per pillar, each opening with the pillar itself. Statements reveal as they
- * scroll in (progressive: visible without JS); T6.7 makes them scroll-linked. Renders nothing when
- * no pillar has a statement (a renamed brand).
+ * one large statement per pillar, each opening with the pillar itself. Each statement's words
+ * brighten in reading order as it scrolls up the page (`<ScrollText>`: scroll-linked CSS,
+ * so it needs no JS; full strength without support or under reduced motion). Renders nothing
+ * when no pillar has a statement (a renamed brand).
  */
 export function Manifesto({ pillars }: { pillars: Brand['pillars'] }) {
   const statements = manifestoStatements(pillars);
@@ -26,12 +27,12 @@ export function Manifesto({ pillars }: { pillars: Brand['pillars'] }) {
           {names.join(' · ')}
         </h2>
         <div className="flex flex-col gap-10 lg:col-span-8 lg:gap-16">
-          {statements.map(({ pillar, rest }, i) => (
-            <Reveal key={pillar} index={i}>
-              <p className="type-h2 text-fg">
-                <em>{pillar}</em> {rest}
-              </p>
-            </Reveal>
+          {statements.map(({ pillar, rest }) => (
+            <ScrollText
+              key={pillar}
+              parts={[{ text: pillar, em: true }, { text: rest }]}
+              className="type-h2 text-fg"
+            />
           ))}
         </div>
       </div>
