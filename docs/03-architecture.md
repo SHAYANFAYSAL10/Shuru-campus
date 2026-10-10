@@ -185,4 +185,5 @@ Both apps can run as two Vercel projects from the same repo. This is for test pr
 
 - **web**: Root Directory `apps/web`. `apps/web/vercel.json` builds through turbo so `@campus/contracts` is built first.
 - **api**: Root Directory `apps/api`. `apps/api/vercel.json` builds `dist/` and routes every path to `apps/api/api/index.js`, which boots the same `createApp()` once per cold start and reuses it while warm. Set `TRUST_PROXY=true`.
+- **Node 24:** both apps pin `engines.node` to `24.x`, which Vercel reads from each Root Directory. Nest 12 is ESM-only and `@nestjs/throttler` `require()`s it, which needs Node ≥ 22.12.
 - **Known limits:** the throttler's counters live in each instance's memory, so rate limits are best-effort; the first request after idle pays Nest's boot time.
