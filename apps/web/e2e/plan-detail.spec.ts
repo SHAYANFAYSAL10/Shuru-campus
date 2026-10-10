@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 import { defaultBrand, plansSeed } from '@campus/contracts';
 
@@ -83,5 +83,82 @@ test.describe('Plan detail', () => {
 
     await expect(page).toHaveURL(/\/spaces\/hot-desk$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Hot Desk');
+  });
+});
+
+// T6.5: the card's photo grows into the plan page's photo (04 §6, signature moment 3).
+test.describe('Plan card → detail transition', () => {
+  /** Notes every view-transition pseudo-element that animates from now on, frame by frame. */
+  async function watchViewTransitions(page: Page) {
+    await page.evaluate(() => {
+      const seen = new Set<string>();
+      Object.assign(window, { viewTransitionsSeen: seen });
+      const tick = () => {
+        for (const animation of document.getAnimations()) {
+          const pseudo = (animation.effect as KeyframeEffect | null)?.pseudoElement;
+          if (pseudo?.startsWith('::view-transition')) seen.add(pseudo);
+        }
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
+  }
+
+  function viewTransitionsSeen(page: Page) {
+    return page.evaluate(() => [
+      ...(window as unknown as { viewTransitionsSeen: Set<string> }).viewTransitionsSeen,
+    ]);
+  }
+
+  async function followHotDeskCard(page: Page) {
+    await page.goto('/');
+    // Shown once hydrated: before that, the card is a plain link that reloads the page.
+    await expect(page.getByRole('button', { name: 'Pause changing word' })).toBeVisible();
+    const card = page.getByRole('list', { name: 'Plans' }).getByRole('link', { name: 'Hot Desk' });
+    await card.scrollIntoViewIfNeeded();
+    await watchViewTransitions(page);
+    await card.click();
+    await expect(page).toHaveURL(/\/spaces\/hot-desk$/);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Hot Desk');
+  }
+
+  test('morphs the card photo into the plan photo', async ({ page }) => {
+    await followHotDeskCard(page);
+
+    await expect
+      .poll(() => viewTransitionsSeen(page))
+      .toContain('::view-transition-group(plan-photo-hot-desk)');
+  });
+
+  test('flies the photo in where the browser has no view transitions', async ({ page }) => {
+    await page.addInitScript(() => {
+      Reflect.deleteProperty(Document.prototype, 'startViewTransition');
+    });
+    await followHotDeskCard(page);
+
+    // The wrapper that flies has no accessible handle, so it's reached through its photo.
+    const photo = page.getByRole('img', { name: /Hot Desk$/ }).locator('..');
+    // It arrives flying (a running transform animation), then rests in place.
+    await expect.poll(() => photo.evaluate((el) => el.getAnimations().length)).toBe(1);
+    await expect.poll(() => photo.evaluate((el) => el.getAnimations().length)).toBe(0);
+    expect(await viewTransitionsSeen(page)).toEqual([]);
+  });
+
+  test('crossfades in place under reduced motion', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await followHotDeskCard(page);
+
+    const seen = await viewTransitionsSeen(page);
+    expect(seen).toContain('::view-transition-new(plan-photo-hot-desk)');
+    expect(seen).not.toContain('::view-transition-group(plan-photo-hot-desk)');
+  });
+
+  test('leaves other navigation alone', async ({ page }) => {
+    await page.goto('/spaces/hot-desk');
+    await watchViewTransitions(page);
+    await page.getByRole('main').getByRole('link', { name: 'Spaces & pricing' }).click();
+    await expect(page).toHaveURL(/\/spaces$/);
+
+    expect(await viewTransitionsSeen(page)).toEqual([]);
   });
 });

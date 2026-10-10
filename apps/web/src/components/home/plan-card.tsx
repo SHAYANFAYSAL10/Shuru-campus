@@ -1,13 +1,14 @@
 import { Check } from 'lucide-react';
 import Image from 'next/image';
-import NextLink from 'next/link';
 
 import { type Plan } from '@campus/contracts';
 
+import { PlanMorphLink, PlanMorphSource } from '@/components/motion/plan-morph';
 import { Badge } from '@/components/ui/badge';
 import { Price } from '@/components/ui/price';
 import { cn } from '@/lib/cn';
 import { planPhoto } from '@/lib/plan-media';
+import { planCardAttributes } from '@/lib/plan-morph';
 import { keyFeatures, planFromRate, planHref } from '@/lib/plans';
 
 // One card per carousel slot below `md`, two columns from `md`, three from `lg`.
@@ -28,7 +29,8 @@ export interface PlanCardProps {
  * subgrid, so render it `as="li"` straight in the list (a nested subgrid mis-sizes its rows in
  * Chromium). The whole card is one link to the plan (the name's link stretches over
  * it), so it's a single tab stop with a sensible name. Hover lifts the card and eases the photo
- * in (fine pointers only); T6.5 turns the click into a shared-element transition.
+ * in (fine pointers only). Following it, the photo grows into the plan page's photo
+ * (`components/motion/plan-morph.tsx`).
  */
 export function PlanCard({
   plan,
@@ -41,6 +43,7 @@ export function PlanCard({
 
   return (
     <Root
+      {...planCardAttributes}
       className={cn(
         // Five rows (photo, name, audience, price, features) on the list's subgrid, so names,
         // prices and feature lists line up across cards even when an audience wraps.
@@ -49,7 +52,10 @@ export function PlanCard({
         className,
       )}
     >
-      <div className="relative aspect-4/5 overflow-hidden rounded-md bg-bg-alt">
+      <PlanMorphSource
+        slug={plan.slug}
+        className="relative aspect-4/5 overflow-hidden rounded-md bg-bg-alt"
+      >
         {photo ? (
           <Image
             src={photo.src}
@@ -60,21 +66,23 @@ export function PlanCard({
             className="size-full object-cover photo-tone transition-transform duration-slow ease-out group-hover:scale-103 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
           />
         ) : null}
-        {plan.highlight ? (
-          <Badge tone="accent" className="absolute top-3 left-3">
-            Popular
-          </Badge>
-        ) : null}
-      </div>
+      </PlanMorphSource>
+      {/* Outside the photo, so it stays put while the photo morphs (it sits by the name there). */}
+      {plan.highlight ? (
+        <Badge tone="accent" className="absolute top-3 left-3">
+          Popular
+        </Badge>
+      ) : null}
 
       <Heading className="pt-5 type-h3 text-fg">
         {/* The stretched link: its ::after covers the card, so the photo and price click through. */}
-        <NextLink
+        <PlanMorphLink
+          slug={plan.slug}
           href={planHref(plan.slug)}
           className="outline-none after:absolute after:inset-0 after:rounded-md"
         >
           {plan.name}
-        </NextLink>
+        </PlanMorphLink>
       </Heading>
       <p className="pt-2 text-small text-fg-muted">{plan.audience.join(', ')}</p>
 

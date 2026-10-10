@@ -27,8 +27,14 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const nonce = (await headers()).get(NONCE_HEADER) ?? undefined;
   return (
     // next-themes (theme class) and the announcement script set attributes on <html> before
-    // hydration.
-    <html lang="en" className={fontVariables} suppressHydrationWarning>
+    // hydration. `data-scroll-behavior` tells the router to set aside base.css's smooth scrolling
+    // while it moves to a new page, so arrivals (and the plan photo's morph) start at the top.
+    <html
+      lang="en"
+      className={fontVariables}
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
       <head>
         {/* Hides a dismissed announcement before first paint (components/layout/announcement-bar.tsx).
             Browsers hide `nonce` from the DOM after parsing, hence the hydration opt-out. */}

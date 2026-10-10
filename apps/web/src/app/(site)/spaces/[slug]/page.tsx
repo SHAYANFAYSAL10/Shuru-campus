@@ -57,12 +57,15 @@ export default async function PlanPage({ params }: PageProps<'/spaces/[slug]'>) 
   return (
     <>
       <JsonLd data={breadcrumbJsonLd(trail)} />
-      <div className="mx-auto max-w-content pt-8 px-page-safe pb-section sm:pt-12 lg:pt-16">
+      {/* overflow-x-clip: the photo flying in from a plan card (PlanMorphTarget) is scaled past its
+          crop, and that mustn't widen the page on phones. */}
+      <div className="mx-auto max-w-content overflow-x-clip pt-8 px-page-safe pb-section sm:pt-12 lg:pt-16">
         <Breadcrumbs trail={trail} />
         <PlanSection
           plan={plan}
           index={0}
           eager
+          morphTarget
           headingLevel="h1"
           className="border-t-0 pt-8 pb-0 lg:pt-12 lg:pb-0"
         />
