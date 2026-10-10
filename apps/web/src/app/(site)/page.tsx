@@ -1,5 +1,6 @@
 import { AmenitiesSection } from '@/components/home/amenities-section';
 import { CtaBand } from '@/components/home/cta-band';
+import { DaySection } from '@/components/home/day-section';
 import { HomeHero } from '@/components/home/home-hero';
 import { Manifesto } from '@/components/home/manifesto';
 import { PlanFinderSection } from '@/components/home/plan-finder-section';
@@ -39,8 +40,9 @@ export default async function HomePage() {
   // them close up. (Spaces stays, saying why it's empty.)
   const finder = planList.length > 0 ? 2 : undefined;
   const amenitiesAt = (finder ?? 1) + 1;
-  const why = amenityList.length > 0 ? amenitiesAt + 1 : amenitiesAt;
-  const numbers = { spaces: 1, finder, amenities: amenitiesAt, why, visit: why + 1 };
+  const day = amenityList.length > 0 ? amenitiesAt + 1 : amenitiesAt;
+  const why = day + 1;
+  const numbers = { spaces: 1, finder, amenities: amenitiesAt, day, why, visit: why + 1 };
 
   return (
     <>
@@ -50,6 +52,7 @@ export default async function HomePage() {
       <SpacesSection plans={plans.ok ? plans.data : null} number={numbers.spaces} />
       {numbers.finder ? <PlanFinderSection plans={planList} number={numbers.finder} /> : null}
       <AmenitiesSection amenities={amenityList} number={numbers.amenities} />
+      <DaySection shortName={site.brand.shortName} hours={site.hours} number={numbers.day} />
       <WhyCoworking number={numbers.why} />
       <VisitSection contact={site.contact} hours={site.hours} number={numbers.visit} />
       <CtaBand phones={site.contact.phones} inquiryForm={site.features.inquiryForm} />

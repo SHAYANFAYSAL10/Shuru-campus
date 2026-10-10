@@ -318,3 +318,66 @@ test.describe('Home', () => {
     });
   });
 });
+
+test.describe('A day at the space', () => {
+  /** Saturday 10 Oct 2026, 14:32 in Dhaka (UTC+6): open, in the stretch after lunch. */
+  const OPEN = new Date('2026-10-10T08:32:00Z');
+  /** Friday: closed all day. */
+  const FRIDAY = new Date('2026-10-09T08:00:00Z');
+
+  test('marks the current Dhaka time on the rail and highlights as it scrolls', async ({
+    page,
+  }) => {
+    await page.clock.install({ time: OPEN });
+    await page.goto('/');
+    const section = page.getByRole('region', { name: 'How a day here unfolds.' });
+    const rail = section.getByRole('list', { name: 'The day, hour by hour' });
+    await rail.scrollIntoViewIfNeeded();
+
+    await expect(section.getByText(`A day at ${defaultBrand.shortName}`)).toBeVisible();
+    const now = rail.locator('li[aria-current="time"]');
+    await expect(now).toHaveCount(1);
+    await expect(now).toContainText('Lunch');
+    await expect(now).toContainText('Now 14:32');
+    await expect(section.getByText('14:32 in Dhaka · Open now, until 19:00')).toBeVisible();
+
+    // The marker moves on with the minute.
+    // Jumps the clock (firing due timers once) rather than replaying every frame of the minute.
+    await page.clock.fastForward(60_000);
+    await expect(now).toContainText('Now 14:33');
+
+    // The highlight follows scroll: the rail's own below `xl`, the page's from it.
+    const active = rail.locator('li[data-active]');
+    await expect(active).toHaveCount(1);
+    const scrolls = await rail.evaluate((list) => list.scrollWidth > list.clientWidth);
+    if (scrolls) {
+      await rail.evaluate((list) => {
+        list.scrollLeft = list.scrollWidth;
+      });
+    } else {
+      await page.evaluate(() => {
+        window.scrollBy(0, window.innerHeight);
+      });
+    }
+    await expect(active).toContainText('Close');
+  });
+
+  test('says when it opens while closed, with no marker', async ({ page }) => {
+    await page.clock.install({ time: FRIDAY });
+    await page.goto('/');
+    const section = page.getByRole('region', { name: 'How a day here unfolds.' });
+    await section.scrollIntoViewIfNeeded();
+    await expect(section.getByText('14:00 in Dhaka · Closed, opens Sat 9:00')).toBeVisible();
+    await expect(section.locator('li[aria-current="time"]')).toHaveCount(0);
+  });
+
+  test('shows every moment and the week’s hours without JavaScript', async ({ browser }) => {
+    const context = await browser.newContext({ javaScriptEnabled: false });
+    const page = await context.newPage();
+    await page.goto('/');
+    const rail = page.getByRole('list', { name: 'The day, hour by hour' });
+    await expect(rail.getByRole('listitem')).toHaveCount(6);
+    await expect(page.getByText('Sat–Thu 9:00–19:00 · Fri closed').last()).toBeAttached();
+    await context.close();
+  });
+});

@@ -1,5 +1,7 @@
 import { type ReactNode } from 'react';
 
+import { cn } from '@/lib/cn';
+
 export interface SectionHeadingProps {
   /** The `h2`'s id, for the section's `aria-labelledby`. */
   id: string;
@@ -11,6 +13,8 @@ export interface SectionHeadingProps {
   title: ReactNode;
   /** One supporting paragraph, three lines at most on desktop (B1). */
   lead?: ReactNode;
+  /** On the lake band (`surface-brand`): everything takes its on-brand text color. */
+  inverse?: boolean;
   className?: string;
 }
 
@@ -21,11 +25,12 @@ export function SectionHeading({
   number,
   title,
   lead,
+  inverse = false,
   className,
 }: SectionHeadingProps) {
   return (
     <div className={className}>
-      <p className="type-eyebrow text-fg-subtle">
+      <p className={cn('type-eyebrow', !inverse && 'text-fg-subtle')}>
         {number === undefined ? null : (
           <span aria-hidden="true" className="tabular-nums">
             {String(number).padStart(2, '0')} —{' '}
@@ -34,10 +39,12 @@ export function SectionHeading({
         {eyebrow}
       </p>
       {/* 20ch: the display measure (B1). */}
-      <h2 id={id} className="mt-4 max-w-[20ch] type-h2 text-fg">
+      <h2 id={id} className={cn('mt-4 max-w-[20ch] type-h2', !inverse && 'text-fg')}>
         {title}
       </h2>
-      {lead ? <p className="mt-4 max-w-xl type-lead text-fg-muted">{lead}</p> : null}
+      {lead ? (
+        <p className={cn('mt-4 max-w-xl type-lead', !inverse && 'text-fg-muted')}>{lead}</p>
+      ) : null}
     </div>
   );
 }

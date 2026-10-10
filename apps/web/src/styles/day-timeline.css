@@ -1,0 +1,176 @@
+/*
+ * "A day at {shortName}" rail (components/home/day-timeline.tsx), on the lake band. Each moment
+ * draws its own stretch of rail, from its dot to the next moment's dot, so the rail tiles across
+ * the scroller with no overlay to keep in sync. The begin line fills the stretches up to the
+ * current Dhaka time (`--fill`, 0–1, by `scaleX`) and the "Now" marker rides its tip
+ * (`--fraction`, by `translateX`). Only transform and opacity move (CLAUDE.md §3 → Motion).
+ */
+[data-day-moment] {
+  /* The card's padding; the dot lines up with the card's text. */
+  --day-inset: calc(var(--spacing) * 5);
+  --day-dot: 0.75rem;
+  /* The begin line's stroke (04 §1). */
+  --day-stroke: 1.5px;
+  /* Where the line runs in the rail row: room above it for the "Now" label. */
+  --day-line-y: 2.25rem;
+  /* From one dot's center to the next one's: the stretch runs into the next moment. */
+  --day-dot-center: calc(var(--day-inset) + var(--day-dot) / 2);
+  --day-rail-color: color-mix(in oklab, var(--color-on-brand) 35%, transparent);
+  --day-highlight: color-mix(in oklab, var(--color-on-brand) 8%, transparent);
+}
+
+.day-rail {
+  position: relative;
+  height: calc(var(--day-line-y) + var(--day-dot));
+}
+
+.day-stretch {
+  position: absolute;
+  top: calc(var(--day-line-y) + (var(--day-dot) - var(--day-stroke)) / 2);
+  left: var(--day-dot-center);
+  right: calc(-1 * var(--day-dot-center));
+  height: var(--day-stroke);
+  background: var(--day-rail-color);
+}
+
+.day-stretch-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--color-accent);
+  transform: scaleX(var(--fill, 0));
+  transform-origin: left;
+  transition: transform var(--duration-slow) var(--ease-out);
+}
+
+.day-dot {
+  position: absolute;
+  top: var(--day-line-y);
+  left: var(--day-inset);
+  width: var(--day-dot);
+  height: var(--day-dot);
+  border: var(--day-stroke) solid var(--color-on-brand);
+  border-radius: var(--radius-full);
+  background: var(--color-brand-surface);
+  transition: transform var(--duration-fast) var(--ease-out);
+
+  &[data-passed] {
+    border-color: var(--color-accent);
+    background: var(--color-accent);
+  }
+}
+
+[data-day-moment][data-active] .day-dot {
+  transform: scale(1.5);
+}
+
+/* Spans the stretch, so its translateX percentage is a share of the stretch. */
+.day-now {
+  position: absolute;
+  inset-block: 0;
+  left: var(--day-dot-center);
+  right: calc(-1 * var(--day-dot-center));
+  pointer-events: none;
+  transform: translateX(calc(var(--fraction, 0) * 100%));
+  transition:
+    transform var(--duration-slow) var(--ease-out),
+    opacity var(--duration-base) var(--ease-out) var(--duration-slow);
+
+  /* Appears once the line has drawn up to it. */
+  @starting-style {
+    opacity: 0;
+  }
+}
+
+.day-now-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+.day-now-dot {
+  position: absolute;
+  top: calc(var(--day-line-y) + var(--day-dot) / 2);
+  left: 0;
+  width: calc(var(--day-dot) * 1.5);
+  height: calc(var(--day-dot) * 1.5);
+  border: var(--day-stroke) solid var(--color-on-brand);
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+  transform: translate(-50%, -50%);
+}
+
+.day-card {
+  position: relative;
+  isolation: isolate;
+  margin-top: calc(var(--spacing) * 3);
+  margin-inline-end: calc(var(--spacing) * 3);
+  padding: var(--day-inset);
+  border-radius: var(--radius-md);
+  transition: transform var(--duration-base) var(--ease-out);
+
+  /* The highlight: a lighter wash that fades in, so the text never changes color. */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: var(--day-highlight);
+    opacity: 0;
+    transition: opacity var(--duration-base) var(--ease-out);
+  }
+}
+
+[data-day-moment][data-active] .day-card {
+  transform: translateY(calc(var(--spacing) * -1));
+
+  &::before {
+    opacity: 1;
+  }
+}
+
+/* Reduced motion: the line and marker jump to the minute; the highlight is a short crossfade. */
+@media (prefers-reduced-motion: reduce) {
+  .day-stretch-fill,
+  .day-dot,
+  .day-now,
+  .day-card {
+    transition: none;
+  }
+
+  [data-day-moment][data-active] .day-dot,
+  [data-day-moment][data-active] .day-card {
+    transform: none;
+  }
+
+  .day-card::before {
+    transition-duration: var(--duration-crossfade);
+  }
+}
+
+/* Windows High Contrast drops backgrounds: keep the line, the dots and the highlight visible. */
+@media (forced-colors: active) {
+  .day-stretch,
+  .day-stretch-fill,
+  .day-now-dot,
+  .day-dot[data-passed] {
+    forced-color-adjust: none;
+  }
+
+  .day-stretch {
+    background: GrayText;
+  }
+
+  .day-stretch-fill,
+  .day-now-dot,
+  .day-dot[data-passed] {
+    background: Highlight;
+    border-color: Highlight;
+  }
+
+  [data-day-moment][data-active] .day-card {
+    outline: 1px solid CanvasText;
+  }
+}

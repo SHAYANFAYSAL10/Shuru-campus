@@ -11,7 +11,8 @@ export interface IconButtonProps extends Omit<ComponentProps<'button'>, 'childre
   /** Accessible name. Required: an icon alone never carries meaning (B3). */
   label: string;
   icon: LucideIcon;
-  variant?: 'primary' | 'secondary' | 'ghost';
+  /** `onBrand` on the lake band. */
+  variant?: 'primary' | 'secondary' | 'ghost' | 'onBrand';
   size?: 'sm' | 'md';
   /** Show the label as a tooltip on hover and focus (B3). On by default. */
   tooltip?: boolean;
