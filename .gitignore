@@ -35,3 +35,7 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 .idea/
+
+# vercel (apps/api build creates an empty static output dir)
+apps/api/public/
+.vercel/
