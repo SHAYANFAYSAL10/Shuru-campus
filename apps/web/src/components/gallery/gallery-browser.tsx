@@ -3,8 +3,9 @@
 import { ImageOff } from 'lucide-react';
 import { AnimatePresence } from 'motion/react';
 import * as m from 'motion/react-m';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import { useState, type MouseEvent } from 'react';
+import { useRef, useState, type MouseEvent } from 'react';
 
 import { type GalleryCategory, type GalleryImage } from '@campus/contracts';
 
@@ -18,6 +19,7 @@ import {
   gallerySummary,
   suggestCategory,
 } from '@/lib/gallery';
+import { useHydrated } from '@/lib/hooks/use-hydrated';
 import { useReducedMotion } from '@/lib/hooks/use-media-query';
 import { ease, seconds } from '@/styles/motion';
 
@@ -25,6 +27,15 @@ import { ease, seconds } from '@/styles/motion';
 const SIZES = '(min-width: 90rem) 26rem, (min-width: 64rem) 30vw, (min-width: 40rem) 46vw, 92vw';
 /** Photos that load straight away: the top of every column at three columns, give or take. */
 const EAGER = 4;
+
+// Code-split (CLAUDE.md → Performance budgets): the lightbox is its own chunk, fetched when a
+// pointer or focus first reaches a photo, and only ever rendered in the browser.
+const loadLightbox = () =>
+  import('@/components/gallery/gallery-lightbox').then((mod) => mod.GalleryLightbox);
+const GalleryLightbox = dynamic(loadLightbox, { ssr: false });
+const prefetchLightbox = () => {
+  void loadLightbox();
+};
 
 export interface GalleryBrowserProps {
   images: readonly GalleryImage[];
@@ -41,14 +52,29 @@ export interface GalleryBrowserProps {
  * showing in a polite live region. The photos are a CSS-columns masonry (no JS layout) at their
  * own ratios; on a change, leaving photos fade out and the rest glide to their new places
  * (`layout`, transform only). Reduced motion keeps the fades, shortened, and drops the glide.
- * T6.6 turns each photo into a button that opens the lightbox.
+ * Each photo links to its full-size file, so without JS (or in a new tab) it still opens large;
+ * a plain click opens the lightbox on it instead, over the photos the filter shows.
  */
 export function GalleryBrowser({ images, initialCategory, action }: GalleryBrowserProps) {
   const [category, setCategoryState] = useState(initialCategory);
   // Set by the first change, so nothing fades in on first paint (the HTML arrives filtered).
   const [changed, setChanged] = useState(false);
   const reduced = useReducedMotion();
+  const hydrated = useHydrated();
+  // The photo the lightbox is open on, by id; null while closed.
+  const [viewing, setViewing] = useState<string | null>(null);
+  const thumbnails = useRef(new Map<string, HTMLAnchorElement>());
   const shown = filterGallery(images, category);
+  const viewingIndex = viewing ? shown.findIndex((image) => image.id === viewing) : -1;
+
+  const view = (id: string) => (event: MouseEvent<HTMLAnchorElement>) => {
+    // A new-tab or download click keeps the link's own behavior: the full-size file.
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      return;
+    }
+    event.preventDefault();
+    setViewing(id);
+  };
   const suggestion = category && shown.length === 0 ? suggestCategory(images, category) : undefined;
 
   const choose = (next: GalleryCategory | undefined) => (event: MouseEvent<HTMLButtonElement>) => {
@@ -117,18 +143,35 @@ export function GalleryBrowser({ images, initialCategory, action }: GalleryBrows
                 transition={{ ...fade, layout: { duration: seconds('base'), ease: ease.out } }}
                 className="mb-gutter break-inside-avoid"
               >
-                <Image
-                  src={image.src}
-                  width={image.width}
-                  height={image.height}
-                  alt={image.alt}
-                  sizes={SIZES}
-                  placeholder="blur"
-                  blurDataURL={image.blurDataUrl}
-                  loading={index < EAGER ? 'eager' : 'lazy'}
-                  fetchPriority={index === 0 ? 'high' : undefined}
-                  className="block h-auto w-full rounded-sm bg-bg-alt photo-tone"
-                />
+                <a
+                  href={image.src}
+                  ref={(element) => {
+                    if (!element) return;
+                    thumbnails.current.set(image.id, element);
+                    return () => {
+                      thumbnails.current.delete(image.id);
+                    };
+                  }}
+                  onClick={view(image.id)}
+                  onPointerEnter={prefetchLightbox}
+                  onFocus={prefetchLightbox}
+                  // Only once it opens a dialog; before hydration it's a plain link to the file.
+                  aria-haspopup={hydrated ? 'dialog' : undefined}
+                  className="block cursor-zoom-in rounded-sm"
+                >
+                  <Image
+                    src={image.src}
+                    width={image.width}
+                    height={image.height}
+                    alt={image.alt}
+                    sizes={SIZES}
+                    placeholder="blur"
+                    blurDataURL={image.blurDataUrl}
+                    loading={index < EAGER ? 'eager' : 'lazy'}
+                    fetchPriority={index === 0 ? 'high' : undefined}
+                    className="block h-auto w-full rounded-sm bg-bg-alt photo-tone"
+                  />
+                </a>
               </m.li>
             ))}
           </AnimatePresence>
@@ -169,6 +212,17 @@ export function GalleryBrowser({ images, initialCategory, action }: GalleryBrows
             {suggestion ? `Show ${categoryInfo(suggestion).label}` : 'Show all photos'}
           </button>
         </m.div>
+      ) : null}
+
+      {viewingIndex >= 0 ? (
+        <GalleryLightbox
+          images={shown}
+          initialIndex={viewingIndex}
+          thumbnail={(id) => thumbnails.current.get(id) ?? null}
+          onClose={() => {
+            setViewing(null);
+          }}
+        />
       ) : null}
     </form>
   );

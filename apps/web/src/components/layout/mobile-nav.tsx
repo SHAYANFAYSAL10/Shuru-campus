@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowUpRight, Menu } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import * as m from 'motion/react-m';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -122,17 +122,12 @@ export function MobileNav({ items, hours, memberLoginUrl, bar, className }: Mobi
           <OpenStatus hours={hours} />
           <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
             <ThemeToggle iconOnly={false} />
-            <a
+            <NextLink
               href={memberLoginUrl}
-              className="group inline-flex min-h-hit items-center gap-1 rounded-sm font-medium text-fg-muted transition-colors hover:text-fg"
+              className="inline-flex min-h-hit items-center rounded-sm font-medium text-fg-muted transition-colors hover:text-fg"
             >
               Member login
-              <ArrowUpRight
-                aria-hidden="true"
-                className="size-4 transition-transform duration-fast ease-out group-hover:translate-x-px group-hover:-translate-y-px motion-reduce:transition-none"
-                strokeWidth={1.5}
-              />
-            </a>
+            </NextLink>
           </div>
         </m.div>
       </SheetContent>
