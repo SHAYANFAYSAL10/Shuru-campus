@@ -2,7 +2,7 @@
 
 > `{name}`, `{shortName}` and `{legalName}` in copy below refer to the configurable brand (`06-api.md` → `Brand`). Never type the brand name into components or copy.
 
-Every page shares a **header** (logo, nav, `OpenStatus`, theme toggle, "Member login" link → OfficeRnD, primary CTA "Book a visit") and a **footer** (address, phones, email, hours, socials, legal links, a large "Let's begin." sign-off in Fraunces).
+Every page shares a **header** (logo, nav, `OpenStatus`, theme toggle, "Member login" link (header, mobile menu and footer; it will lead to the OfficeRnD portal, but until the portal is ready it goes to `/members/login`, which has no route, so it shows the site's 404), primary CTA "Book a visit") and a **footer** (address, phones, email, hours, socials, legal links, a large "Let's begin." sign-off in Fraunces).
 
 The header is transparent over the hero. On scroll it condenses (height 80→64px) and gains a translucent surface (`backdrop-filter`, solid fallback). It hides on scroll-down and shows on scroll-up, but never while focus is inside it.
 
@@ -39,7 +39,7 @@ Story ("We are dreamers…") beside an editorial photo, the meaning of the name 
 
 ## Gallery `/gallery`
 
-A masonry grid (CSS columns; no JS layout), filter chips (*All · Workspace · Meeting rooms · Café · Events*, synced to `?category=`; without JS they submit a GET form) with a `layout` re-flow animation, a polite live summary ("Showing 3 photos of the café."), and a lightbox (keyboard, swipe, counter, captions, focus restore). An empty category says "Nothing in *Events* yet. Try *Workspace*." with a button to it. Images are lazy below the fold. With `features.gallery` off the page is a 404.
+A masonry grid (CSS columns; no JS layout), filter chips (*All · Workspace · Meeting rooms · Café · Events*, synced to `?category=`; without JS they submit a GET form) with a `layout` re-flow animation, a polite live summary ("Showing 3 photos of the café."), and a lightbox (keyboard, swipe, counter, captions, focus restore). Each photo links to its full-size file, so without JS it still opens large. An empty category says "Nothing in *Events* yet. Try *Workspace*." with a button to it. Images are lazy below the fold. With `features.gallery` off the page is a 404.
 
 ## Contact `/contact`
 
